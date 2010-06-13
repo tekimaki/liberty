@@ -4,7 +4,7 @@
 $tables = array(
 
 'liberty_content_types' => "
-	content_type_guid C(16) PRIMARY,
+	content_type_guid C(32) PRIMARY,
 	content_name C(250) NOTNULL,
 	content_name_plural C(250),
 	maintainer_url C(250),
@@ -24,7 +24,7 @@ $tables = array(
 	modifier_user_id I4 NOTNULL,
 	created I8 NOTNULL,
 	last_modified I8 NOTNULL,
-	content_type_guid C(16) NOTNULL,
+	content_type_guid C(32) NOTNULL,
 	format_guid C(16) NOTNULL,
 	content_status_id I4 NOTNULL,
 	event_time I8 NOTNULL DEFAULT 0,
