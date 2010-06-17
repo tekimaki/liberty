@@ -45,6 +45,7 @@ class LibertyValidator {
 				break;
 			case 'null':
 				LibertyValidator::preview_null($vars, $pParamHash, $store);
+				break;
 			default:
 				global $gBitSystem;
 				$gBitSystem->fatalError("Unsupported validation type: ".$type);
