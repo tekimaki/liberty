@@ -166,11 +166,14 @@ class LibertyContent extends LibertyBase {
 	function verify( &$pParamHash ) {
 		global $gLibertySystem, $gBitSystem, $gBitLanguage, $gBitUser;
 
+		// content_type_guid
 		// It is possible a derived class set this to something different
 		if( empty( $pParamHash['content_type_guid'] ) ) {
 			$pParamHash['content_type_guid'] = $this->mContentTypeGuid;
 		}
 
+		// creator user_id
+		// defaults to session user
 		if( empty( $pParamHash['user_id'] ) ) {
 			$pParamHash['user_id'] = $gBitUser->getUserId();
 		}
@@ -195,6 +198,7 @@ class LibertyContent extends LibertyBase {
 			$pParamHash['content_store']['content_id'] = $pParamHash['content_id'];
 		}
 
+		// change owner
 		// Are we allowed to override owner?
 		if ($gBitSystem->isFeatureActive('liberty_allow_change_owner') && $gBitUser->hasPermission('p_liberty_edit_content_owner')) {
 			// If an owner is being set override user_id
@@ -203,7 +207,7 @@ class LibertyContent extends LibertyBase {
 			}
 		}
 
-		// Do we need to change the status
+		// change the status
 		if (!empty($pParamHash['content_status_id'])) {
 			if( $this->hasUserPermission( 'p_liberty_edit_content_status' ) || $gBitUser->hasUserPermission( 'p_liberty_edit_all_status') ) {
 				$allStatus = $this->getAvailableContentStatuses();
@@ -215,6 +219,7 @@ class LibertyContent extends LibertyBase {
 			}
 		}
 
+		// prep text inputs [title,data,edit_comment]
 		$pParamHash['field_changed'] = empty( $pParamHash['content_id'] )
 					|| (!empty($this->mInfo["data"]) && !empty($pParamHash["edit"]) && (md5($this->mInfo["data"]) != md5($pParamHash["edit"])))
 					|| (!empty($pParamHash["title"]) && !empty($this->mInfo["title"]) && (md5($this->mInfo["title"]) != md5($pParamHash["title"])))
@@ -233,12 +238,13 @@ class LibertyContent extends LibertyBase {
 			$pParamHash['content_store']['lang_code'] = $_REQUEST['i18n']['lang_code'];
 		}
 
+		// last modified date-time
 		$pParamHash['content_store']['last_modified'] = !empty( $pParamHash['last_modified'] ) ? $pParamHash['last_modified'] : $gBitSystem->getUTCTime();
 		if( !empty( $pParamHash['event_time'] ) ) {
 			$pParamHash['content_store']['event_time'] = $pParamHash['event_time'];
 		}
 
-		// WARNING: Assume WIKI if t
+		// @TODO clarify this warning: WARNING: Assume WIKI if t
 		if( !empty( $pParamHash['content_id'] ) ) {
 			// do NOT allow changing of content_type_guid in update for safety of overridden secondary classes (like BitBook )
 			unset( $pParamHash['content_store']['content_type_guid'] );
@@ -248,6 +254,7 @@ class LibertyContent extends LibertyBase {
 			$pParamHash['content_store']['content_type_guid'] = $pParamHash['content_type_guid'];
 		}
 
+		// ip
 		// setup some required defaults if not defined
 		if( empty( $pParamHash['ip'] ) ) {
 			if( empty( $_SERVER["REMOTE_ADDR"] ) ) {
@@ -258,11 +265,13 @@ class LibertyContent extends LibertyBase {
 		}
 		$pParamHash['content_store']['ip'] = $pParamHash['ip'];
 
+		// modifier user
 		if( !@$this->verifyId( $pParamHash['modifier_user_id'] ) ) {
 			$pParamHash['modifier_user_id'] = $gBitUser->getUserId();
 		}
 		$pParamHash['content_store']['modifier_user_id'] = $pParamHash['modifier_user_id'];
 
+		// content format guid
 		if( empty( $pParamHash['format_guid'] ) ) {
 			$pParamHash['format_guid'] = $gBitSystem->getConfig( 'default_format', 'tikiwiki' );
 		}
@@ -273,6 +282,7 @@ class LibertyContent extends LibertyBase {
 			$pParamHash['content_store']['last_hit'] = $gBitSystem->getUTCTime();
 		}
 
+		// run format plugin verification 
 		if( !empty( $pParamHash['edit'] ) && $func = $gLibertySystem->getPluginFunction( $pParamHash['format_guid'], 'verify_function' ) ) {
 			$error = $func( $pParamHash );
 			if( $error ) {
@@ -280,6 +290,7 @@ class LibertyContent extends LibertyBase {
 			}
 		}
 
+		// @TODO insert description comment
 		if( !empty( $pParamHash['content_store']['data'] )) {
 			$this->filterData( $pParamHash['content_store']['data'], $pParamHash['content_store'], 'prestore' );
 		} else {
@@ -288,13 +299,14 @@ class LibertyContent extends LibertyBase {
 		}
 		$pParamHash['content_store']['format_guid'] = $pParamHash['format_guid'];
 
+		// set version (for history)
 		if( !@BitBase::verifyId( $this->mInfo['version'] ) ) {
 			$pParamHash['content_store']['version'] = 1;
 		} else {
 			$pParamHash['content_store']['version'] = $this->mInfo['version'] + 1;
 		}
 
-		// search related stuff
+		// search related indexing
 		if ( ( !(isset($this->mInfo['no_index']) and $this->mInfo['no_index'] == true ) ) and !isset($this->mInfo['index_data']) ) {
 			$this->mInfo['index_data'] = "";
 			if ( isset($pParamHash["title"]) )       $this->mInfo['index_data'] .= $pParamHash["title"] . ' ';
@@ -315,6 +327,8 @@ class LibertyContent extends LibertyBase {
 				$pParamHash['preferences_store'][$pref] = NULL;
 			}
 		}
+
+		// prep summary(description) text 
 		$pParamHash['data_store']['summary'] = !empty( $pParamHash['summary'] ) ? $pParamHash['summary'] : NULL ;
 
 		// call verify service to see if any services have errors
