@@ -7,7 +7,7 @@ global $gBitInstaller;
 $infoHash = array(
 	'package'      => LIBERTY_PKG_NAME,
 	'version'      => str_replace( '.php', '', basename( __FILE__ )),
-	'description'  => "Update content type guid table to allow longer character string for guid values.",
+	'description'  => "Update content type guid table to allow longer character string for guid values. Move liberty structures to its own package.",
 	'post_upgrade' => NULL,
 );
 

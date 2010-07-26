@@ -160,17 +160,6 @@ $tables = array(
 	mime_type C(64)
 ",
 
-'liberty_structures' => "
-	structure_id I4 AUTO PRIMARY,
-	root_structure_id I4 NOTNULL,
-	content_id I4 NOTNULL,
-	structure_level I1 NOTNULL DEFAULT 1,
-	pos I4,
-	page_alias C(240),
-	parent_id I4
-",
-//	CONSTRAINT ', CONSTRAINT `liberty_root_structure_id_ref` FOREIGN KEY (`root_structure_id`) REFERENCES `".BIT_DB_PREFIX."liberty_structures`( `structure_id` )'
-
 'liberty_dynamic_variables' => "
 	name C(40) PRIMARY,
 	data XL
@@ -259,9 +248,6 @@ $indices = array (
 	'attachments_hits_idx' => array( 'table' => 'liberty_attachments', 'cols' => 'hits', 'opts' => NULL ),
 	'attachments_user_id_idx' => array( 'table' => 'liberty_attachments', 'cols' => 'user_id', 'opts' => NULL ),
 	'st_co_foreign_guid_idx' => array( 'table' => 'liberty_attachments', 'cols' => 'foreign_id, attachment_plugin_guid', 'opts' => array( 'UNIQUE' ) ),
-	'structures_root_idx' => array( 'table' => 'liberty_structures', 'cols' => 'root_structure_id', 'opts' => NULL),
-	'structures_parent_idx' => array( 'table' => 'liberty_structures', 'cols' => 'parent_id', 'opts' => NULL),
-	'structures_content_idx' => array( 'table' => 'liberty_structures', 'cols' => 'content_id', 'opts' => NULL),
 	'to_content_id_idx' => array( 'table' => 'liberty_content_links', 'cols' => 'to_content_id', 'opts' => NULL),
 	'links_from_content_id_idx' => array( 'table' => 'liberty_content_links', 'cols' => 'from_content_id', 'opts' => NULL),
 	'links_title_content_id_idx' => array( 'table' => 'liberty_content_links', 'cols' => 'to_title', 'opts' => NULL),
@@ -281,7 +267,6 @@ $sequences = array (
 	'liberty_comment_id_seq'     => array( 'start' => 1 ),
 	'liberty_files_id_seq'       => array( 'start' => 1 ),
 	'liberty_attachments_id_seq' => array( 'start' => 1 ),
-	'liberty_structures_id_seq'  => array( 'start' => 4 ),
 	'liberty_meta_types_id_seq'  => array( 'start' => 1 ),
 	'liberty_meta_titles_id_seq' => array( 'start' => 1 ),
 );
