@@ -69,7 +69,7 @@ class LibertyBase extends BitBase {
 		global $gLibertySystem, $gBitUser, $gBitSystem;
 
 		if( BitBase::verifyId( $pContentId ) ) {
-			// remove non integer bits from structure_id and content_id requests
+			// remove non integer bits from content_id requests
 			// can happen with period's at the end of url's that are email'ed around
 			$pContentId = preg_replace( '/[\D]/', '', $pContentId );
 			if( empty( $pContentGuid ) ) {

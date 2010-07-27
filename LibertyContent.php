@@ -58,12 +58,6 @@ class LibertyContent extends LibertyBase {
 	var $mContentId;
 
 	/**
-	 * If this content is being viewed within a structure
-	 * @public
-	 */
-	var $mStructureId;
-
-	/**
 	 * Content type GUID for this LibertyContent object
 	 * @public
 	 */
@@ -460,11 +454,6 @@ class LibertyContent extends LibertyBase {
 
 			// Remove aliases
 			$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."liberty_aliases` WHERE `content_id`=?", array( $this->mContentId ) );
-
-			// Remove structures
-			// it's not this simple. what about orphans? needs real work. :( xoxo - spider
-//			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_structures` WHERE `content_id` = ?";
-//			$result = $this->mDb->query( $query, array( $this->mContentId ) );
 
 			// Remove data
 			$query = "DELETE FROM `".BIT_DB_PREFIX."liberty_content_data` WHERE `content_id` = ?";
@@ -2651,28 +2640,6 @@ class LibertyContent extends LibertyBase {
 		return $ret;
 	}
 
-	/**
-	 * Get a list of all structures this content is a member of
-	 **/
-	function getStructures() {
-		$ret = NULL;
-		if( $this->isValid() ) {
-			$ret = array();
-			$structures_added = array();
-			$query = 'SELECT ls.*, lc.`title`, tcr.`title` AS `root_title`
-				FROM `'.BIT_DB_PREFIX.'liberty_content` lc, `'.BIT_DB_PREFIX.'liberty_structures` ls
-				INNER JOIN  `'.BIT_DB_PREFIX.'liberty_structures` tsr ON( tsr.`structure_id`=ls.`root_structure_id` )
-				INNER JOIN `'.BIT_DB_PREFIX.'liberty_content` tcr ON( tsr.`content_id`=tcr.`content_id` )
-				WHERE lc.`content_id`=ls.`content_id` AND ls.`content_id`=?';
-			if( $result = $this->mDb->query( $query,array( $this->mContentId ) ) ) {
-				while ($res = $result->fetchRow()) {
-					$ret[] = $res;
-				}
-			}
-		}
-		return $ret;
-	}
-
 	/*
 	 * Splits content either at the ...split... or at the
 	 * length specified if no manual split is in the content.
@@ -2935,38 +2902,6 @@ class LibertyContent extends LibertyBase {
 			if( is_string($value) ){
 				$pParamHash[$key] = htmlspecialchars_decode( $value );
 			}
-		}
-	}
-
-	/**
-	 * Set content related mStructureId
-	 *
-	 * @param integer Structure ID
-	 */
-	function setStructure( $pStructureId ) {
-		if( $this->verifyId( $pStructureId ) ) {
-			$this->mStructureId = $pStructureId;
-		}
-	}
-
-	/**
-	 * Check the number of structures that the content object is being used in
-	 *
-	 * @param integer Structure ID ( If NULL or not supplied check all structures )
-	 * @return integer Number of structures that this content object is located in
-	 */
-	function isInStructure( $pStructureId=NULL ) {
-		if( $this->isValid() ) {
-			$whereSql = NULL;
-			$bindVars = array( $this->mContentId );
-			if( $pStructureId ) {
-				array_push( $bindVars, $pStructureId );
-				$whereSql = ' AND ls.`root_structure_id`=? ';
-			}
-			$query  = "SELECT `structure_id` FROM `".BIT_DB_PREFIX."liberty_structures` ls
-					WHERE ls.`content_id`=? $whereSql";
-			$cant = $this->mDb->getOne( $query, $bindVars );
-			return $cant;
 		}
 	}
 
