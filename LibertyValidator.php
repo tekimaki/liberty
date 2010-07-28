@@ -65,8 +65,8 @@ class LibertyValidator {
 			case 'choice':
 				LibertyValidator::validate_choice($vars, $pParamHash, $pObject, $store);
 				break;
-			// TODO: for the moment validat references as an int
-		    	case 'reference':
+			// TODO: for the moment validate references as an int
+			case 'reference':
 			case 'int':
 			case 'long':
 				LibertyValidator::validate_integers($vars, $pParamHash, $pObject, $store);
@@ -93,6 +93,9 @@ class LibertyValidator {
 				break;
 			case 'null':
 				LibertyValidator::validate_null($vars, $pParamHash, $pObject, $store);
+				break;
+			case 'filename':
+				LibertyValidator::validate_filename($vars, $pParamHash, $pObject, $store);
 				break;
 			default:
 				global $gBitSystem;
@@ -519,5 +522,26 @@ class LibertyValidator {
 				$store[$var] = NULL;
 			}
 		}
+	}
+
+	function validate_filename($pVars, &$pParamHash, &$pObject, &$store) {
+		foreach( $pVars as $var => $constraints) {
+			if (!empty( $pParamHash[$var] ) ) {
+				$filename = $pParamHash[$var];
+		        if ( preg_match('/[&$\?\*\%:\/\\\]/', $filename) ){
+					$pObject->mErrors[$var] = tra('The file name contains invalid characters, make sure the filename does not contain any of the follow characters: &$?%:/\\');
+				} else {
+					$store[$var] = $filename;
+				}
+			}
+			else if (isset($constraints['required']) && $constraints['required']) {
+				$pObject->mErrors[$var] = 'A value for ' . $constraints['name'] . ' is required.';
+			}
+			else {
+				$store[$var] = NULL;
+			}
+		}
+		
+		return (count($pObject->mErrors) == 0);
 	}
 }
