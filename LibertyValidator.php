@@ -528,7 +528,7 @@ class LibertyValidator {
 		foreach( $pVars as $var => $constraints) {
 			if (!empty( $pParamHash[$var] ) ) {
 				$filename = $pParamHash[$var];
-		        if ( preg_match('/[&$\?\*\%:\/\\\]/', $filename) ){
+		        if ( preg_match('/[&\ $\?\*\%:\/\\\]/', $filename) ){
 					$pObject->mErrors[$var] = tra('The file name contains invalid characters, make sure the filename does not contain any of the follow characters: &$?%:/\\');
 				} else {
 					$store[$var] = $filename;
