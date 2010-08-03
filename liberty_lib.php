@@ -400,7 +400,8 @@ function liberty_content_preview( &$pObject ) {
 	if( $gBitSystem->isFeatureActive( 'liberty_display_status' )
 		&& ( $gBitUser->hasPermission( 'p_liberty_edit_content_status' ) || $gBitUser->hasPermission( 'p_libert_edit_all_status' ))
 		&& @BitBase::verifyId( $_REQUEST['content_status_id'] )) {
-		$pObject->mInfo['content_status_id'] = $_REQUEST['content_status_id'];
+		// DEPRECATED - This seems really undesirable, causes all sorts of display issues when previewing due to errors
+		// $pObject->mInfo['content_status_id'] = $_REQUEST['content_status_id'];
 	}
 	if( $gBitSystem->isFeatureActive( 'liberty_allow_change_owner' )
 		&& $gBitUser->hasPermission( 'p_liberty_edit_content_owner' )
