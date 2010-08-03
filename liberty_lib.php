@@ -312,10 +312,16 @@ function liberty_content_load_sql( &$pObject, $pParamHash=NULL ) {
  * liberty_content_list_sql 
  * 
  * @param array $pParamHash
+ * Status Values
  * @param array $pParamHash['enforce_status'] will add joins to status_id even if user is admin
  * @param array $pParamHash['min_status_id'] one less than the minimum status a content can have to be included
  * @param array $pParamHash['max_status_id'] one more than the maximum status a content can have to be included
  * @param array $pParamHash['min_owner_status_id'] one less than the mimimum status a content can have to be included that is owned by the requester
+ * Date Values
+ * @param array $pParamHash['min_created'] will limit to content since (and including) created date
+ * @param array $pParamHash['max_created'] will limit to content prior to (and including) created date
+ * @param array $pParamHash['min_last_modified'] will limit to content since (and including) last_modified date
+ * @param array $pParamHash['max_last_modified'] will limit to content prior to (and including) last_modified date
  * @access public
  * @return content list sql
  */
@@ -356,6 +362,27 @@ function liberty_content_list_sql( &$pObject, $pParamHash=NULL ) {
 					OR lc.`content_status_id` > ".$min_status_id."
 				)";
 		}
+	}
+
+	// limit to content since (and including) created date
+	if( !empty( $pParamHash['min_created'] ) ){
+		$ret['where_sql'] .= " AND lc.`created` >= ?";
+		$ret['bind_vars'][] = $pParamHash['min_created'];
+	}
+	// limit to content prior to (and including) created date
+	if( !empty( $pParamHash['max_created'] ) ){
+		$ret['where_sql'] .= " AND lc.`created` <= ?";
+		$ret['bind_vars'][] = $pParamHash['max_created'];
+	}
+	// limit to content since (and including) last_modified date
+	if( !empty( $pParamHash['min_last_modified'] ) ){
+		$ret['where_sql'] .= " AND lc.`last_modified` >= ?";
+		$ret['bind_vars'][] = $pParamHash['min_last_modified'];
+	}
+	// limit to content prior to (and including) last_modified date
+	if( !empty( $pParamHash['max_last_modified'] ) ){
+		$ret['where_sql'] .= " AND lc.`last_modified` <= ?";
+		$ret['bind_vars'][] = $pParamHash['max_last_modified'];
 	}
 
 	return $ret;
