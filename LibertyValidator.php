@@ -67,6 +67,8 @@ class LibertyValidator {
 				break;
 			// TODO: for the moment validate references as an int
 			case 'reference':
+				LibertyValidator::validate_references($vars, $pParamHash, $pObject, $store);
+				break;
 			case 'int':
 			case 'long':
 				LibertyValidator::validate_integers($vars, $pParamHash, $pObject, $store);
@@ -191,6 +193,62 @@ class LibertyValidator {
 		foreach( $pVars as $var => $constraints) {
 			$pStore[$var] = isset($pParamHash[$var]) ? $pParamHash[$var] : NULL;
 		}
+	}
+
+	/**
+	 * for now this is a lot like integers except that unset value is returned null not 0
+	 * @TODO perhaps validate against the reference record
+	 */
+	function validate_references(&$pVars, &$pParamHash, &$pObject, &$store) {
+		foreach( $pVars as $var => $constraints) {
+			if (!empty( $pParamHash[$var] ) ) {
+				if (is_numeric($pParamHash[$var])) {
+					if (preg_match('/^([0-9]+)\.?0*$/', 
+							$pParamHash[$var], $match)) {
+						if (empty($constraints['min']) ||
+							$pParamHash[$var] < $constraints['min']) {
+							if (empty($constraints['max']) ||
+								$pParamHash[$var] > $constraints['max']) {
+								$store[$var] = $match[1];
+							}
+							else {
+								$pObject->mErrors[$var] = 'The value of '
+									. $contraints['name']
+									. 'is larger than the maximum of '
+									. $constraints['min'];
+							}
+						}
+						else {
+							$pObject->mErrors[$var] = 'The value of '
+								. $contraints['name']
+								. 'is less than the minimum of '
+								. $constraints['min'];
+						}
+					}
+					else {
+						$pObject->mErrors[$var] = 'The value of '
+							. $constraints['name'] 
+								. ' is not an integer.';
+					}
+				}
+				else {
+					$pObject->mErrors[$var] = 'The value of ' . 
+						$constraints['name'] 
+						. ' is not an integer.';
+				}
+			}
+			else {
+				if (isset($constraints['required']) && $constraints['required']) {
+					$pObject->mErrors[$var] = 'A value for ' .$constraints['name']
+						. ' is required.';
+				}
+				else {
+					$store[$var] = NULL;
+				}
+			}
+		}
+
+		return (count($pObject->mErrors) == 0);
 	}
 
 	function validate_integers(&$pVars, &$pParamHash, &$pObject, &$store) {
