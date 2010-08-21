@@ -813,7 +813,7 @@ class LibertyContent extends LibertyBase {
 	 */
 	function verifyAccessControl() {
 		if( $this->isValid() ) {
-			$this->invokeServices( 'content_verify_access' );
+			$this->invokeServices( 'content_verify_access_function' );
 		}
 	}
 
