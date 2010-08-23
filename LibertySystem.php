@@ -737,7 +737,54 @@ class LibertySystem extends LibertyBase {
 		return $ret;
 	}
 
+    /**
+     * loadPackagePlugins
+	 *
+	 * package plugins are light weight services which 
+	 * dont require unique package implementations, and instead
+	 * register against the pluggable package
+	 *
+	 * services at all valid plugin paths as defined by
+	 * LibertyServer::getPackagePluginPaths are processed
+	 *
+	 * @param pPackageName -- the name guid of the package
+     */
+	function loadPackagePlugins( $pPackageName ){
+		if( $paths = $this->getPackagePluginPaths( $pPackageName ) ){
+			foreach( $paths as $path ){
+				$this->loadPackagePluginsAtPath( $path );
+			}
+		}
+    }
 
+	/**
+	 * loadPackagePluginsAtPath
+	 * @see loadPackagePlugins
+	 */
+    function loadPackagePluginsAtPath( $pPluginsPath ){
+        if( is_dir( $pPluginsPath ) && $plugins = opendir( $pPluginsPath )) {
+            while( FALSE !== ( $pluginDir = readdir( $plugins ) ) ) {
+                if( is_dir( $pluginDir ) && is_file( $pPluginsPath.$pluginDir.'plugin_inc.php' ) ) {
+                    include_once( $pPluginsPath.$pluginDir.'plugin_inc.php' );
+                }
+            }
+        }
+    }
+
+	/**
+	 * getPackagePluginPaths
+	 * returns all valid locations for package service based plugins
+	 * @param pPackageName -- the name guid of the package
+	 */
+	function getPackagePluginPaths( $pPackageName ){
+		$paths = array();
+        $packagePath = constant( strtoupper( $pPackageName ).'_PKG_PATH' );
+        // check for plugins in package/plugins/ dir
+        $paths[] = $packagePath.'plugins';
+        // check for plugins in config/pkg/plugins/ dir
+        $paths[] = CONFIG_PKG_PATH.$pPackageName.'/plugins/';
+		return $paths;
+	}
 
 
 	// ****************************** Miscellaneous Functions
