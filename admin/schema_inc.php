@@ -1,5 +1,26 @@
 <?php
 
+global $gBitSystem;
+
+// Package Requirements
+$gBitSystem->registerRequirements( LIBERTY_PKG_NAME, array(
+	'users'     => array( 'min' => '2.1.0' ),
+	'kernel'    => array( 'min' => '2.0.0' ),
+	'themes'    => array( 'min' => '2.0.0' ),
+	'languages' => array( 'min' => '2.0.0' ),
+	'storage'   => array( 'min' => '0.0.0' ),
+));
+
+$gBitSystem->registerPackageInfo( LIBERTY_PKG_NAME, array(
+	'description' => "Liberty is an integral part and manages all content on your site.",
+	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
+) );
+
+
+// Install process
+global $gBitInstaller;
+if( is_object( $gBitInstaller ) ){
+
 // Common Content tables
 $tables = array(
 
@@ -213,8 +234,6 @@ $tables = array(
 
 );
 
-global $gBitInstaller;
-
 foreach( array_keys( $tables ) AS $tableName ) {
 	$gBitInstaller->registerSchemaTable( LIBERTY_PKG_NAME, $tableName, $tables[$tableName], TRUE );
 }
@@ -228,12 +247,6 @@ $constraints = array(
 foreach( array_keys($constraints) AS $tableName ) {
 	$gBitInstaller->registerSchemaConstraints( LIBERTY_PKG_NAME, $tableName, $constraints[$tableName]);
 }
-
-
-$gBitInstaller->registerPackageInfo( LIBERTY_PKG_NAME, array(
-	'description' => "Liberty is an integral part and manages all content on your site.",
-	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
-) );
 
 // ### Indexes
 $indices = array (
@@ -326,13 +339,4 @@ $gBitInstaller->registerUserPermissions( LIBERTY_PKG_NAME, array(
 	array('p_liberty_trusted_editor', 'Can make edits to content as a trusted editor', 'editors', LIBERTY_PKG_NAME ),
 ));
 
-// Package Requirements
-$gBitInstaller->registerRequirements( LIBERTY_PKG_NAME, array(
-	'users'     => array( 'min' => '2.1.0' ),
-	'kernel'    => array( 'min' => '2.0.0' ),
-	'themes'    => array( 'min' => '2.0.0' ),
-	'languages' => array( 'min' => '2.0.0' ),
-	'storage'   => array( 'min' => '0.0.0' ),
-));
-
-?>
+}
