@@ -764,8 +764,8 @@ class LibertySystem extends LibertyBase {
     function loadPackagePluginsAtPath( $pPluginsPath ){
         if( is_dir( $pPluginsPath ) && $plugins = opendir( $pPluginsPath )) {
             while( FALSE !== ( $pluginDir = readdir( $plugins ) ) ) {
-                if( is_dir( $pluginDir ) && is_file( $pPluginsPath.$pluginDir.'plugin_inc.php' ) ) {
-                    include_once( $pPluginsPath.$pluginDir.'plugin_inc.php' );
+                if( is_dir( $pPluginsPath.$pluginDir ) && is_file( $pPluginsPath.$pluginDir.'/plugin_inc.php' ) ) {
+                    include_once( $pPluginsPath.$pluginDir.'/plugin_inc.php' );
                 }
             }
         }
@@ -776,13 +776,13 @@ class LibertySystem extends LibertyBase {
 	 * returns all valid locations for package service based plugins
 	 * @param pPackageName -- the name guid of the package
 	 */
-	function getPackagePluginPaths( $pPackageName ){
+	public static function getPackagePluginPaths( $pPackageName ){
 		$paths = array();
         $packagePath = constant( strtoupper( $pPackageName ).'_PKG_PATH' );
         // check for plugins in package/plugins/ dir
         $paths[] = $packagePath.'plugins';
         // check for plugins in config/pkg/plugins/ dir
-        $paths[] = CONFIG_PKG_PATH.$pPackageName.'/plugins/';
+        $paths[] = CONFIG_PKG_PATH.$pPackageName.'/plugins';
 		return $paths;
 	}
 
