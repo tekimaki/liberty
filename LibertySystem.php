@@ -763,9 +763,10 @@ class LibertySystem extends LibertyBase {
 	 */
     function loadPackagePluginsAtPath( $pPluginsPath ){
         if( is_dir( $pPluginsPath ) && $plugins = opendir( $pPluginsPath )) {
-            while( FALSE !== ( $pluginDir = readdir( $plugins ) ) ) {
-                if( is_dir( $pPluginsPath.$pluginDir ) && is_file( $pPluginsPath.$pluginDir.'/plugin_inc.php' ) ) {
-                    include_once( $pPluginsPath.$pluginDir.'/plugin_inc.php' );
+            while( FALSE !== ( $pluginDirName = readdir( $plugins ) ) ) {
+				$pluginDirPath = $pPluginsPath.'/'.$pluginDirName;
+                if( is_dir( $pluginDirPath ) && is_file( $pluginDirPath.'/plugin_inc.php' ) ) {
+                    include_once( $pluginDirPath.'/plugin_inc.php' );
                 }
             }
         }
@@ -865,4 +866,3 @@ class LibertySystem extends LibertyBase {
 		return LIBERTY_DEFAULT_MIME_HANDLER;
 	}
 }
-?>
