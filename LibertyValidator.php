@@ -12,13 +12,17 @@ class LibertyValidator {
 			// TODO: for the moment validate urls as strings
 			case 'string':
 			case 'url':
+			// TODO: for the moment validate email as strings
+			case 'email':
+			// TODO: for the moment validate zip as strings
+			case 'zip':
 			    LibertyValidator::preview_strings($vars, $pParamHash, $store);
 				break;
 			case 'choice':
 				LibertyValidator::preview_choice($vars, $pParamHash, $store);
 				break;
 			// TODO: for the moment validat references as an int
-		    	case 'reference':
+			case 'reference':
 			case 'int':
 			case 'long':
 				LibertyValidator::preview_integers($vars, $pParamHash, $store);
@@ -35,7 +39,7 @@ class LibertyValidator {
 				LibertyValidator::preview_booleans($vars, $pParamHash, $store);
 				break;
 			case 'phone':
-				LibertyValidator::preview_phones($vars, $pParamHash, $store);
+				LibertyValidator::preview_phone($vars, $pParamHash, $store);
 				break;
 			case 'date':
 				LibertyValidator::preview_dates($vars, $pParamHash, $store);
@@ -60,6 +64,10 @@ class LibertyValidator {
 			// TODO: for the moment validate urls as strings
 			case 'string':
 			case 'url':
+			// TODO: for the moment validate email as strings
+			case 'email':
+			// TODO: for the moment validate zip as strings
+			case 'zip':
 				LibertyValidator::validate_strings($vars, $pParamHash, $pObject, $store);
 				break;
 			case 'choice':
@@ -85,7 +93,7 @@ class LibertyValidator {
 				LibertyValidator::validate_booleans($vars, $pParamHash, $pObject, $store);
 				break;
 			case 'phone':
-				LibertyValidator::validate_phones($vars, $pParamHash, $pObject, $store);
+				LibertyValidator::validate_phone($vars, $pParamHash, $pObject, $store);
 				break;
 			case 'date':
 				LibertyValidator::validate_dates($vars, $pParamHash, $pObject, $store);
