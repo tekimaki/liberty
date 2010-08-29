@@ -23,6 +23,11 @@ $formLibertyFeatures = array(
 		'note' => 'Some plugins such as the attachment plugin wrap their output with a div. This might not work well when you are using a WYSYWIG such as TinyMCE or FCKeditor in combination with HTML Purifier. There are Pros and Cons to using either wrapper.',
 		'default' => 'n'
 	),
+	// moved over from kernel, not the best place, but at least its more intuitive here
+	'site_edit_help' => array(
+		'label' => 'Input Help',
+		'note' => 'Displays <strong>extensive</strong> (about 50kb) help regarding the syntax of available format plugins (e.g., Tikiwiki and HTML), and of available Data Plugins (e.g., attachment, include, table of contents). Explanations and examples are shown near any suitable entry form.',
+	),
 );
 
 if( $gBitSystem->isPackageActive( 'quota' )) {
