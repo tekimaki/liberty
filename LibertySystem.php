@@ -716,25 +716,52 @@ class LibertySystem extends LibertyBase {
 		$ret = NULL;
 		if( !empty( $this->mServices ) ) {
 			foreach( array_keys( $this->mServices ) as $service ) {
+				// DEPRECATED - this is mostly circular logic - getting the package name from itself to look itself up
+				// Service names are key values - regardless of package
+				// Accessing services directly by name infact allows multiple packages to provide the same kind of service
+				/*
 				if( $this->hasService( $service ) ) {
-					// DEPRECATED - this is mostly circular logic - getting the package name from itself to look itself up
-					// Service names are key values - regardless of package
-					// Accessing services directly by name infact allows multiple packages to provide the same kind of service
-					/*
 					if( !($package = $gBitSystem->getConfig( 'liberty_service_'.$service )) ) {
 						$package = key( $this->mServices[$service] );
 					}
 					if( !empty( $this->mServices[$service][$package][$pServiceValue] ) ) {
 						$ret[$service] = $this->mServices[$service][$package][$pServiceValue];
 					}
-					*/
-					if( !empty( $this->mServices[$service]['services'][$pServiceValue] ) ) {
-						$ret[$service] = $this->mServices[$service]['services'][$pServiceValue];
-					}
+				}
+				*/
+				if( !empty( $this->mServices[$service]['services'][$pServiceValue] ) ) {
+					$ret[$service] = $this->mServices[$service]['services'][$pServiceValue];
 				}
 			}
 		}
 		return $ret;
+	}
+
+	/**
+	 * execute services used by a package
+	 */
+	function invokePackageServices( $pPackage, $pServiceValue, &$pFunctionParam=NULL ) {
+		$errors = array();
+		$serviceFunctions = array();
+		// Invoke any package services handlers 
+		if( !empty( $this->mServices ) ) {
+			foreach( array_keys( $this->mServices ) as $service ) {
+				if( !empty( $this->mServices[$service]['services'][$pServiceValue] ) && 
+					!empty( $this->mServices[$service]['package'] ) &&
+					$this->mServices[$service]['package'] == $pPackage 
+				){
+					$serviceFunctions[] = $this->mServices[$service]['services'][$pServiceValue];
+				}
+			}
+		}
+		foreach ( $serviceFunctions as $func ) {
+			if( function_exists( $func ) ) {
+				if( $errors = $func( $pFunctionParam ) ) {
+					$this->mErrors = array_merge( $this->mErrors, $errors );
+				}
+			}
+		}
+		return $errors;
 	}
 
     /**
