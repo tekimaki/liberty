@@ -202,7 +202,7 @@ $tables = array(
 
 'liberty_content_permissions' => "
 	group_id I4 PRIMARY,
-	perm_name C(30) PRIMARY,
+	perm_name C(128) PRIMARY,
 	content_id I4 PRIMARY,
 	is_revoked C(1)
 	CONSTRAINT   ' , CONSTRAINT `liberty_content_id_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content` (`content_id`) '
