@@ -58,6 +58,14 @@ class LibertyValidator {
 		}
 	}
 
+    function validateAttachment($pName, $pParams, &$pObject) {
+		if (is_array($pParams['format']) && !empty($_FILES[$pName]) && !empty($_FILES[$pName]['type'])) {
+			if (!in_array($_FILES[$pName]['type'], $pParams['format'])) {
+				$pObject->mErrors[$pName] = "Invalid file format for " . $pParams['name'];
+			}
+		}			
+	}
+
 	function validate(&$pVars, &$pParamHash, &$pObject, &$store) {
 		foreach($pVars as $type => $vars) {
 			switch($type) {
