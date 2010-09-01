@@ -160,6 +160,8 @@ class LibertyMime extends LibertyAttachable {
 				empty( $pStoreHash['liberty_attachments']['auto_primary'] ) || $pStoreHash['liberty_attachments']['auto_primary'] ? TRUE : FALSE
 			);
 
+			$this->invokeServices( 'upload_store_function', $pStoreHash );
+
 			// Roll back if something went wrong
 			if( empty( $this->mErrors )) {
 				$this->mDb->CompleteTrans();
