@@ -4,7 +4,7 @@ global $gBitSystem;
 
 // Package Requirements
 $gBitSystem->registerRequirements( LIBERTY_PKG_NAME, array(
-	'users'     => array( 'min' => '2.1.0' ),
+	'users'     => array( 'min' => '2.1.2' ),
 	'kernel'    => array( 'min' => '2.0.0' ),
 	'themes'    => array( 'min' => '2.0.0' ),
 	'languages' => array( 'min' => '2.0.0' ),
