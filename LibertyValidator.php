@@ -14,9 +14,10 @@ class LibertyValidator {
 			case 'url':
 			// TODO: for the moment validate email as strings
 			case 'email':
-			// TODO: for the moment validate zip as strings
-			case 'zip':
 			    LibertyValidator::preview_strings($vars, $pParamHash, $store);
+				break;
+			case 'zip':
+			    LibertyValidator::preview_zips($vars, $pParamHash, $store);
 				break;
 			case 'choice':
 				LibertyValidator::preview_choice($vars, $pParamHash, $store);
@@ -74,9 +75,10 @@ class LibertyValidator {
 			case 'url':
 			// TODO: for the moment validate email as strings
 			case 'email':
-			// TODO: for the moment validate zip as strings
-			case 'zip':
 				LibertyValidator::validate_strings($vars, $pParamHash, $pObject, $store);
+				break;
+			case 'zip':
+			    LibertyValidator::validate_zips($vars, $pParamHash, $pObject, $store);
 				break;
 			case 'choice':
 				LibertyValidator::validate_choice($vars, $pParamHash, $pObject, $store);
@@ -134,6 +136,50 @@ class LibertyValidator {
 		 foreach( $pVars as $var ) {
 		 	  $pStore[$var] = isset($pParamHash[$var]) ? 
 				$pParamHash[$var] : NULL;
+		}
+	}
+
+	function preview_zips(&$pVars, &$pParamHash, &$pStore) {
+		foreach( $pVars as $var => $constraints ) {
+			if( isset( $pParamHash[$var] ) ) {
+				$pStore[$var] = isset($pParamHash[$var]) ?
+					$pParamHash[$var] : NULL;
+			}
+		}
+	}
+
+	function validate_zips(&$pVars, &$pParamHash, &$pObject, &$store) {
+		foreach( $pVars as $var => $constraints) {
+			if (!empty( $pStore[$var] ) &&
+				empty( $pParamHash[$var] )) {
+				if (isset($constraints['required']) && $constraints['required']) {
+					$pObject->mErrors[$var] = 'A value for ' . (empty( $constraints['label'] ) ? $constraints['name'] : $constraints['label'])
+						. ' is required.';
+				}
+				else {
+					// Somebody deleted the value, we need to null it out
+					$store[$var] = NULL;
+				}
+			}
+			else if( empty( $pParamHash[$var] ) ) {
+				if (isset($constraints['required']) && $constraints['required']) {
+					$pObject->mErrors[$var] = 'A value for ' . (empty( $constraints['label'] ) ? $constraints['name'] : $constraints['label'])
+						. ' is required.';
+				}
+				else {
+					// Somebody deleted the value, we need to null it out
+					$store[$var] = NULL;
+				}
+			}
+			else {
+				if( !preg_match("/^([0-9]{5})(-[0-9]{4})?$/i", $pParamHash[$var])) {
+					$pObject->mErrors[$var] =
+						'The value for '.(empty( $constraints['label'] ) ? $constraints['name'] : $constraints['label']).' is not in a valid zipcode format.';
+				}
+				else {
+					$store[$var] = $pParamHash[$var];
+				}
+			}
 		}
 	}
 
