@@ -1461,8 +1461,7 @@ class LibertyContent extends LibertyBase {
 	/**
 	 * Deprecated, use verifyUpdatePermission
 	 */
-	function verifyEditPermission( $pVerifyAccessControl=TRUE, $pCheckGlobalPerm=TRUE ) {
-		deprecated( "LibertyContent::verifyEditPermission has been replaced with LibertyContent::verifyUpdatePermission and pCheckGlobal has been change to always be the case" );
+	function verifyEditPermission( $pVerifyAccessControl=TRUE ) {
 		$this->verifyUpdatePermission( $pVerifyAccessControl );
 	}
 
