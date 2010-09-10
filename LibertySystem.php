@@ -796,7 +796,7 @@ class LibertySystem extends LibertyBase {
             while( FALSE !== ( $pluginDirName = readdir( $plugins ) ) ) {
 				$pluginDirPath = $pPluginsPath.'/'.$pluginDirName;
                 if( is_dir( $pluginDirPath ) && is_file( $pluginDirPath.'/plugin_inc.php' ) ) {
-                    include_once( $pluginDirPath.'/plugin_inc.php' );
+                    require_once( $pluginDirPath.'/plugin_inc.php' );
                 }
             }
         }
