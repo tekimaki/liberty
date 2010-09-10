@@ -1430,16 +1430,6 @@ class LibertyContent extends LibertyBase {
 		return( $this->hasUserPermission( $this->mUpdateContentPerm, $pVerifyAccessControl ) );
 	}
 
-	/**
-	 * Deprecated, use hasUpdatePermission
-	 *
-	 * @return bool True if user has this type of content administration permission
-	 */
-	function hasEditPermission( $pVerifyAccessControl=TRUE, $pCheckGlobalPerm=TRUE ) {
-		deprecated( "LibertyContent::hasEditPermission has been replaced with LibertyContent::hasUpdatePermission and pCheckGlobal has been change to always be the case" );
-		return( $this->hasUpdatePermission( $pVerifyAccessControl ) );
-	}
-
 	// === verifyUpdatePermission
 	/**
 	 * This code was duplicated _EVERYWHERE_ so here is an easy template to cut that down.
@@ -1455,14 +1445,6 @@ class LibertyContent extends LibertyBase {
 		} else {
 			$gBitSystem->fatalPermission( $this->mUpdateContentPerm );
 		}
-	}
-
-	// === verifyEditPermission
-	/**
-	 * Deprecated, use verifyUpdatePermission
-	 */
-	function verifyEditPermission( $pVerifyAccessControl=TRUE ) {
-		$this->verifyUpdatePermission( $pVerifyAccessControl );
 	}
 
 	/**
