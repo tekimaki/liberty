@@ -811,10 +811,9 @@ class LibertyContent extends LibertyBase {
 	/**
 	 * Check permissions to establish if user has permission to access the object
 	 */
-	function verifyAccessControl() {
-		if( $this->isValid() ) {
-			$this->invokeServices( 'content_verify_access_function' );
-		}
+	function verifyAccessControl( $pPermName ) {
+		$pParamHash['perm_name'] = $pPermName;
+		$this->invokeServices( 'content_verify_access_function', $pPermName );
 	}
 
 	/**
@@ -1340,7 +1339,7 @@ class LibertyContent extends LibertyBase {
 	 * @param string return default user permission setting when no content perms are set
 	 * @return bool true if user has permission to access file
 	 */
-	function hasUserPermission( $pPermName, $pVerifyAccessControl=TRUE ) {
+	function hasUserPermission( $pPermName ) {
 		global $gBitUser;
 		$ret = FALSE;
 		if( !$this->isValid() ) {
@@ -1350,9 +1349,7 @@ class LibertyContent extends LibertyBase {
 			if( $gBitUser->isAdmin() || $gBitUser->hasPermission( $this->mAdminContentPerm )) {
 				$ret = TRUE;
 			} else {
-				if( $pVerifyAccessControl ) {
-					$this->verifyAccessControl();
-				}
+				$this->verifyAccessControl( $pPermName );
 				$checkPerms = $this->getUserPermissions();
 				if ( !empty( $checkPerms ) ) {
 					// Do they have the admin permission or the one we want?
@@ -1375,21 +1372,20 @@ class LibertyContent extends LibertyBase {
 	 *
 	 * @return bool True if user has this type of content administration permission
 	 */
-	function hasAdminPermission( $pVerifyAccessControl=TRUE ) {
-		return( $this->hasUserPermission( $this->mAdminContentPerm, $pVerifyAccessControl ) );
+	function hasAdminPermission() {
+		return( $this->hasUserPermission( $this->mAdminContentPerm ) );
 	}
 
 	// === verifyAdminPermission
 	/**
 	 * This code was duplicated _EVERYWHERE_ so here is an easy template to cut that down.
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
-	 * @param $pVerifyAccessControl check access control service if available
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
 	 */
-	function verifyAdminPermission( $pVerifyAccessControl=TRUE ) {
+	function verifyAdminPermission() {
 		global $gBitSystem;
-		if( $this->hasAdminPermission( $pVerifyAccessControl ) ) {
+		if( $this->hasAdminPermission() ) {
 			return TRUE;
 		} else {
 			$gBitSystem->fatalPermission( $this->mAdminContentPerm );
@@ -1401,20 +1397,19 @@ class LibertyContent extends LibertyBase {
 	 *
 	 * @return bool True if user has this type of content expunge permission
 	 */
-	function hasExpungePermission( $pVerifyAccessControl=TRUE ) {
-		return( $this->hasUserPermission( $this->mExpungeContentPerm, $pVerifyAccessControl ) );
+	function hasExpungePermission() {
+		return( $this->hasUserPermission( $this->mExpungeContentPerm ) );
 	}
 
 	// === verifyExpungePermission
 	/**
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
-	 * @param $pVerifyAccessControl check access control service if available
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
 	 */
-	function verifyExpungePermission( $pVerifyAccessControl=TRUE ) {
+	function verifyExpungePermission() {
 		global $gBitSystem;
-		if( $this->hasExpungePermission( $pVerifyAccessControl ) ) {
+		if( $this->hasExpungePermission() ) {
 			return TRUE;
 		} else {
 			$gBitSystem->fatalPermission( $this->mExpungeContentPerm );
@@ -1426,21 +1421,20 @@ class LibertyContent extends LibertyBase {
 	 *
 	 * @return bool True if user has this type of content administration permission
 	 */
-	function hasUpdatePermission( $pVerifyAccessControl=TRUE ) {
-		return( $this->hasUserPermission( $this->mUpdateContentPerm, $pVerifyAccessControl ) );
+	function hasUpdatePermission() {
+		return( $this->hasUserPermission( $this->mUpdateContentPerm ) );
 	}
 
 	// === verifyUpdatePermission
 	/**
 	 * This code was duplicated _EVERYWHERE_ so here is an easy template to cut that down.
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
-	 * @param $pVerifyAccessControl check access control service if available
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
 	 */
-	function verifyUpdatePermission( $pVerifyAccessControl=TRUE ) {
+	function verifyUpdatePermission() {
 		global $gBitSystem;
-		if( $this->hasUpdatePermission( $pVerifyAccessControl ) ) {
+		if( $this->hasUpdatePermission() ) {
 			return TRUE;
 		} else {
 			$gBitSystem->fatalPermission( $this->mUpdateContentPerm );
@@ -1452,8 +1446,8 @@ class LibertyContent extends LibertyBase {
 	 *
 	 * @return bool True if user has this type of content administration permission
 	 */
-	function hasCreatePermission( $pVerifyAccessControl=TRUE ) {
-		return( $this->hasUserPermission( $this->mCreateContentPerm, $pVerifyAccessControl ) );
+	function hasCreatePermission() {
+		return( $this->hasUserPermission( $this->mCreateContentPerm ) );
 	}
 
 	// === verifyCreatePermission
@@ -1463,9 +1457,9 @@ class LibertyContent extends LibertyBase {
 	 *
 	 * @return bool True if user has this type of content administration permission
 	 **/
-	function verifyCreatePermission( $pVerifyAccessControl=TRUE ) {
+	function verifyCreatePermission() {
 		global $gBitSystem;
-		if( !$this->isValid() && $this->hasCreatePermission( $pVerifyAccessControl ) ) {
+		if( !$this->isValid() && $this->hasCreatePermission() ) {
 			return TRUE;
 		} else {
 			$gBitSystem->fatalPermission( $this->mCreateContentPerm );
@@ -1478,21 +1472,20 @@ class LibertyContent extends LibertyBase {
 	 *
 	 * @return bool True if user has this type of content administration permission
 	 */
-	function hasViewPermission( $pVerifyAccessControl=TRUE ) {
-		return( $this->hasUpdatePermission( $pVerifyAccessControl ) || empty( $this->mViewContentPerm ) || $this->hasUserPermission( $this->mViewContentPerm, $pVerifyAccessControl ));
+	function hasViewPermission() {
+		return( $this->hasUpdatePermission() || empty( $this->mViewContentPerm ) || $this->hasUserPermission( $this->mViewContentPerm ));
 	}
 
 	// === verifyViewPermission
 	/**
 	 * This code was duplicated _EVERYWHERE_ so here is an easy template to cut that down.
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
-	 * @param $pVerifyAccessControl check access control service if available
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
 	 */
-	function verifyViewPermission( $pVerifyAccessControl=TRUE ) {
+	function verifyViewPermission() {
 		global $gBitSystem;
-		if( $this->hasViewPermission( $pVerifyAccessControl ) ) {
+		if( $this->hasViewPermission() ) {
 			return TRUE;
 		} else {
 			$gBitSystem->fatalPermission( $this->mViewContentPerm );
@@ -1504,20 +1497,19 @@ class LibertyContent extends LibertyBase {
 	 *
 	 * @return bool True if user has this type of content administration permission
 	 */
-	function hasPostCommentsPermission( $pVerifyAccessControl=TRUE ) {
-		return( $this->hasUserPermission( 'p_liberty_post_comments', $pVerifyAccessControl ));
+	function hasPostCommentsPermission() {
+		return( $this->hasUserPermission( 'p_liberty_post_comments' ));
 	}
 
 	// === verifyPostCommentsPermission
 	/**
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
-	 * @param $pVerifyAccessControl check access control service if available
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
 	 */
-	function verifyPostCommentsPermission( $pVerifyAccessControl=TRUE ) {
+	function verifyPostCommentsPermission() {
 		global $gBitSystem;
-		if( $this->hasPostCommentPermission( $pVerifyAccessControl ) ) {
+		if( $this->hasPostCommentPermission() ) {
 			return TRUE;
 		} else {
 			$gBitSystem->fatalPermission( 'p_liberty_post_comments' );
