@@ -224,6 +224,8 @@ class LibertyAttachable extends LibertyContent {
 	 */
 	function expunge() {
 		if( !empty( $this->mStorage ) && count( $this->mStorage )) {
+			$this->invokeServices( 'upload_expunge_function', $this );
+
 			foreach( array_keys( $this->mStorage ) as $i ) {
 				$this->expungeAttachment( $this->mStorage[$i]['attachment_id'] );
 			}
