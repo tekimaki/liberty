@@ -28,6 +28,7 @@ define( 'FORMAT_PLUGIN', 'format' );
 define( 'DATA_PLUGIN', 'data' );
 define( 'MIME_PLUGIN', 'mime' );
 define( 'FILTER_PLUGIN', 'filter' );
+define( 'VALIDATE_PLUGIN', 'validate' );
 
 if( !defined( 'LIBERTY_DEFAULT_MIME_HANDLER' )) {
 	define( 'LIBERTY_DEFAULT_MIME_HANDLER', 'mimedefault' );
