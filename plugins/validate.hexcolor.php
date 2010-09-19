@@ -1,4 +1,4 @@
- /* -*- Mode: php; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4; -*- */
+<?php /* -*- Mode: php; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4; -*- */
 /* vim: :set fdm=marker : */
 /**
  * @version  $Header$
@@ -19,15 +19,17 @@ $pluginParams = array (
 	// help page on bitweaver org that explains this plugin
 	'help_page'                => 'Hexcolor Validation',
 	// brief description of the plugin
-        'description'              => 'Validate hexcolors in forms.',
+	'description'              => 'Validate hexcolors in forms.',
 	// should this plugin be active or not when loaded for the first time
 	'auto_activate'            => TRUE,
+	// should the plugin be forced to the current state.
+	'forced'				   => TRUE,
 
 	// type of plugin
 	'plugin_type'              => VALIDATE_PLUGIN,
 
-	// The key used to indicate to run this kind of validation
-	'validate_key'		   => 'hexcolor',
+	// A type which can be used to run this and other validations
+	'validate_type'		   => 'hexcolor',
 
 	// url to page with options for this plugin
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',

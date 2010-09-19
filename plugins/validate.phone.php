@@ -22,12 +22,14 @@ $pluginParams = array (
         'description'              => 'Validate phones in forms.',
 	// should this plugin be active or not when loaded for the first time
 	'auto_activate'            => TRUE,
+	// should the plugin be forced to the current state.
+	'forced'				   => TRUE,
 
 	// type of plugin
 	'plugin_type'              => VALIDATE_PLUGIN,
 
 	// The key used to indicate to run this kind of validation
-	'validate_key'		   => 'phone',
+	'validate_type'		   => 'phone',
 
 	// url to page with options for this plugin
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',

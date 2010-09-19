@@ -26,15 +26,14 @@ $pluginParams = array (
         'description'              => 'Validate emails in forms.',
 	// should this plugin be active or not when loaded for the first time
 	'auto_activate'            => TRUE,
+	// should the plugin be forced to the current state.
+	'forced'				   => TRUE,
 
 	// type of plugin
 	'plugin_type'              => VALIDATE_PLUGIN,
 
 	// A type which can be used to run this and other validations
 	'validate_type'	   	   => 'email',
-
-	// The key used to indicate to run this kind of validation
-    	//	'validate_key'		   => 'email',
 
 	// url to page with options for this plugin
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',

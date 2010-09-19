@@ -57,9 +57,6 @@ class LibertyValidator {
 						$activePlugins[$data['validate_type']][] = &$data;
 					}
 				}
-				if (!empty($data['validate_key'])) {
-					$activePlugins[$data['validate_key']][] = &$data;
-				}
 			}
 		}
 		// Stupid php scoping
