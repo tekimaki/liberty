@@ -29,14 +29,14 @@ $pluginParams = array (
 	'plugin_type'              => VALIDATE_PLUGIN,
 
 	// A type which can be used to run this and other validations
-	'validate_type'	   	   => array('zip','postal_code');
+	'validate_type'	   	   => array('zip','postal_code'),
 
 	// url to page with options for this plugin
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',
 	
 	// various filter functions and when they are called
-	'validate_function'     => 'validate_zip',
-	'preview_function'        => 'preview_zip'
+	'validate_function'     => 'validate_zips',
+	'preview_function'        => 'preview_zips'
 );
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_ZIP, $pluginParams );
