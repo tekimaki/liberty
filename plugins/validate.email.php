@@ -17,6 +17,9 @@ define( 'PLUGIN_GUID_VALID_EMAIL', 'valid_email' );
 
 global $gLibertySystem;
 
+// Try to use is_email function but don't puke if it is missing.
+@include_once(UTIL_PKG_PATH."is_email.php");
+
 $pluginParams = array (
 	// plugin title
 	'title'                    => 'Validate Emails',
@@ -83,7 +86,17 @@ function validate_emails($pVars, &$pParamHash, &$pObject, &$store) {
 					'The length of the '.$constraints['name'].' is too long.';
 			}
 			else {
-				$store[$var] = $pParamHash[$var];
+				// Did we manage to inclue is_email.php above?
+				if (function_exists('is_email')) {
+					if (!is_email($pParamHash[$var])) {
+						$pObject->mErrors[$var] =
+							'The email address given for '.$constraints['name'].' does not seem to be a valid email address.';
+					} else {
+						$store[$var] = $pParamHash[$var];
+					}
+				} else {
+					$store[$var] = $pParamHash[$var];
+				}
 			}
 		}
 	}
