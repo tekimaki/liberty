@@ -10,26 +10,19 @@ class LibertyValidator {
 		$activePlugins = LibertyValidator::getActivePlugins();
 
 		foreach($pVars as $type => $vars) {
-			switch ($type) {
-				// We include null in here so that it can not be disabled
-			case 'null':
-				LibertyValidator::validate_null($vars, $pParamHash, $pObject, $store);
-				break;
-			default:
-				if (!empty($activePlugins[$type])) {
-					foreach ($activePlugins[$type] as $type => $data) {
-						if (!empty($data['preview_function'])) {
-							$function = $data['preview_function'];
-							$function($vars, $pParamHash, $store);
-						}
+			if (!empty($activePlugins[$type])) {
+				foreach ($activePlugins[$type] as $type => $data) {
+					if (!empty($data['preview_function'])) {
+						$function = $data['preview_function'];
+						$function($vars, $pParamHash, $store);
 					}
-				} else {
-					// TODO: Should we just call null here and ignore they turned off all validators of the right type?
-					global $gBitSystem;
-					$gBitSystem->fatalError("Unsupported validation type: ".$type);
 				}
-				break;
+			} else {
+				// TODO: Should we just call null here and ignore they turned off all validators of the right type?
+				global $gBitSystem;
+				$gBitSystem->fatalError("Unsupported validation type: ".$type);
 			}
+			break;
 		}
 	}
 
@@ -72,40 +65,19 @@ class LibertyValidator {
 		$activePlugins = LibertyValidator::getActivePlugins();
 
 		foreach($pVars as $type => $vars) {
-			switch ($type) {
-				// We include null in here so that it can not be disabled
-			case 'null':
-				LibertyValidator::validate_null($vars, $pParamHash, $pObject, $store);
-				break;
-			default:
-				if (!empty($activePlugins[$type])) {
-					foreach ($activePlugins[$type] as $type => $data) {
-						if (!empty($data['validate_function'])) {
-							$function = $data['validate_function'];
-							$function($vars, $pParamHash, $pObject, $store);
-						}
+			if (!empty($activePlugins[$type])) {
+				foreach ($activePlugins[$type] as $type => $data) {
+					if (!empty($data['validate_function'])) {
+						$function = $data['validate_function'];
+						$function($vars, $pParamHash, $pObject, $store);
 					}
-				} else {
-					// TODO: Should we just call null here and ignore they turned off all validators of the right type?
-					global $gBitSystem;
-					$gBitSystem->fatalError("Unsupported validation type: ".$type);
 				}
-				break;
+			} else {
+				// TODO: Should we just call null here and ignore they turned off all validators of the right type?
+				global $gBitSystem;
+				$gBitSystem->fatalError("Unsupported validation type: ".$type);
 			}
-		}
-	}
-
-	function preview_null(&$pVars, &$pParamHash, &$pStore) {
-		 foreach( $pVars as $var ) {
-		 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-				$pParamHash[$var] : NULL;
-		}
-	}
-
-	function validate_null($pVars, &$pParamHash, &$pObject, &$store) {
-		 foreach( $pVars as $var ) {
-		 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-				$pParamHash[$var] : NULL;
+			break;
 		}
 	}
 }
