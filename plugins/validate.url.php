@@ -50,27 +50,9 @@ function preview_urls(&$pVars, &$pParamHash, &$pStore) {
 
 function validate_urls($pVars, &$pParamHash, &$pObject, &$store) {
 	foreach( $pVars as $var => $constraints) {
-		if( !empty( $pStore[$var] ) &&
-			empty ( $pParamHash[$var] ) ) {
-			
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . $constraints['name']
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
-		}
-		else if( empty( $pParamHash[$var] ) ) {
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . $constraints['name']
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
+		if( empty ( $pParamHash[$var] ) ) {
+			// Somebody deleted the value, we need to null it out
+			$store[$var] = NULL;
 		}
 		else {
 			// TODO: Options page for the various parts to configure what is allowed as a URL on your site?

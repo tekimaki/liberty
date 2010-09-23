@@ -9,48 +9,42 @@
 /**
  * definitions ( guid character limit is 16 chars )
  */
-define( 'PLUGIN_GUID_VALID_NULL', 'valid_null' );
+define( 'PLUGIN_GUID_VALID_REQUIRED', 'valid_required' );
 
 global $gLibertySystem;
 
 $pluginParams = array (
 	// plugin title
-	'title'                    => 'Validate Nulls',
+	'title'                    => 'Validate Required',
 	// help page on bitweaver org that explains this plugin
-	'help_page'                => 'Null Validation',
+	'help_page'                => 'Required Validation',
 	// brief description of the plugin
-	'description'              => 'Null Validator which just copies values.',
+        'description'              => 'Validate required fields in a forms.',
 	// should this plugin be active or not when loaded for the first time
 	'auto_activate'            => TRUE,
 	// should the plugin be forced to the current state.
-	'forced'				   => TRUE,
+	'forced'		   => TRUE,
 
 	// type of plugin
 	'plugin_type'              => VALIDATE_PLUGIN,
 
 	// A type which can be used to run this and other validations
-	'validate_type'	   	   => 'null',
+	'validate_attribute'   	   => 'required',
 
 	// url to page with options for this plugin
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',
 	
 	// various filter functions and when they are called
-	'validate_function'     => 'validate_null',
-	'preview_function'        => 'preview_null'
+	'validate_attribute_function'     => 'validate_required',
 );
 
-$gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_NULL, $pluginParams );
+$gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_REQUIRED, $pluginParams );
 
-function preview_null(&$pVars, &$pParamHash, &$pStore) {
-	 foreach( $pVars as $var ) {
-	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-			$pParamHash[$var] : NULL;
-	}
+function validate_required($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
+  if( empty ( $pParamHash[$pVar] ) ) {
+    $pObject->mErrors[$pVar] = 'A value for ' . $pConstraints['name']
+      . ' is required.';
+  }
+  return (count($pObject->mErrors) == 0);
 }
 
-function validate_null($pVars, &$pParamHash, &$pObject, &$store) {
-	 foreach( $pVars as $var ) {
-	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-			$pParamHash[$var] : NULL;
-	}
-}

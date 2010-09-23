@@ -63,7 +63,9 @@ function validate_times($pVars, &$pParamHash, &$pObject, &$store) {
 	$bd = new BitDate($offset);
 	
 	foreach ($pVars as $var => $constraints) {
-		if (isset( $pParamHash[$var] ) ) {
+		if (empty($pParamHash[$var])) {
+			$store[$var] = NULL;
+		} else {
 			// if value is an array assumed to be a set of html_options_time values
 			if( is_array( $pParamHash[$var] ) ){
 				if ((!isset($pParamHash[$var]['Meridian']) ||
@@ -107,10 +109,6 @@ function validate_times($pVars, &$pParamHash, &$pObject, &$store) {
 				// TODO: This should be called via a service hook now.
 				validate_number($pVars, $pParamHash, $pObject, $store);
 			}
-		}
-		else if (isset($constraints['required']) && $constraints['required']) {
-			$pObject->mErrors[$var] = 'A value for '. $constraints['name']
-				. ' is required.';
 		}
 	}
 	

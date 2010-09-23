@@ -58,9 +58,6 @@ function validate_filenames($pVars, &$pParamHash, &$pObject, &$store) {
 				$store[$var] = $filename;
 			}
 		}
-		else if (isset($constraints['required']) && $constraints['required']) {
-			$pObject->mErrors[$var] = 'A value for ' . $constraints['name'] . ' is required.';
-		}
 		else {
 			$store[$var] = NULL;
 		}

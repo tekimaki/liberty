@@ -19,7 +19,7 @@ $pluginParams = array (
 	// help page on bitweaver org that explains this plugin
 	'help_page'                => 'String Validation',
 	// brief description of the plugin
-        'description'              => 'Validate strings in forms.',
+	'description'              => 'Validate strings in forms.',
 	// should this plugin be active or not when loaded for the first time
 	'auto_activate'            => TRUE,
 	// should the plugin be forced to the current state.
@@ -50,37 +50,12 @@ function preview_strings(&$pVars, &$pParamHash, &$pStore) {
 
 function validate_strings($pVars, &$pParamHash, &$pObject, &$store) {
 	foreach( $pVars as $var => $constraints) {
-		if( !empty( $pStore[$var] ) &&
-			empty ( $pParamHash[$var] ) ) {
-			
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . $constraints['name']
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
-		}
-		else if( empty( $pParamHash[$var] ) ) {
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . $constraints['name']
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
+		if( empty ( $pParamHash[$var] ) ) {
+			// Somebody deleted the value, we need to null it out
+			$store[$var] = NULL;
 		}
 		else {
-			if (isset($constraints['length']) &&
-				strlen($pParamHash[$var]) > $constraints['length']) {
-				$pObject->mErrors[$var] =
-					'The length of the '.$constraints['name'].' is too long.';
-			}
-			else {
-				$store[$var] = $pParamHash[$var];
-			}
+			$store[$var] = (string)$pParamHash[$var];
 		}
 	}
 	

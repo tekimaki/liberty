@@ -54,9 +54,6 @@ function validate_choice(&$pVars, &$pParamHash, &$pObject, &$store) {
 				$store[$var] = $pParamHash[$var];
 			}
 		}
-		else if (isset($contraints['required']) && $constraints['required']) {
-			$pObject->mErrors[$var] = 'A value for ' . $constraint['name'] . ' is required.';
-		}
 		else{
 			$store[$var] = NULL;
 		}

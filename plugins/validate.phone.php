@@ -60,10 +60,6 @@ function validate_phone($pVars, &$pParamHash, &$pObject, &$store) {
 				$store[$var] = $phone;
 			}
 		}
-		else if (isset($constraints['required']) && $constraints['required']) {
-			$pObject->mErrors[$var] = 'A value for ' . $constraints['name']
-				. ' is required.';
-		}
 		else {
 			$store[$var] = NULL;
 		}

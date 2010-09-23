@@ -9,48 +9,44 @@
 /**
  * definitions ( guid character limit is 16 chars )
  */
-define( 'PLUGIN_GUID_VALID_NULL', 'valid_null' );
+define( 'PLUGIN_GUID_VALID_MIN', 'valid_min' );
 
 global $gLibertySystem;
 
 $pluginParams = array (
 	// plugin title
-	'title'                    => 'Validate Nulls',
+	'title'                    => 'Validate Min',
 	// help page on bitweaver org that explains this plugin
-	'help_page'                => 'Null Validation',
+	'help_page'                => 'Min Validation',
 	// brief description of the plugin
-	'description'              => 'Null Validator which just copies values.',
+        'description'              => 'Validate minimum values in a forms.',
 	// should this plugin be active or not when loaded for the first time
 	'auto_activate'            => TRUE,
 	// should the plugin be forced to the current state.
-	'forced'				   => TRUE,
+	'forced'		   => TRUE,
 
 	// type of plugin
 	'plugin_type'              => VALIDATE_PLUGIN,
 
 	// A type which can be used to run this and other validations
-	'validate_type'	   	   => 'null',
+	'validate_attribute'   	   => 'min',
 
 	// url to page with options for this plugin
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',
 	
 	// various filter functions and when they are called
-	'validate_function'     => 'validate_null',
-	'preview_function'        => 'preview_null'
+	'validate_attribute_function'     => 'validate_min',
 );
 
-$gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_NULL, $pluginParams );
+$gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_MIN, $pluginParams );
 
-function preview_null(&$pVars, &$pParamHash, &$pStore) {
-	 foreach( $pVars as $var ) {
-	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-			$pParamHash[$var] : NULL;
-	}
-}
-
-function validate_null($pVars, &$pParamHash, &$pObject, &$store) {
-	 foreach( $pVars as $var ) {
-	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-			$pParamHash[$var] : NULL;
-	}
+function validate_min($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
+  if (!(empty($pConstraints['min']) ||
+	$pParamHash[$var] < $pConstraints['min'])) {
+    $pObject->mErrors[$var] = 'The value of '
+      . $pContraints['name']
+      . 'is less than the minimum of '
+      . $pConstraints['min'];
+  }
+  return (count($pObject->mErrors) == 0);
 }

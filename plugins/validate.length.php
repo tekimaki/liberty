@@ -9,48 +9,44 @@
 /**
  * definitions ( guid character limit is 16 chars )
  */
-define( 'PLUGIN_GUID_VALID_NULL', 'valid_null' );
+define( 'PLUGIN_GUID_VALID_LENGTH', 'valid_length' );
 
 global $gLibertySystem;
 
 $pluginParams = array (
 	// plugin title
-	'title'                    => 'Validate Nulls',
+	'title'                    => 'Validate Length',
 	// help page on bitweaver org that explains this plugin
-	'help_page'                => 'Null Validation',
+	'help_page'                => 'Length Validation',
 	// brief description of the plugin
-	'description'              => 'Null Validator which just copies values.',
+        'description'              => 'Validate length fields in a forms.',
 	// should this plugin be active or not when loaded for the first time
 	'auto_activate'            => TRUE,
 	// should the plugin be forced to the current state.
-	'forced'				   => TRUE,
+	'forced'		   => TRUE,
 
 	// type of plugin
 	'plugin_type'              => VALIDATE_PLUGIN,
 
 	// A type which can be used to run this and other validations
-	'validate_type'	   	   => 'null',
+	'validate_attribute'   	   => 'length',
 
 	// url to page with options for this plugin
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',
 	
 	// various filter functions and when they are called
-	'validate_function'     => 'validate_null',
-	'preview_function'        => 'preview_null'
+	'validate_attribute_function'     => 'validate_length',
 );
 
-$gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_NULL, $pluginParams );
+$gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_LENGTH, $pluginParams );
 
-function preview_null(&$pVars, &$pParamHash, &$pStore) {
-	 foreach( $pVars as $var ) {
-	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-			$pParamHash[$var] : NULL;
-	}
+function validate_length($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
+  if( !empty ( $pParamHash[$pVar] ) ) {
+    if (strlen($pParamHash[$var]) > $pConstraints['length']) {
+      $pObject->mErrors[$var] =
+	'The length of the '.$pConstraints['name'].' field is too long.';
+    }
+  }
+  return (count($pObject->mErrors) == 0);
 }
 
-function validate_null($pVars, &$pParamHash, &$pObject, &$store) {
-	 foreach( $pVars as $var ) {
-	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
-			$pParamHash[$var] : NULL;
-	}
-}

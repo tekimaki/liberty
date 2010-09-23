@@ -83,10 +83,6 @@ function validate_dates($pVars, &$pParamHash, &$pObject, &$store) {
 					}
 				}
 			}
-		else if (isset($contraints['required']) && $constraints['required']) {
-			$pObject->mErrors[$var] = 'A value for ' .
-				$constraint['name'] . ' is required.';
-		}
 	}
 	
 	return (count($pObject->mErrors) == 0);

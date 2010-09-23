@@ -60,9 +60,6 @@ function validate_hexcolor($pVars, &$pParamHash, &$pObject, &$store) {
 				$pObject->mErrors[$var] = tra('The hex color code you entered is not valid');
 			}
 		}
-		else if (isset($constraints['required']) && $constraints['required']) {
-			$pObject->mErrors[$var] = 'A value for ' . $constraints['name'] . ' is required.';
-		}
 		else {
 			$store[$var] = NULL;
 		}

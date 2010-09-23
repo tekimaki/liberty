@@ -59,44 +59,21 @@ function validate_emails($pVars, &$pParamHash, &$pObject, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if( !empty( $pStore[$var] ) &&
 			empty ( $pParamHash[$var] ) ) {
-			
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . $constraints['name']
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
-		}
-		else if( empty( $pParamHash[$var] ) ) {
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . $constraints['name']
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
+			// Somebody deleted the value, we need to null it out
+			$store[$var] = NULL;
 		}
 		else {
-			if (isset($constraints['length']) &&
-				strlen($pParamHash[$var]) > $constraints['length']) {
-				$pObject->mErrors[$var] =
-					'The length of the '.$constraints['name'].' is too long.';
-			}
-			else {
-				// Did we manage to inclue is_email.php above?
-				if (function_exists('is_email')) {
-					if (!is_email($pParamHash[$var])) {
-						$pObject->mErrors[$var] =
-							'The email address given for '.$constraints['name'].' does not seem to be a valid email address.';
-					} else {
-						$store[$var] = $pParamHash[$var];
-					}
+			// Did we manage to inclue is_email.php above?
+			if (function_exists('is_email')) {
+				if (!is_email($pParamHash[$var])) {
+					$pObject->mErrors[$var] =
+						'The email address given for '.$constraints['name'].' does not seem to be a valid email address.';
 				} else {
 					$store[$var] = $pParamHash[$var];
 				}
+			} else {
+				// TODO: Something better here? At least log a warning?
+				$store[$var] = $pParamHash[$var];
 			}
 		}
 	}

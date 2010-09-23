@@ -54,24 +54,7 @@ function validate_zips(&$pVars, &$pParamHash, &$pObject, &$store) {
 	foreach( $pVars as $var => $constraints) {
 	    if (!empty( $pStore[$var] ) &&
 			empty( $pParamHash[$var] )) {
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . (empty( $constraints['label'] ) ? $constraints['name'] : $constraints['label'])
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
-		}
-		else if( empty( $pParamHash[$var] ) ) {
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' . (empty( $constraints['label'] ) ? $constraints['name'] : $constraints['label'])
-					. ' is required.';
-			}
-			else {
-				// Somebody deleted the value, we need to null it out
-				$store[$var] = NULL;
-			}
+			$store[$var] = NULL;
 		}
 		else {
 			if( !preg_match("/^([0-9]{5})(-[0-9]{4})?$/i", $pParamHash[$var])) {

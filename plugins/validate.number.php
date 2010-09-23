@@ -47,25 +47,7 @@ function validate_number(&$pVars, &$pParamHash, &$pObject, &$store) {
 			if (is_numeric($pParamHash[$var])) {
 				if (preg_match('/^([0-9]+)\.?0*$/', 
 							   $pParamHash[$var], $match)) {
-					if (empty($constraints['min']) ||
-						$pParamHash[$var] < $constraints['min']) {
-						if (empty($constraints['max']) ||
-							$pParamHash[$var] > $constraints['max']) {
-							$store[$var] = $match[1];
-						}
-						else {
-							$pObject->mErrors[$var] = 'The value of '
-								. $contraints['name']
-								. 'is larger than the maximum of '
-								. $constraints['min'];
-						}
-					}
-					else {
-						$pObject->mErrors[$var] = 'The value of '
-							. $contraints['name']
-							. 'is less than the minimum of '
-							. $constraints['min'];
-					}
+					$store[$var] = $match[1];
 				}
 				else {
 					$pObject->mErrors[$var] = 'The value of '
@@ -80,13 +62,7 @@ function validate_number(&$pVars, &$pParamHash, &$pObject, &$store) {
 			}
 		}
 		else {
-			if (isset($constraints['required']) && $constraints['required']) {
-				$pObject->mErrors[$var] = 'A value for ' .$constraints['name']
-					. ' is required.';
-			}
-			else {
-				$store[$var] = '0';
-			}
+			$store[$var] = '0';
 		}
 	}
 	
