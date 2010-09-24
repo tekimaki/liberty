@@ -504,6 +504,7 @@ class LibertyValidator {
 				$pStore[$var] =
 					($pParamHash[$var] == 'on' ||
 						$pParamHash[$var] == 1 ||
+						$pParamHash[$var] == 'y' ||
 						$pParamHash[$var] == 'yes' )
 					? 1 : 0;
 			}
@@ -519,6 +520,7 @@ class LibertyValidator {
 				$store[$var] =
 					($pParamHash[$var] == 'on' ||
 						$pParamHash[$var] == 1 ||
+						$pParamHash[$var] == 'y' ||
 						$pParamHash[$var] == 'yes')
 					? 1 : 0;
 			}
