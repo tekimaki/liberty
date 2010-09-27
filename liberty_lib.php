@@ -285,7 +285,9 @@ function liberty_content_load_sql( &$pObject, $pParamHash=NULL ) {
 	global $gBitSystem, $gBitUser;
 	$ret = array();
 
-	$hasPerm = ( is_object( $pObject ) && isset( $pObject->hasUserPermission )) ? $pObject->hasUserPermission( 'p_liberty_edit_all_status' ) : $gBitUser->hasPermission( 'p_liberty_edit_all_status' );
+	$hasPerm = ( is_object( $pObject ) && isset( $pObject->hasUserPermission )) ? 
+		( $pObject->hasUserPermission('p_liberty_view_all_status') || $pObject->hasUserPermission( 'p_liberty_edit_all_status' ) ): 
+		( $gBitUser->hasPermission( 'p_liberty_view_all_status' ) || $gBitUser->hasPermission( 'p_liberty_edit_all_status' ) );
 
 	if( $gBitSystem->isFeatureActive( 'liberty_display_status' ) && !$hasPerm ) {
 		if(( is_object( $pObject ) && !empty( $pObject->mType['content_type_guid'] ) && $pObject->mType['content_type_guid'] == 'bitcomment' )
