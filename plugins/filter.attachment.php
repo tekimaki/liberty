@@ -27,7 +27,7 @@ $pluginParams = array (
 	//'plugin_settings_url'      => LIBERTY_PKG_URL.'admin/filter_attachment.php',
 
 	// various filter functions and when they are called
-	'requirement_function'     => 'attachment_filter_reqirements',
+	'requirement_function'     => 'attachment_filter_requirements',
 	'prestore_function'        => 'attachment_filter',
 	'expunge_function'         => 'attachment_filter_expunge',
 );
@@ -45,13 +45,13 @@ $gLibertySystem->registerPlugin( PLUGIN_GUID_FILTERATTACHMENT, $pluginParams );
  */
 
 /**
- * attachment_filter_reqirements 
+ * attachment_filter_requirements 
  * 
  * @param boolean $pInstall 
  * @access private
  * @return information hash
  */
-function attachment_filter_reqirements( $pInstall = FALSE ) {
+function attachment_filter_requirements( $pInstall = FALSE ) {
 	global $gLibertySystem;
 	$ret = array();
 	if( $pInstall ) {
