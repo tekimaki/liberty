@@ -1,0 +1,463 @@
+---
+liberty: 
+  version: 2.1.6
+  required: true
+  requirements: 
+    users: 
+      min: 2.1.2
+    kernel: 
+      min: 2.0.0
+    themes: 
+      min: 2.0.0
+    languages: 
+      min: 2.0.0
+    storage: 
+      min: 0.0.0
+  description: >
+    Liberty is an integral part and manages all content on your site.
+  license: 
+    name: LGPL
+    description: Licensed under the GNU LESSER GENERAL PUBLIC LICENSE.
+    url: http://www.gnu.org/copyleft/lesser.html
+  homeable: false
+  tables: 
+    liberty_content_types: |
+      
+      content_type_guid C(32) PRIMARY,
+      content_name C(250) NOTNULL,
+      content_name_plural C(250),
+      maintainer_url C(250),
+      handler_class C(128),
+      handler_package C(128),
+      handler_file C(128)
+      
+    liberty_content_status: |
+      
+      content_status_id I4 PRIMARY,
+      content_status_name C(128) NOTNULL
+      
+    liberty_content: |
+      
+      content_id I4 PRIMARY,
+      user_id I4 NOTNULL,
+      modifier_user_id I4 NOTNULL,
+      created I8 NOTNULL,
+      last_modified I8 NOTNULL,
+      content_type_guid C(32) NOTNULL,
+      format_guid C(16) NOTNULL,
+      content_status_id I4 NOTNULL,
+      event_time I8 NOTNULL DEFAULT 0,
+      version I4,
+      lang_code C(32),
+      title C(160),
+      ip C(39),
+      data XL
+      CONSTRAINT '
+      , CONSTRAINT `liberty_content_status_ref` FOREIGN KEY (`content_status_id`) REFERENCES `liberty_content_status`( `content_status_id` )
+      , CONSTRAINT `liberty_content_type_ref` FOREIGN KEY (`content_type_guid`) REFERENCES `liberty_content_types`( `content_type_guid` )'
+      
+    liberty_aliases: |
+      
+      content_id I4 PRIMARY,
+      alias_title C(190) PRIMARY
+      CONSTRAINT '
+      , CONSTRAINT liberty_aliases_content_fkey FOREIGN KEY( `content_id` ) REFERENCES `liberty_content` ( `content_id` )'
+      
+    liberty_content_data: |
+      
+      content_id I4 PRIMARY,
+      data XL NOTNULL,
+      data_type C(32) PRIMARY
+      CONSTRAINT ', CONSTRAINT `liberty_content_data_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content` ( `content_id` )'
+      
+    liberty_content_hits: |
+      
+      content_id I4 PRIMARY,
+      hits I4 NOTNULL DEFAULT 1,
+      last_hit I8 NOTNULL DEFAULT 1
+      CONSTRAINT ', CONSTRAINT `liberty_content_hits_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content` ( `content_id` )'
+      
+    liberty_content_history: |
+      
+      content_id I4 PRIMARY,
+      version I4 PRIMARY,
+      last_modified I8 NOTNULL,
+      format_guid C(16) NOTNULL,
+      summary XL,
+      user_id I4 NOTNULL,
+      ip C(39),
+      history_comment C(200),
+      data XL
+      CONSTRAINT ', CONSTRAINT `liberty_history_content_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content`( `content_id` )'
+      
+    liberty_action_log: |
+      
+      content_id I4,
+      user_id I4 NOTNULL,
+      last_modified I8 NOTNULL,
+      title C(160),
+      ip C(39),
+      log_message C(250) NOTNULL DEFAULT '',
+      error_message C(250) NOTNULL DEFAULT ''
+      
+    liberty_copyrights: |
+      
+      copyright_id I4 AUTO PRIMARY,
+      page_id I4 NOTNULL,
+      title C(200),
+      copyright_year I8,
+      authors C(200),
+      copyright_order I8,
+      user_id I4
+      
+    liberty_content_links: |
+      
+      from_content_id I4,
+      to_content_id I4,
+      to_title C(160),
+      pos F
+      CONSTRAINT ', CONSTRAINT `lib_content_links_from_ref` FOREIGN KEY (`from_content_id`) REFERENCES `liberty_content` (`content_id`)
+      , CONSTRAINT `lib_content_links_to_ref` FOREIGN KEY (`to_content_id`) REFERENCES `liberty_content` (`content_id`)'
+      
+    liberty_content_prefs: |
+      
+      content_id I4 PRIMARY,
+      pref_name C(40) PRIMARY,
+      pref_value C(250)
+      CONSTRAINT ', CONSTRAINT `lib_content_prefs_content_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content` (`content_id`)'
+      
+    liberty_comments: |
+      
+      comment_id I4 PRIMARY,
+      content_id I4 NOTNULL,
+      parent_id I4 NOTNULL,
+      root_id I4 NOTNULL,
+      thread_forward_sequence C(250),
+      thread_reverse_sequence C(250),
+      anon_name C(64)
+      CONSTRAINT ', CONSTRAINT `liberty_comments_content_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content`( `content_id` )
+      , CONSTRAINT `liberty_comments_parent_ref` FOREIGN KEY (`parent_id`) REFERENCES `liberty_content`( `content_id` )
+      , CONSTRAINT `liberty_comments_root_ref` FOREIGN KEY (`root_id`) REFERENCES `liberty_content`( `content_id` )'
+      
+    liberty_link_cache: |
+      
+      cache_id I4 AUTO PRIMARY,
+      url C(250),
+      data B,
+      refresh I8
+      
+    liberty_attachments: |
+      
+      attachment_id I4 PRIMARY,
+      content_id I4,
+      attachment_plugin_guid C(16) NOTNULL,
+      foreign_id I4 NOTNULL,
+      user_id I4 NOTNULL,
+      is_primary C(1),
+      pos I4,
+      hits I4,
+      error_code I4,
+      caption C(250)
+      CONSTRAINT '
+      , CONSTRAINT `liberty_attachments_con_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content`( `content_id` )
+      '
+      
+    liberty_attachment_prefs: |
+      
+      attachment_id I4 PRIMARY,
+      pref_name C(40) PRIMARY,
+      pref_value C(250)
+      CONSTRAINT ', CONSTRAINT `lib_att_prefs_content_ref` FOREIGN KEY (`attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)'
+      
+    liberty_files: |
+      
+      file_id I4 PRIMARY,
+      user_id I4 NOTNULL,
+      storage_path C(250),
+      file_size I4,
+      mime_type C(64)
+      
+    liberty_dynamic_variables: |
+      
+      name C(40) PRIMARY,
+      data XL
+      
+    liberty_process_queue: |
+      
+      process_id I4 NOTNULL AUTO PRIMARY,
+      content_id I4 NOTNULL,
+      queue_date I8 NOTNULL,
+      begin_date I8,
+      end_date I8,
+      process_status C(64),
+      log_message XL,
+      processor C(250),
+      processor_parameters XL
+      
+    liberty_content_permissions: |
+      
+      group_id I4 PRIMARY,
+      perm_name C(128) PRIMARY,
+      content_id I4 PRIMARY,
+      is_revoked C(1)
+      CONSTRAINT   ' , CONSTRAINT `liberty_content_id_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content` (`content_id`) '
+      
+    liberty_meta_titles: |
+      
+      meta_title_id I4 PRIMARY,
+      meta_title C(250) NOTNULL
+      
+    liberty_meta_types: |
+      
+      meta_type_id I4 PRIMARY,
+      meta_type C(250) NOTNULL
+      
+    liberty_attachment_meta_data: |
+      
+      attachment_id I4 PRIMARY NOTNULL,
+      meta_type_id I4 PRIMARY NOTNULL,
+      meta_title_id I4 PRIMARY NOTNULL,
+      meta_value XL
+      CONSTRAINT '
+      , CONSTRAINT `lib_attachment_meta_id_ref`    FOREIGN KEY (`attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)
+      , CONSTRAINT `lib_attachment_meta_type_ref`  FOREIGN KEY (`meta_type_id`)  REFERENCES `liberty_meta_types`  (`meta_type_id`)
+      , CONSTRAINT `lib_attachment_meta_title_ref` FOREIGN KEY (`meta_title_id`) REFERENCES `liberty_meta_titles` (`meta_title_id`) '
+      
+  constraints: 
+    liberty_content_permissions: 
+      liberty_content_perm_group_ref: >
+        FOREIGN KEY (`group_id`) REFERENCES
+        `users_groups` (`group_id`)
+    liberty_process_queue: 
+      liberty_process_queue_ref: >
+        FOREIGN KEY (`content_id`) REFERENCES
+        `liberty_content`( `content_id` )
+  indexes: 
+    content_title_idx: 
+      table: liberty_content
+      cols: title
+      opts: 
+    content_user_idx: 
+      table: liberty_content
+      cols: user_id
+      opts: 
+    content_moduser_idx: 
+      table: liberty_content
+      cols: modifier_user_id
+      opts: 
+    content_content_hits_idx: 
+      table: liberty_content_hits
+      cols: content_id
+      opts: 
+    content_status_idx: 
+      table: liberty_content
+      cols: content_status_id
+      opts: 
+    content_alias_title_idx: 
+      table: liberty_aliases
+      cols: alias_title
+      opts: 
+    comments_object_idx: 
+      table: liberty_comments
+      cols: content_id
+      opts: 
+    comments_parent_idx: 
+      table: liberty_comments
+      cols: parent_id
+      opts: 
+    attachments_hits_idx: 
+      table: liberty_attachments
+      cols: hits
+      opts: 
+    attachments_user_id_idx: 
+      table: liberty_attachments
+      cols: user_id
+      opts: 
+    st_co_foreign_guid_idx: 
+      table: liberty_attachments
+      cols: foreign_id, attachment_plugin_guid
+      opts: 
+        - UNIQUE
+    to_content_id_idx: 
+      table: liberty_content_links
+      cols: to_content_id
+      opts: 
+    links_from_content_id_idx: 
+      table: liberty_content_links
+      cols: from_content_id
+      opts: 
+    links_title_content_id_idx: 
+      table: liberty_content_links
+      cols: to_title
+      opts: 
+    liberty_content_perm_group_idx: 
+      table: liberty_content_permissions
+      cols: group_id
+      opts: 
+    liberty_content_perm_perm_idx: 
+      table: liberty_content_permissions
+      cols: perm_name
+      opts: 
+    liberty_content_perm_cont_idx: 
+      table: liberty_content_permissions
+      cols: content_id
+      opts: 
+    process_id_idx: 
+      table: liberty_process_queue
+      cols: content_id
+      opts: 
+    lib_attachment_meta_idx: 
+      table: liberty_attachment_meta_data
+      cols: attachment_id
+      opts: 
+    lib_attachment_meta_type_idx: 
+      table: liberty_attachment_meta_data
+      cols: meta_type_id
+      opts: 
+    lib_attachment_meta_title_idx: 
+      table: liberty_attachment_meta_data
+      cols: meta_title_id
+      opts: 
+    ip_idx: 
+      table: badbehavior
+      cols: ip
+      opts: 
+  sequences: 
+    liberty_content_id_seq: 
+      start: 1
+    liberty_comment_id_seq: 
+      start: 1
+    liberty_files_id_seq: 
+      start: 1
+    liberty_attachments_id_seq: 
+      start: 1
+    liberty_meta_types_id_seq: 
+      start: 1
+    liberty_meta_titles_id_seq: 
+      start: 1
+  preferences: 
+    liberty_auto_display_attachment_thumbs: small
+    liberty_action_log: y
+    liberty_html_purifier: htmlpurifier
+    site_edit_help: y
+  defaults: 
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-999, 'Deleted')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-998, 'Spam')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-201, 'Suspended')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-100, 'Denied')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-40, 'Private')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-30, 'Password Protected')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-20, 'Group Protected')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-10, 'Hidden')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-5, 'Draft')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (-1, 'Pending Approval')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (50, 'Available')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (102, 'Commercial')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (200, 'Recommended')
+    - >
+      INSERT INTO `liberty_content_status`
+      (`content_status_id`,`content_status_name`)
+      VALUES (999, 'Copy Protected')
+    - >
+      UPDATE `liberty_content` SET
+      `content_status_id`=50
+  permissions: 
+    p_liberty_edit_html_style: 
+      description: Can include style information in HTML
+      level: editors
+    p_liberty_list_content: 
+      description: Can list content
+      level: basic
+    p_liberty_admin_comments: 
+      description: Can administer comments
+      level: editors
+    p_liberty_post_comments: 
+      description: Can post new comments
+      level: registered
+    p_liberty_read_comments: 
+      description: Can read comments
+      level: basic
+    p_liberty_edit_comments: 
+      description: Can edit all comments
+      level: editors
+    p_liberty_attach_attachments: 
+      description: Can create content attachments
+      level: registered
+    p_liberty_detach_attachment: 
+      description: Can detach content attachments
+      level: registered
+    p_liberty_delete_attachment: 
+      description: Can delete content attachments
+      level: registered
+    p_liberty_print: 
+      description: Can print content
+      level: basic
+    p_liberty_enter_html: 
+      description: Can enter HTML
+      level: registered
+    p_liberty_edit_content_status: 
+      description: Can edit the status of content
+      level: registered
+    p_liberty_edit_all_status: 
+      description: >
+        Can edit the status of content using all
+        status
+      level: editors
+    p_liberty_view_all_status: 
+      description: Can view content with any status
+      level: editors
+    p_liberty_edit_content_owner: 
+      description: Can edit the owner of content
+      level: editors
+    p_liberty_edit_content_alias: 
+      description: Can edit the alternate titles of content
+      level: editors
+    p_liberty_assign_content_perms: 
+      description: >
+        Can assign individual content
+        permissions
+      level: editors
+    p_liberty_trusted_editor: 
+      description: >
+        Can make edits to content as a trusted
+        editor
+      level: editors
