@@ -13,8 +13,7 @@ liberty:
       min: 2.0.0
     storage: 
       min: 0.0.0
-  description: >
-    Liberty is an integral part and manages all content on your site.
+  description: Liberty is an integral part and manages all content on your site.
   license: 
     name: LGPL
     description: Licensed under the GNU LESSER GENERAL PUBLIC LICENSE.
@@ -337,9 +336,9 @@ liberty:
       start: 1
   preferences: 
     liberty_auto_display_attachment_thumbs: small
-    liberty_action_log: y
+    liberty_action_log: 'y'
     liberty_html_purifier: htmlpurifier
-    site_edit_help: y
+    site_edit_help: 'y'
   defaults: 
     - >
       INSERT INTO `liberty_content_status`
@@ -438,9 +437,7 @@ liberty:
       description: Can edit the status of content
       level: registered
     p_liberty_edit_all_status: 
-      description: >
-        Can edit the status of content using all
-        status
+      description: Can edit the status of content using all status
       level: editors
     p_liberty_view_all_status: 
       description: Can view content with any status
@@ -452,12 +449,8 @@ liberty:
       description: Can edit the alternate titles of content
       level: editors
     p_liberty_assign_content_perms: 
-      description: >
-        Can assign individual content
-        permissions
+      description: Can assign individual content permissions
       level: editors
     p_liberty_trusted_editor: 
-      description: >
-        Can make edits to content as a trusted
-        editor
+      description: Can make edits to content as a trusted editor
       level: editors
