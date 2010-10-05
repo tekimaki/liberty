@@ -224,13 +224,9 @@ liberty:
       
   constraints: 
     liberty_content_permissions: 
-      liberty_content_perm_group_ref: >
-        FOREIGN KEY (`group_id`) REFERENCES
-        `users_groups` (`group_id`)
+      liberty_content_perm_group_ref: FOREIGN KEY (`group_id`) REFERENCES `users_groups` (`group_id`)
     liberty_process_queue: 
-      liberty_process_queue_ref: >
-        FOREIGN KEY (`content_id`) REFERENCES
-        `liberty_content`( `content_id` )
+      liberty_process_queue_ref: FOREIGN KEY (`content_id`) REFERENCES `liberty_content`( `content_id` )
   indexes: 
     content_title_idx: 
       table: liberty_content
