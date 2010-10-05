@@ -313,10 +313,6 @@ liberty:
       table: liberty_attachment_meta_data
       cols: meta_title_id
       opts: 
-    ip_idx: 
-      table: badbehavior
-      cols: ip
-      opts: 
   sequences: 
     liberty_content_id_seq: 
       start: 1
