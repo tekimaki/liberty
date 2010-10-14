@@ -71,7 +71,9 @@
 													<input type="hidden" name="PLUGINS[{$guid}]" value="y" />
 												{else}
 													{if $plugin.forced}
-														<input type="checkbox" checked={$plugin.is_active} disabled=true />
+														{* input checkbox does not support readonly and disabled prevents submission so we need two one for display and one to send *}
+														<input type="checkbox" checked="checked" disabled=true />
+														<input type="hidden" name="PLUGINS[{$guid}]" value="y" />
 													{else}
 														{html_checkboxes name="PLUGINS[`$guid`]" values="y" checked=`$plugin.is_active` labels=false id=$guid}
 													{/if}
