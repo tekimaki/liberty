@@ -1,14 +1,14 @@
 ---
 liberty: 
-  version: 2.1.6
+  version: 2.1.7
   required: true
   requirements: 
     users: 
-      min: 2.1.2
+      min: 2.1.4
     kernel: 
-      min: 2.0.0
+      min: 2.1.0
     themes: 
-      min: 2.0.0
+      min: 2.0.1
     languages: 
       min: 2.0.0
     storage: 
@@ -446,3 +446,40 @@ liberty:
     p_liberty_trusted_editor: 
       description: Can make edits to content as a trusted editor
       level: editors
+  plugin_apis:
+    sql:
+      - content_load_sql
+      - content_list_sql
+    function:
+      - content_load
+      - content_display
+      - content_list
+      - content_list_history
+      - content_preview
+      - content_verify
+      - content_edit
+      - content_store
+      - content_section
+      - content_expunge
+      - content_user_perms
+      - content_verify_access
+      - comment_store
+      - package_admin
+      - upload_store
+      - upload_expunge
+      - upload_expunge_attachment
+    tpl:
+      - content_list_options
+      - content_list_sort
+      - content_list_actions
+      - content_upload_tab
+      - content_edit_mini
+      - content_edit_tab
+      - content_view
+      - content_body
+      - content_nav
+      - content_icon
+      - content_list
+      - content_display_section
+      - content_search
+      - package_admin
