@@ -41,7 +41,7 @@ define( 'LIBERTY_SERVICE_COMMERCE', 'commerce' );
 define( 'LIBERTY_SERVICE_CONTENT_TEMPLATES', 'content_templates' );
 define( 'LIBERTY_SERVICE_DOCUMENT_GENERATION', 'document_generation' );
 define( 'LIBERTY_SERVICE_FORUMS', 'forums' );
-define( 'LIBERTY_SERVICE_GROUP', 'groups' );
+// define( 'LIBERTY_SERVICE_GROUP', 'groups' );
 define( 'LIBERTY_SERVICE_MAPS', 'map_display' );
 define( 'LIBERTY_SERVICE_METADATA', 'metadata' );
 define( 'LIBERTY_SERVICE_MENU', 'menu' );
@@ -89,6 +89,7 @@ class LibertySystem extends LibertyBase {
 	// Packages using LibertySystem
 	// this makes it possible to extend LibertySystem by another package
 	var $mSystem = LIBERTY_PKG_NAME;
+
 	var $mPluginPath;
 
 
@@ -717,28 +718,18 @@ class LibertySystem extends LibertyBase {
 	 **/
 	function getServiceValues( $pServiceValue ) {
 		global $gBitSystem;
+		return $gBitSystem->getPackagePluginHandlers( PKG_PLUGIN_TYPE_FUNCTION, preg_replace( '/_function$/','', $pServiceValue ) );
+		/*
 		$ret = NULL;
 		if( !empty( $this->mServices ) ) {
 			foreach( array_keys( $this->mServices ) as $service ) {
-				// DEPRECATED - this is mostly circular logic - getting the package name from itself to look itself up
-				// Service names are key values - regardless of package
-				// Accessing services directly by name infact allows multiple packages to provide the same kind of service
-				/*
-				if( $this->hasService( $service ) ) {
-					if( !($package = $gBitSystem->getConfig( 'liberty_service_'.$service )) ) {
-						$package = key( $this->mServices[$service] );
-					}
-					if( !empty( $this->mServices[$service][$package][$pServiceValue] ) ) {
-						$ret[$service] = $this->mServices[$service][$package][$pServiceValue];
-					}
-				}
-				*/
 				if( !empty( $this->mServices[$service]['services'][$pServiceValue] ) ) {
 					$ret[$service] = $this->mServices[$service]['services'][$pServiceValue];
 				}
 			}
 		}
 		return $ret;
+		*/
 	}
 
 	/**

@@ -817,15 +817,19 @@ class LibertyContent extends LibertyBase {
 	}
 
 	/**
-	 * Set up access to services used by the object
+	 * Invoke registered package plugin api handlers 
 	 */
 	function invokeServices( $pServiceFunction, &$pFunctionParam=NULL ) {
-		global $gLibertySystem;
+		global $gBitSystem;
 		$errors = array();
-		// Invoke any services store functions such as categorization or access control
-		if( $serviceFunctions = $gLibertySystem->getServiceValues( $pServiceFunction ) ) {
-			foreach ( $serviceFunctions as $func ) {
-				if( function_exists( $func ) ) {
+		// @TODO - maybe this result list should be limited by lcconfig - then the checks would not be necessary in the service handlers
+		if( $services = $gBitSystem->getPackagePluginHandlers( PKG_PLUGIN_TYPE_FUNCTION, preg_replace( '/_function$/','', $pServiceFunction ) ) ){
+			foreach ( $services as $service ) {
+				if( !empty( $service['handler_file'] ) && !empty( $service['path_type'] ) && !empty( $service['plugin_handler'] ) ){
+					// load the handler file
+					require_once( constant( strtoupper($service['package_guid']).'_PKG_PATH' ).$service['handler_file'] ); 
+					$func = $service['plugin_handler'];
+					// excute the service function
 					if( $errors = $func( $this, $pFunctionParam ) ) {
 						$this->mErrors = array_merge( $this->mErrors, $errors );
 					}
@@ -1110,29 +1114,35 @@ class LibertyContent extends LibertyBase {
 	*/
 	function getServicesSql( $pServiceFunction, &$pSelectSql, &$pJoinSql, &$pWhereSql, &$pBindVars, $pObject = NULL, &$pParamHash = NULL ) {
 		//deprecated( 'You package is calling the deprecated LibertyContent::getServicesSql() method. Please update your code to use LibertyContent::getLibertySql' );
-		global $gLibertySystem;
-		if( $loadFuncs = $gLibertySystem->getServiceValues( $pServiceFunction ) ) {
-			foreach( $loadFuncs as $func ) {
-				if( function_exists( $func ) ) {
-					if( !empty( $pObject ) && is_object( $pObject ) ) {
-						$loadHash = $func( $pObject, $pParamHash );
-					} else {
-						$loadHash = $func( $this, $pParamHash );
-					}
-					if( !empty( $loadHash['select_sql'] ) ) {
-						$pSelectSql .= $loadHash['select_sql'];
-					}
-					if( !empty( $loadHash['join_sql'] ) ) {
-						$pJoinSql .= $loadHash['join_sql'];
-					}
-					if( !empty( $loadHash['where_sql'] ) ) {
-						$pWhereSql .= $loadHash['where_sql'];
-					}
-					if( !empty( $loadHash['bind_vars'] ) ) {
-						if ( is_array( $pBindVars ) ) {
-							$pBindVars = array_merge( $pBindVars, $loadHash['bind_vars'] );
+		global $gBitSystem;
+		if( $services = $gBitSystem->getPackagePluginHandlers( PKG_PLUGIN_TYPE_SQL, preg_replace( '/_function$/','', $pServiceFunction ) ) ){
+			foreach ( $services as $service ) {
+				if( !empty( $service['handler_file'] ) && !empty( $service['path_type'] ) && !empty( $service['plugin_handler'] ) ){
+					// load the handler file
+					require_once( constant( strtoupper($service['package_guid']).'_PKG_PATH' ).$service['handler_file'] ); 
+					$func = $service['plugin_handler'];
+					// excute the service function
+					if( function_exists( $func ) ) {
+						if( !empty( $pObject ) && is_object( $pObject ) ) {
+							$loadHash = $func( $pObject, $pParamHash );
 						} else {
-							$pBindVars = $loadHash['bind_vars'];
+							$loadHash = $func( $this, $pParamHash );
+						}
+						if( !empty( $loadHash['select_sql'] ) ) {
+							$pSelectSql .= $loadHash['select_sql'];
+						}
+						if( !empty( $loadHash['join_sql'] ) ) {
+							$pJoinSql .= $loadHash['join_sql'];
+						}
+						if( !empty( $loadHash['where_sql'] ) ) {
+							$pWhereSql .= $loadHash['where_sql'];
+						}
+						if( !empty( $loadHash['bind_vars'] ) ) {
+							if ( is_array( $pBindVars ) ) {
+								$pBindVars = array_merge( $pBindVars, $loadHash['bind_vars'] );
+							} else {
+								$pBindVars = $loadHash['bind_vars'];
+							}
 						}
 					}
 				}
