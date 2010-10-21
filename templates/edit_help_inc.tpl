@@ -7,11 +7,13 @@
 			<h2>{tr}Data Plugin Help{/tr}</h2>
 			<div {if !$gBitThemes->isJavascriptEnabled()}style="display:none;"{/if}>
 				{tr}Click on the plugin you need help for{/tr}:<br />
-				<select size="10" onchange="javascript:BitBase.flipMulti(this.options[this.selectedIndex].value,1,1);">
-					{foreach from=$dataplugins item=p}
-						<option value="{$p.plugin_guid}">{$p.title|escape|default:"{tr}No Title{/tr}"} &bull; {ldelim}{$p.tag|lower}{rdelim}</option>
-					{/foreach}
-				</select>
+				<div class="row">
+					<select size="10" onchange="javascript:BitBase.flipMulti(this.options[this.selectedIndex].value,1,1);">
+						{foreach from=$dataplugins item=p}
+							<option value="{$p.plugin_guid}">{$p.title|escape|default:"{tr}No Title{/tr}"} &bull; {ldelim}{$p.tag|lower}{rdelim}</option>
+						{/foreach}
+					</select>
+				</div>
 			</div>
 
 			{foreach from=$dataplugins item=p}
@@ -32,14 +34,16 @@
 		{/if}
 
 		{if $mimeplugins}
-			<h2>{tr}Mime Plugin Help{/tr}</h2>
+			<h2 class="clear">{tr}Mime Plugin Help{/tr}</h2>
 			<div {if !$gBitThemes->isJavascriptEnabled()}style="display:none;"{/if}>
 				{tr}Click on the plugin you need help for{/tr}:<br />
-				<select size="10" onchange="javascript:BitBase.flipMulti(this.options[this.selectedIndex].value,1,1);">
-					{foreach from=$mimeplugins item=p}
-						<option value="{$p.plugin_guid}">{$p.title|escape|default:"{tr}No Title{/tr}"}</option>
-					{/foreach}
-				</select>
+				<div class="row">
+					<select size="10" onchange="javascript:BitBase.flipMulti(this.options[this.selectedIndex].value,1,1);">
+						{foreach from=$mimeplugins item=p}
+							<option value="{$p.plugin_guid}">{$p.title|escape|default:"{tr}No Title{/tr}"}</option>
+						{/foreach}
+					</select>
+				</div>
 			</div>
 
 			{foreach from=$mimeplugins item=p}

@@ -483,3 +483,21 @@ liberty:
       - content_display_section
       - content_search
       - package_admin
+  plugins:
+    liberty:
+      description: Provides core functionality, including enforcing some access control and dynamic layout components.
+      required: true
+      handler_file: liberty_lib.php
+      api_handlers:
+        sql:
+          content_load_sql: liberty_content_load_sql
+          content_list_sql: liberty_content_list_sql
+        function:
+          content_display: liberty_content_display
+          content_edit: liberty_content_edit
+          content_preview: liberty_content_preview
+        tpl:
+          content_edit_mini: 'bitpackage:liberty/service_content_edit_mini_inc.tpl'
+          content_edit_tab: 'bitpackage:liberty/service_content_edit_tab_inc.tpl'
+          content_icon: 'bitpackage:liberty/service_content_icon_inc.tpl'
+          content_body: 'bitpackage:liberty/service_content_body_inc.tpl'

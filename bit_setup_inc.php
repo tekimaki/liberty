@@ -32,6 +32,7 @@ if( empty( $current_default_format_guid ) || empty( $plugin_status ) || $plugin_
 	$gLibertySystem->loadActivePlugins();
 }
 
+/*
 $gLibertySystem->registerService( 'liberty', 
 	LIBERTY_PKG_NAME, 
 	array(
@@ -52,6 +53,7 @@ $gLibertySystem->registerService( 'liberty',
 		'required' => TRUE,
 	)
 );
+ */
 
 // delete cache file if requested
 if( @BitBase::verifyId( $_REQUEST['refresh_liberty_cache'] )) {
@@ -62,4 +64,3 @@ if( @BitBase::verifyId( $_REQUEST['refresh_liberty_cache'] )) {
 // make thumbnail sizes available to smarty
 global $gThumbSizes;
 $gBitSmarty->assign_by_ref( 'gThumbSizes', $gThumbSizes );
-?>
