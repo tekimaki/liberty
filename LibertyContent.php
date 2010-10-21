@@ -847,15 +847,14 @@ class LibertyContent extends LibertyBase {
 	 */
 	function hasService( $pServiceGuid ){
 		global $gBitSystem;
-		$ret = TRUE; // we return true by default to preserve legacy service opperation which has no content type preferences
+		$ret = FALSE; 
 
 		if( $gBitSystem->isPackageActive( 'lcconfig' ) ){
 			// LCConfig is a singleton class
 			$LCConfig = LCConfig::getInstance();
-			// LCConfig negates services by content type
-			// if result is not 'n' then service should apply to this content type
-			if( $LCConfig->getConfig( 'service_'.$pServiceGuid, $this->mContentTypeGuid ) == 'n' ){	
-				$ret = FALSE;
+			// content must opt in to services
+			if( $LCConfig->getConfig( 'service_'.$pServiceGuid, $this->mContentTypeGuid ) == 'y' ){	
+				$ret = TRUE;
 			}
 		}
 
