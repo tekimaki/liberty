@@ -671,17 +671,6 @@ class LibertySystem extends LibertyBase {
 
 
 	// ****************************** Service Functions
-	/**
-	 * Get the service details of a given package
-	 *
-	 * @param $pPackageName Package name of you want the service details for
-	 * @return Service details if the package has them - FALSE if the package is not a service
-	 * @access public
-	 **/
-	function getService( $pPackageName ) {
-		global $gBitSystem;
-		return( !empty( $gBitSystem->mPackages[$pPackageName]['service'] ) ? $gBitSystem->mPackages[$pPackageName]['service'] : NULL );
-	}
 
 	/**
 	 * Check to see if a package has any service capabilities
@@ -689,8 +678,10 @@ class LibertySystem extends LibertyBase {
 	 * @return TRUE on success, FALSE on failure
 	 * @access public
 	 **/
+	// @TODO DELETE - DEPRECATED - Replace with direct call to $gBitSystem->isPackagePluginActive
 	function hasService( $pServiceName ) {
-		return( !empty( $this->mServices[$pServiceName] ) );
+		global $gBitSystem;
+		return( $gBitSystem->isPackagePluginActive( $pServiceName ) );
 	}
 
 	/**
@@ -703,40 +694,21 @@ class LibertySystem extends LibertyBase {
 	function getServiceValues( $pServiceValue ) {
 		global $gBitSystem;
 		return $gBitSystem->getPackagePluginHandlers( PKG_PLUGIN_TYPE_FUNCTION, preg_replace( '/_function$/','', $pServiceValue ) );
-		/*
-		$ret = NULL;
-		if( !empty( $this->mServices ) ) {
-			foreach( array_keys( $this->mServices ) as $service ) {
-				if( !empty( $this->mServices[$service]['services'][$pServiceValue] ) ) {
-					$ret[$service] = $this->mServices[$service]['services'][$pServiceValue];
-				}
-			}
-		}
-		return $ret;
-		*/
 	}
 
 	/**
-	 * execute services used by a package
+	 * execute services used by a package (not by content)
 	 */
-	function invokePackageServices( $pPackage, $pServiceValue, &$pFunctionParam=NULL ) {
+	function invokePackageServices( $pPackageGuid, $pServiceValue, &$pFunctionParam=NULL ) {
+		global $gBitSystem;
 		$errors = array();
-		$serviceFunctions = array();
-		// Invoke any package services handlers 
-		if( !empty( $this->mServices ) ) {
-			foreach( array_keys( $this->mServices ) as $service ) {
-				if( !empty( $this->mServices[$service]['services'][$pServiceValue] ) && 
-					!empty( $this->mServices[$service]['package'] ) &&
-					$this->mServices[$service]['package'] == $pPackage 
-				){
-					$serviceFunctions[] = $this->mServices[$service]['services'][$pServiceValue];
-				}
-			}
-		}
-		foreach ( $serviceFunctions as $func ) {
-			if( function_exists( $func ) ) {
-				if( $errors = $func( $pFunctionParam ) ) {
-					$this->mErrors = array_merge( $this->mErrors, $errors );
+		if( $handlers = $gBitSystem->getPackagePluginHandlers( PKG_PLUGIN_TYPE_FUNCTION, preg_replace( '/_function$/','', $pServiceValue ) ) ){
+			foreach ( $handlers as $handler ) {
+				if( $handler['package_guid'] == $pPackageGuid ){
+					$func = $handler['plugin_handler'];
+					if( $errors = $func( $pFunctionParam ) ) {
+						$this->mErrors = array_merge( $this->mErrors, $errors );
+					}
 				}
 			}
 		}
