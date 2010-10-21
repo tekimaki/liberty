@@ -1,8 +1,8 @@
 {strip}
 {if $package}
-{foreach from=$gLibertySystem->mServices item=service key=service_guid}
-    {if $service.services.package_admin_tpl && $service.package eq $package}
-        {include file=$service.services.package_admin_tpl}
+{foreach from=$gBitSystem->getPackagePluginHandlers('tpl','package_admin') item=service}
+    {if $service.package eq $package}
+        {include file=$service.plugin_handler}
     {/if}
 {/foreach}
 {/if}
