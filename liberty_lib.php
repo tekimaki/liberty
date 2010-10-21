@@ -287,7 +287,7 @@ function liberty_content_load_sql( &$pObject, $pParamHash=NULL ) {
 
 	$hasPerm = ( is_object( $pObject ) && isset( $pObject->hasUserPermission )) ? 
 		( $pObject->hasUserPermission('p_liberty_view_all_status') || $pObject->hasUserPermission( 'p_liberty_edit_all_status' ) ): 
-		( $gBitUser->hasPermission( 'p_liberty_view_all_status' ) || $gBitUser->hasPermission( 'p_liberty_edit_all_status' ) );
+		( is_object( $gBitUser ) && ( $gBitUser->hasPermission( 'p_liberty_view_all_status' ) || $gBitUser->hasPermission( 'p_liberty_edit_all_status' ) ) );
 
 	if( $gBitSystem->isFeatureActive( 'liberty_display_status' ) && !$hasPerm ) {
 		if(( is_object( $pObject ) && !empty( $pObject->mType['content_type_guid'] ) && $pObject->mType['content_type_guid'] == 'bitcomment' )
@@ -297,7 +297,7 @@ function liberty_content_load_sql( &$pObject, $pParamHash=NULL ) {
 					INNER JOIN `".BIT_DB_PREFIX."liberty_comments` lcoms ON (lc.`content_id` = lcoms.`content_id`) 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content` rlcs ON( rlcs.`content_id`=lcoms.`root_id` )";
 			$ret['where_sql'] = " AND lc.`content_status_id` < 100 AND ( ( (rlcs.`user_id` = '".$gBitUser->getUserId()."' OR lc.`user_id` = '".$gBitUser->getUserId()."') AND lc.`content_status_id` > -100) OR lc.`content_status_id` > 0 )";
-		} else {
+		} elseif( is_object( $gBitUser ) ) {
 			// let owner see any of their own content with a status > -100
 			$ret['where_sql'] = " AND lc.`content_status_id` < 100 AND ( (lc.`user_id` = '".$gBitUser->getUserId()."' AND lc.`content_status_id` > -100) OR lc.`content_status_id` > 0 )";
 		}

@@ -827,7 +827,8 @@ class LibertyContent extends LibertyBase {
 			foreach ( $services as $service ) {
 				if( !empty( $service['handler_file'] ) && !empty( $service['path_type'] ) && !empty( $service['plugin_handler'] ) ){
 					// load the handler file
-					require_once( constant( strtoupper($service['package_guid']).'_PKG_PATH' ).$service['handler_file'] ); 
+					$path = $gBitSystem->getPackagePluginPath( $service );
+					require_once( $path.$service['handler_file'] );
 					$func = $service['plugin_handler'];
 					// excute the service function
 					if( $errors = $func( $this, $pFunctionParam ) ) {
@@ -1119,14 +1120,9 @@ class LibertyContent extends LibertyBase {
 			foreach ( $services as $service ) {
 				if( !empty( $service['handler_file'] ) && !empty( $service['path_type'] ) && !empty( $service['plugin_handler'] ) ){
 					// load the handler file
-					switch( $service['path_type'] ){
-					case 'package':
-						require_once( constant( strtoupper($service['package_guid']).'_PKG_PATH' ).$service['handler_file'] ); 
-						break;
-					case 'config':
-						require_once( CONFIG_PKG_PATH.$service['package_guid'].'/plugins/'.$service['plugin_guid'].'/'.$service['handler_file'] ); 
-						break;
-					}
+					$path = $gBitSystem->getPackagePluginPath( $service );
+					require_once( $path.$service['handler_file'] );
+
 					$func = $service['plugin_handler'];
 					// excute the service function
 					if( function_exists( $func ) ) {
