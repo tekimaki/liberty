@@ -684,24 +684,6 @@ class LibertySystem extends LibertyBase {
 	}
 
 	/**
-	 * Register package as service - hash added to $this->mServices
-	 *
-	 * $pServiceHash Service hash details. see existing service hashes found in <package>/bit_setup_inc.php for examples and details
-	 * @return none
-	 * @access public
-	 **/
-	/* DEPRECATED - delete it
-	function registerService( $pServiceName, $pPackageName, $pServiceHash, $pOptions = array()  ) {
-		$this->mServices[$pServiceName] = array(
-		   										'package' => $pPackageName,
-		   										'services'	=> $pServiceHash,
-												'description' => !empty( $pOptions['description'] ) ? $pOptions['description'] : NULL,
-												'required' => !empty( $pOptions['required'] ) ? $pOptions['required'] : FALSE,
-											 );
-	}
-	*/
-
-	/**
 	 * Check to see if a package has any service capabilities
 	 *
 	 * @return TRUE on success, FALSE on failure
