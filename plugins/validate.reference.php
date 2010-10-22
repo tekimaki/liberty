@@ -41,7 +41,7 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_REFERENCE, $pluginParams );
 
-function preview_references(&$pVars, &$pParamHash, &$pStore) {
+function preview_reference(&$pVars, &$pParamHash, &$pStore) {
 	foreach( $pVars as $var => $constraints) {
 		$pStore[$var] = isset($pParamHash[$var]) ? $pParamHash[$var] : NULL;
 	}
@@ -51,7 +51,7 @@ function preview_references(&$pVars, &$pParamHash, &$pStore) {
  * for now this is a lot like integers except that unset value is returned null not 0
  * @TODO perhaps validate against the reference record
  */
-function validate_references(&$pVars, &$pParamHash, &$pObject, &$store) {
+function validate_reference(&$pVars, &$pParamHash, &$pObject, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			if (is_numeric($pParamHash[$var])) {
