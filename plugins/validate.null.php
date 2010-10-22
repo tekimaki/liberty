@@ -42,15 +42,17 @@ $pluginParams = array (
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_NULL, $pluginParams );
 
 function preview_null(&$pVars, &$pParamHash, &$pStore) {
-	 foreach( $pVars as $var ) {
+	foreach( $pVars as $var => $constraints ) {
 	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
 			$pParamHash[$var] : NULL;
 	}
 }
 
-function validate_null($pVars, &$pParamHash, &$pObject, &$store) {
-	 foreach( $pVars as $var ) {
+function validate_null($pVars, &$pParamHash, &$pObject, &$pStore) {
+	foreach( $pVars as $var => $constraints ) {
+		/* @TODO verify that this is what null means - not adding it to the store hash
 	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
 			$pParamHash[$var] : NULL;
+		 */
 	}
 }
