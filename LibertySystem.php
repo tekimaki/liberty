@@ -187,9 +187,10 @@ class LibertySystem extends LibertyBase {
 		}
 
 		// check for liberty plugins in other packages as well
-		if( $this->mSystem == LIBERTY_PKG_NAME && $pkgHandle = opendir( BIT_ROOT_PATH )) {
-			while( FALSE !== ( $dirName = readdir( $pkgHandle ))) {
-				if( preg_match( '/^\w/', $dirName )  && $dirName != 'CVS' && is_dir( $pluginDir = BIT_ROOT_PATH.$dirName.'/liberty_plugins/' ) && ( $pluginHandle = opendir( $pluginDir ))) {
+		if( $this->mSystem == LIBERTY_PKG_NAME ){
+			$packages = $gBitSystem->getPackagesConfig();
+			foreach( $packages as $pkg ){
+				if( is_dir( BIT_ROOT_PATH.$pkg['dir'] ) && is_dir( $pluginDir = BIT_ROOT_PATH.$pkg['dir'].'/liberty_plugins/' ) && ( $pluginHandle = opendir( $pluginDir ))) {
 					while( FALSE !== ( $plugin = readdir( $pluginHandle ))) {
 						if( preg_match( "/^{$pPrefixPattern}.*\.php$/", $plugin )) {
 							$this->mPluginFilePath = $pluginDir.$plugin;
