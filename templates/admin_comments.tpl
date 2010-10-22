@@ -82,8 +82,8 @@
 			{/jstab}
 		{/jstabs}
 
-		<div class="row submit">
-			<input type="submit" name="change_prefs" value="{tr}Change preferences{/tr}" />
+		<div class="buttonHolder row submit">
+			<input class="button" type="submit" name="change_prefs" value="{tr}Change preferences{/tr}" />
 		</div>
 	{/form}
 

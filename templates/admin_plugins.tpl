@@ -110,14 +110,14 @@
 				{/foreach}
 			{/jstabs}
 
-			<div class="row submit">
-				<input type="submit" name="pluginsave" value="{tr}Save Plugin Settings{/tr}" />
+			<div class="buttonHolder row submit">
+				<input class="button" type="submit" name="pluginsave" value="{tr}Save Plugin Settings{/tr}" />
 			</div>
 
 			<div class="row">
-				{formlabel label="Reset all plugin settings" for=""}
+				{formlabel label="Reset all plugin settings" for="reset_all_plugins"}
 				{forminput}
-					<input type="submit" name="reset_all_plugins" value="{tr}Reset Plugins{/tr}" />
+					<input class="button" type="submit" name="reset_all_plugins" value="{tr}Reset Plugins{/tr}" />
 					{formhelp note="This will remove all plugin settings from the database and reset them to the default values. This can be useful if some plugins don't seem to work or you simply want to reset all values on this page."}
 				{/forminput}
 			</div>
