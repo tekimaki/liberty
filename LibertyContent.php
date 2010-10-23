@@ -853,7 +853,8 @@ class LibertyContent extends LibertyBase {
 			// LCConfig is a singleton class
 			$LCConfig = LCConfig::getInstance();
 			// content must opt in to services
-			if( $LCConfig->getConfig( 'service_'.$pServiceGuid, $this->mContentTypeGuid ) == 'y' ){	
+			$config = $LCConfig->getConfig( 'service_'.$pServiceGuid, $this->mContentTypeGuid );
+			if( $config == 'y' || $config == 'required' ){	
 				$ret = TRUE;
 			}
 		}
