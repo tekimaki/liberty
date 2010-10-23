@@ -50,7 +50,7 @@ define( 'LIBERTY_SERVICE_REBLOG', 'reblogging_rss_feeds' );
 define( 'LIBERTY_SERVICE_SEARCH', 'search' );
 // define( 'LIBERTY_SERVICE_THEMES', 'themes' );
 define( 'LIBERTY_SERVICE_TOPICA', 'topica' );
-define( 'LIBERTY_SERVICE_TRANSLATION', 'translation' );
+// define( 'LIBERTY_SERVICE_TRANSLATION', 'translation' );
 define( 'LIBERTY_SERVICE_TRANSLITERATION', 'transliteration' );
 define( 'LIBERTY_SERVICE_LIBERTYSECURE', 'security' );
 define( 'LIBERTY_SERVICE_MODCOMMENTS', 'comment_moderation' );
