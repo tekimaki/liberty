@@ -850,12 +850,18 @@ class LibertyContent extends LibertyBase {
 		$ret = FALSE; 
 
 		if( $gBitSystem->isPackageActive( 'lcconfig' ) ){
-			// LCConfig is a singleton class
-			$LCConfig = LCConfig::getInstance();
-			// content must opt in to services
-			$config = $LCConfig->getConfig( 'service_'.$pServiceGuid, $this->mContentTypeGuid );
-			if( $config == 'y' || $config == 'required' ){	
+			// Is the plugin required across all content?
+			$pluginConfig = $gBitSystem->getPluginConfig($pServiceGuid);
+			if (!empty($pluginConfig['required']) && $pluginConfig['required'] == 'y') {
 				$ret = TRUE;
+			} else {
+				// LCConfig is a singleton class
+				$LCConfig = LCConfig::getInstance();
+				// content must opt in to services
+				$config = $LCConfig->getConfig( 'service_'.$pServiceGuid, $this->mContentTypeGuid );
+				if( $config == 'y' || $config == 'required' ){	
+					$ret = TRUE;
+				}
 			}
 		}
 
