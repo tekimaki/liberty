@@ -50,9 +50,7 @@ function preview_null(&$pVars, &$pParamHash, &$pStore) {
 
 function validate_null($pVars, &$pParamHash, &$pObject, &$pStore) {
 	foreach( $pVars as $var => $constraints ) {
-		/* @TODO verify that this is what null means - not adding it to the store hash
 	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
 			$pParamHash[$var] : NULL;
-		 */
 	}
 }
