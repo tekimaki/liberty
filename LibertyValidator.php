@@ -90,39 +90,41 @@ class LibertyValidator {
 	}
 
 	function validate(&$pVars, &$pParamHash, &$pObject, &$store) {
-		// Make sure we have the byType array setup
-		LibertyValidator::setupPlugins();
-		// For each variable we need to validate
-		foreach($pVars as $type => $vars) {
-			// If we have one or more plugin of the right type
-			if (!empty(LibertyValidator::$sActivePluginsByType[$type])) {
-				// Then run each of the plugins of the right type
-				foreach (LibertyValidator::$sActivePluginsByType[$type] as $plug => $data) {
-					// But only if they have specified a validate function
-					if (!empty($data['validate_function'])) {
-						$function = $data['validate_function'];
-						$function($vars, $pParamHash, $pObject, $store);
-					}					
+		if( !empty( $pVars ) ){
+			// Make sure we have the byType array setup
+			LibertyValidator::setupPlugins();
+			// For each variable we need to validate
+			foreach($pVars as $type => $vars) {
+				// If we have one or more plugin of the right type
+				if (!empty(LibertyValidator::$sActivePluginsByType[$type])) {
+					// Then run each of the plugins of the right type
+					foreach (LibertyValidator::$sActivePluginsByType[$type] as $plug => $data) {
+						// But only if they have specified a validate function
+						if (!empty($data['validate_function'])) {
+							$function = $data['validate_function'];
+							$function($vars, $pParamHash, $pObject, $store);
+						}					
+					}
+				// No plugins of the right type! Ack!
+				} else {
+					// TODO: Should we just call null here and ignore they turned off all validators of the right type?
+					global $gBitSystem;
+					$gBitSystem->fatalError("Unsupported validation type: ".$type);
 				}
-			// No plugins of the right type! Ack!
-			} else {
-				// TODO: Should we just call null here and ignore they turned off all validators of the right type?
-				global $gBitSystem;
-				$gBitSystem->fatalError("Unsupported validation type: ".$type);
-			}
-			// Now for each variable check the attributes
-			foreach($vars as $var => $constraints) {
-				// So we loop over the constraints
-				foreach ($constraints as $constraint => $value) {
-					// And if we have an attribute which matches the constraints
-					if (!empty(LibertyValidator::$sActivePluginsByAttribute[$constraint])) {
-						// Then apply each attribute constraint
-						foreach (LibertyValidator::$sActivePluginsByAttribute[$constraint] as $plug => $data) {
-							// But only if it has specified an attribute function properly
-							if (!empty($data['validate_attribute_function'])) {
-								$function = $data['validate_attribute_function'];
-								$function($var, $constraints, $pParamHash, $pObject, $store);
-							}		
+				// Now for each variable check the attributes
+				foreach($vars as $var => $constraints) {
+					// So we loop over the constraints
+					foreach ($constraints as $constraint => $value) {
+						// And if we have an attribute which matches the constraints
+						if (!empty(LibertyValidator::$sActivePluginsByAttribute[$constraint])) {
+							// Then apply each attribute constraint
+							foreach (LibertyValidator::$sActivePluginsByAttribute[$constraint] as $plug => $data) {
+								// But only if it has specified an attribute function properly
+								if (!empty($data['validate_attribute_function'])) {
+									$function = $data['validate_attribute_function'];
+									$function($var, $constraints, $pParamHash, $pObject, $store);
+								}		
+							}
 						}
 					}
 				}
