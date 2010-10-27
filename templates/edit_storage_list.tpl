@@ -1,7 +1,7 @@
 {strip}
 {* don't replicate the surrounding div when inserting ajax content *}
 {if !$gBitThemes->isAjaxRequest()}
-	<div id="edit_storage_list{if !$uploadTab}_tab{/if}{if $form_id}_{$form_id}{/if}">
+	<div id="edit_storage_list{if !$uploadTab}_tab{/if}{if $form_id}_{$form_id}{/if}" class="edit_storage_list">
 {/if}
 {if $gContent->mStorage}
 	<div class="row">
