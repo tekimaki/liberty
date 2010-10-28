@@ -1363,6 +1363,8 @@ class LibertyContent extends LibertyBase {
 		$ret = FALSE;
 		if( !$this->isValid() ) {
 			// return default user permission setting when no content is loaded
+			$this->invokeServices( 'content_user_perms_function' );
+			// OH SHIT!
 			$ret = $gBitUser->hasPermission( $pPermName );
 		} elseif( !$gBitUser->isRegistered() || !( $ret = $this->isOwner() || $ret = $gBitUser->isAdmin() )) {
 			if( $gBitUser->isAdmin() || $gBitUser->hasPermission( $this->mAdminContentPerm )) {
