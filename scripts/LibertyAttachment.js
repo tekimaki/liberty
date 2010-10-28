@@ -4,7 +4,7 @@ LibertyAttachment = {
 	"uploader_under_way":0,
 
 	"uploaderSetup":function(fileid){
-		LibertyAttachment.fileInputClones[fileid] = $(fileid).cloneNode(true);
+		LibertyAttachment.fileInputClones[fileid] = MochiKit.DOM.getElement(fileid).cloneNode(true);
 	},
 	
 	"uploader": function(file, action, waitmsg, frmid, cformid ) {
@@ -31,7 +31,7 @@ LibertyAttachment = {
 	},
 
 	"preflightCheck": function( cformid ){
-		var f = $(cformid);
+		var f = MochiKit.DOM.getElement(cformid);
 		var t = f.title.value;
 		if ( MochiKit.Base.isEmpty(t) ){
 			alert( "Please enter a title for your new content before attempting to upload a file." );
@@ -81,7 +81,7 @@ LibertyAttachment = {
 	},
 	
 	"postflightCheck": function( cformid, d ){
-		var form = $(cformid);
+		var form = MochiKit.DOM.getElement(cformid);
 		var cid = d.getElementById("upload_content_id").value;
 		if ( typeof( form.content_id ) == "undefined" ){
 			var i = INPUT( {'name':'content_id', 'type':'hidden', 'value':cid}, null );
