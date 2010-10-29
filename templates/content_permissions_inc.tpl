@@ -62,7 +62,7 @@
 			{/forminput}
 		</div>
 
-		<div class="row submit">
+		<div class="buttonHolder row submit">
 			<input type="submit" name="back" value="{tr}Go back to content{/tr}" />
 			<input type="submit" name="assign" value="{tr}Assign Permission{/tr}" />
 		</div>

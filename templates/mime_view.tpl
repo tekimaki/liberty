@@ -14,7 +14,7 @@
 				{formfeedback hash=$feedback}
 				{include file=$edit_template preferences=$attachment.preferences}
 
-				<div class="row submit">
+				<div class="buttonHolder row submit">
 					<input type="hidden" name="attachment_id" value="{$smarty.request.attachment_id}" />
 					<input type="submit" name="plugin_submit" value="{tr}Update File{/tr}" />
 				</div>

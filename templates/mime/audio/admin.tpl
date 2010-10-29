@@ -112,7 +112,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="plugin_settings" value="{tr}Save Plugin Settings{/tr}" />
 			</div>
 		{/form}

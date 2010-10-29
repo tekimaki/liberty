@@ -36,7 +36,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="settings_store" value="{tr}Change preferences{/tr}" />
 			</div>
 		{/form}

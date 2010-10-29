@@ -26,7 +26,7 @@
 				</div>
 			{/foreach}
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="apply" value="{tr}Save Plugin Settings{/tr}" />
 			</div>
 		{/form}

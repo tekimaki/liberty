@@ -29,7 +29,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="rank_settings" value="{tr}Apply settings{/tr}" />
 			</div>
 		{/form}
