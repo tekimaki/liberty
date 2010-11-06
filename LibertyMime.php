@@ -173,6 +173,83 @@ class LibertyMime extends LibertyAttachable {
 		return( count( $this->mErrors ) == 0 );
 	}
 
+
+	function storeAttachment( &$pParamHash ){
+		global $gLibertySystem;
+		// can only store attachments to existing content
+		if( $this->isValid() && LibertyMime::verifyAttachmentHash( $pParamHash ) ){
+			$this->mDb->StartTrans();	
+
+			// let the plugin do the rest
+			if( $guid = $gLibertySystem->lookupMimeHandler( $pParamHash['upload_store']['upload'] ) ){
+				$this->pluginStore( $pParamHash['upload_store'], $guid, @BitBase::verifyId( $pParamHash['upload_store']['attachment_id'] ));
+
+				$this->invokeServices( 'upload_store_function', $pParamHash );
+
+				if( !empty( $pParamHash['upload_store']['errors'] ) ){
+					$this->mErrors['attachment'][] = $pParamHash['upload_store']['errors'];
+				}
+			}else{
+				$this->setError['plugin'] = tra('Plugin not found for attachment');
+			}
+
+			// Roll back if something went wrong
+			if( empty( $this->mErrors )) {
+				$this->mDb->CompleteTrans();
+			} else {
+				$this->mDb->RollbackTrans();
+			}
+			return TRUE;
+		}
+		else{
+			return FALSE;
+		}
+	}
+
+
+	// @TODO rename verifyAttachment to be verifyFile and rename this to verifyAttachment
+	/**
+	 * @param $pParamHash['file'] 				required file reference
+	 * @param $pParamHash['content_id'] 		required content_id will be populated if not set
+	 * @param $pParamHash['thumbnail_sizes'] 	optional custom thumbnail sizes
+	 */
+	function verifyAttachmentHash( &$pParamHash ){
+		if( !empty( $pParamHash['file'] ) ){
+			// content_id is required
+			$pParamHash['content_id'] = !empty( $pParamHash['content_id'] )?$pParamHash['content_id']:($this->isValid()?$this->mContentId:NULL);
+			if( !empty( $pParamHash['content_id'] ) ){
+				$pParamHash['upload_store']['content_id'] = $pParamHash['content_id']; 
+			}else{
+				$this->setErrors( 'content_id', tra('Invalid content id') );
+			}
+
+			// file 
+			if( !empty( $pParamHash['file'] ) ){
+				$pParamHash['upload_store']['upload'] = LibertyMime::verifyAttachment( $pParamHash['file'] );
+			}else{
+				// @TODO store() says it doesnt require a file, it can update some other file data - what is that?
+				$this->setError( 'file', tra( 'No file to store' ) );
+			}
+
+			// custom thumbnail sizes
+			if( !empty( $pParamHash['thumbnail_sizes'] ) ){
+				$pParamHash['upload_store']['thumbnail_sizes'] = $pParamHash['thumbnail_sizes'];
+			}
+
+			// attachment_id - where the hell does this come from when updating? and why do i care - wjames
+			if( !empty( $pParamHash['attachment_id'] ) ){
+				$pParamHash['upload_store']['attachment_id'] = $pParamHash['attachment_id'];
+			}
+
+			// what the hell is this stuff? - wjames
+			if( !empty( $pParamHash['thumbnail'] ) ) {
+				$pParamHash['upload_store']['thumbnail'] = $pParamHash['thumbnail'];
+			}
+		}
+		return count( $this->mErrors == 0 );
+	}
+
+
 	/**
 	 * pluginStore will use a given plugin to store uploaded file data
 	 * 
@@ -212,23 +289,31 @@ class LibertyMime extends LibertyAttachable {
 	 * @param array $pStoreHash hash of all data that needs to be stored in the database
 	 * @access public
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason
-	 * @todo If one of the uploaded files is an update, place the attachment_id with the upload hash in $_FILES or in _files_override
+	 * @todo If one of the uploaded files is an update, place the attachment_id with the upload hash in $_FILES['uploads'] or in _files_override
 	 */
 	function verify( &$pParamHash ) {
 		global $gBitUser, $gLibertySystem;
+
+		$uploads = array();
 
 		// check to see if we have any files to upload
 		if( isset( $pParamHash['_files_override'] )) {
 			// we have been passed in a manually stuffed files attachment, such as a custom uploader would have done.
 			// process this, and skip over $_FILES
 			$uploads = $pParamHash['_files_override'];
-		} elseif( !empty( $_FILES )) {
-			// we have some _FILES hanging around we will gobble up. This is inherently dagnerous chewing up a _FILES like this as 
-			// it can cause premature storing of a _FILE if you are trying to store multiple pieces of content at once.
-			foreach( $_FILES as $key => $file ) {
-				if( !empty( $file['name'] ) || !empty( $file['attachment_id'] )) {
-					$uploads[$key] = $file;
+		// uploads is the reserved files array for liberty pkg upload forms
+		} elseif( !empty( $_FILES['uploads']['name'] ) ){ 
+			$count = count( $_FILES['uploads']['name'] );
+			$i = 0;
+			while( $i < $count ){
+				$file = array();
+				foreach( $_FILES['uploads'] as $key => $values ) {
+					$file[$key] = $values[$i];
 				}
+				if( !empty( $file['name'] ) || !empty( $file['attachment_id'] )) {
+					$uploads[] = $file;
+				}
+				$i++;
 			}
 		}
 
@@ -264,6 +349,7 @@ class LibertyMime extends LibertyAttachable {
 
 		return ( count( $this->mErrors ) == 0 );
 	}
+
 
 	/**
 	 * getThumbnailUrl will fetch the primary thumbnail for a given content. If nothing has been set, it will fetch the last thumbnail it can find.
@@ -331,7 +417,7 @@ class LibertyMime extends LibertyAttachable {
 	/**
 	 * verifyAttachment will perform a generic check if a file is valid for processing
 	 * 
-	 * @param array $pFile file array from $_FILES
+	 * @param array $pFile file array
 	 * @access public
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
