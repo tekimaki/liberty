@@ -410,7 +410,7 @@ class LibertyContent extends LibertyBase {
 	 * @param array Array of content data to be stored <br>
 	 * See verify for details of the values required
 	 */
-	function prefightStore( &$pParamHash ) {
+	function preflightStore( &$pParamHash ) {
 		global $gLibertySystem;
 		if( LibertyContent::verify( $pParamHash ) ) {
 			$this->mDb->StartTrans();
@@ -422,6 +422,7 @@ class LibertyContent extends LibertyBase {
 				$this->mLogs['content_store'] = "Created";
 			} else {
 				$result = $this->mDb->associateUpdate( $table, $pParamHash['content_store'], array("content_id" => $pParamHash['content_id'] ) );
+				$this->mContentId = $pParamHash['content_id'];
 				$this->mLogs['content_store'] = "Updated";
 			}
 			// store any messages in the logs
