@@ -857,16 +857,22 @@ class LibertyContent extends LibertyBase {
 		if( $services = $gBitSystem->getPackagePluginHandlers( PKG_PLUGIN_TYPE_FUNCTION, preg_replace( '/_function$/','', $pServiceFunction ) ) ){
 			foreach ( $services as $service ) {
 				if( !empty( $service['handler_file'] ) && !empty( $service['path_type'] ) && !empty( $service['plugin_handler'] ) ){
-					// load the handler file
-					$path = $gBitSystem->getPackagePluginPath( $service );
-					require_once( $path.$service['handler_file'] );
-					$func = $service['plugin_handler'];
-					// excute the service function
-					if( $errors = $func( $this, $pFunctionParam ) ) {
-						$this->mErrors = array_merge( $this->mErrors, $errors );
-					}
+					$errors = $this->invokeService( $service, $pFunctionParam );
 				}
 			}
+		}
+		return $errors;
+	}
+
+	function invokeService( &$pService, &$pFunctionParam ){
+		$errors = array();
+		// load the handler file
+		$path = $gBitSystem->getPackagePluginPath( $pService );
+		require_once( $path.$pService['handler_file'] );
+		$func = $pService['plugin_handler'];
+		// excute the service function
+		if( $errors = $func( $this, $pFunctionParam ) ) {
+			$this->mErrors = array_merge( $this->mErrors, $errors );
 		}
 		return $errors;
 	}
