@@ -404,6 +404,36 @@ class LibertyContent extends LibertyBase {
 	}
 
 	/**
+	 * Create a new content object or update an existing one which has not had its full native content record stored yet
+	 * This is for adding data stored via content plugins before a full record is created, such as attachments
+	 *
+	 * @param array Array of content data to be stored <br>
+	 * See verify for details of the values required
+	 */
+	function prefightStore( &$pParamHash ) {
+		global $gLibertySystem;
+		if( LibertyContent::verify( $pParamHash ) ) {
+			$this->mDb->StartTrans();
+			$table = BIT_DB_PREFIX."liberty_content";
+			if( !@$this->verifyId( $pParamHash['content_id'] ) ) {
+				$this->mContentId = $pParamHash['content_id'] = $pParamHash['content_store']['content_id'] = $this->mDb->GenID( 'liberty_content_id_seq' );
+				$this->mContentTypeGuid = $this->mInfo['content_type_guid'] = $pParamHash['content_type_guid'];
+				$result = $this->mDb->associateInsert( $table, $pParamHash['content_store'] );
+				$this->mLogs['content_store'] = "Created";
+			} else {
+				$result = $this->mDb->associateUpdate( $table, $pParamHash['content_store'], array("content_id" => $pParamHash['content_id'] ) );
+				$this->mLogs['content_store'] = "Updated";
+			}
+			// store any messages in the logs
+			$this->storeActionLog( $pParamHash );
+
+			$this->mDb->CompleteTrans();
+		}
+		return( count( $this->mErrors ) == 0 );
+	}
+
+
+	/**
 	 * Delete comment entries relating to the content object
 	 *
 	 * @access public
