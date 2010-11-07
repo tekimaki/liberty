@@ -865,6 +865,7 @@ class LibertyContent extends LibertyBase {
 	}
 
 	function invokeService( &$pService, &$pFunctionParam ){
+		global $gBitSystem;
 		$errors = array();
 		// load the handler file
 		$path = $gBitSystem->getPackagePluginPath( $pService );
