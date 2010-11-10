@@ -13,14 +13,14 @@ global $gBitSmarty, $gContent;
 
 $gContent = $pluginHash = $error = NULL;
 
-if( !empty( $_REQUEST['preflight_plugin_guid'] ) ){
+if( !empty( $_REQUEST['preflight_plugin_guid'] ) && !empty( $_REQUEST['preflight_fieldset_guid'] ) ){
 	switch( $_REQUEST['preflight_plugin_guid'] ){
 	case 'liberty_attachment';
 		// @TODO migrate attachment_upload here
 		break;
 	default:
-		if( !empty( $_REQUEST[$_REQUEST['preflight_plugin_guid']] ) ){
-			$storeHash[$_REQUEST['preflight_plugin_guid']] = $_REQUEST[$_REQUEST['preflight_plugin_guid']];
+		if( !empty( $_REQUEST[$_REQUEST['preflight_plugin_guid']][$_REQUEST['preflight_fieldset_guid']] ) ){
+			$storeHash[$_REQUEST['preflight_plugin_guid']] = $_REQUEST[$_REQUEST['preflight_plugin_guid']][$_REQUEST['preflight_fieldset_guid']];
 		}
 		else{
 			$error = tra( 'No fieldset found for plugin guid '.$_REQUEST['preflight_plugin_guid'] );
@@ -92,7 +92,9 @@ if( empty( $error ) && is_object( $gContent ) ){
 }
 
 // load service
-$loadHandler = $gBitSystem->getPluginAPIHandler( 'function', 'content_load', $_REQUEST['preflight_plugin_guid'] );
+// @TODO change this to load when pkgmkr can do selective loading based on perhaps a fieldset key being set
+// for now user display which loads everything typically
+$loadHandler = $gBitSystem->getPluginAPIHandler( 'function', 'content_display', $_REQUEST['preflight_plugin_guid'] );
 $gContent->invokeService( $loadHandler, $loadHash );
 
 $gBitSmarty->assign( 'gContent', $gContent );

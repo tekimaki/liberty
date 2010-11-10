@@ -3,11 +3,11 @@ LibertyPreflight = {
 	"fileInputClones":{},
 	"uploader_under_way":0,
 
-	"uploaderSetup":function(fileid){
-		LibertyPreflight.fileInputClones[fileid] = MochiKit.DOM.getElement(fileid).cloneNode(true);
+	"uploaderSetup":function(fieldsetid){
+		LibertyPreflight.fileInputClones[fieldsetid] = MochiKit.DOM.getElement(fieldsetid).cloneNode(true);
 	},
 	
-	"uploader": function(form, action, waitmsg, frameid, pluginguid ) {
+	"uploader": function(form, action, waitmsg, frameid, pluginguid, fieldsetguid ) {
 		if (LibertyPreflight.uploader_under_way) {
 			alert(waitmsg);
 		}else{
@@ -19,8 +19,14 @@ LibertyPreflight = {
 			}else{
 				form.preflight_plugin_guid.value = pluginguid;
 			}
+			if ( typeof( form.preflight_fieldset_guid ) == "undefined" ){
+				var i = INPUT( {'name':'preflight_fieldset_guid', 'type':'hidden', 'value':fieldsetguid}, null );
+				form.insertBefore( i, form.firstChild ); 
+			}else{
+				form.preflight_fieldset_guid.value = fieldsetguid;
+			}
 			var old_target = form.target;
-			form.target = frameid;
+			// form.target = frameid;
 			var old_action = form.action;
 			form.action=action;
 			form.submit();
@@ -32,7 +38,7 @@ LibertyPreflight = {
 	"preflightCheck": function(){
 	},
 
-	"uploaderComplete": function(frmid, divid, fileid, cformid) {
+	"uploaderComplete": function(frmid, fieldsetid) {
 		if (LibertyPreflight.uploader_under_way){
 			BitBase.hideSpinner();
 			var ifrm = document.getElementById(frmid);
@@ -47,25 +53,22 @@ LibertyPreflight = {
 				return;
 			}
 			
-			LibertyPreflight.postflightCheck( cformid, d );
+			// LibertyPreflight.postflightCheck( fieldsetid, d );
 
-			var errMsg = "<div>Sorry, there was a problem retrieving results.</div>";
-			var divO = document.getElementById(divid);
-			divR = d.getElementById('result_tab');
+			// replace the current form with the result
+			var errMsg = "<div>Sorry, there was a problem retrieving results. Please report this issue to an administrator</div>";
+			var divO = document.getElementById(fieldsetid); 
+			divR = d.getElementById(fieldsetid);
 			if (divO != null) {
-				divO.innerHTML = (divR != null)?divR.innerHTML:errMsg+"a";
-			}
-			divid = divid + '_tab';
-			divO = document.getElementById(divid);
-			var divR = d.getElementById('result_list');
-			if (divO != null) {
-				divO.innerHTML =  (divR != null)?divR.innerHTML:errMsg+"b";
+				divO.innerHTML = (divR != null)?divR.innerHTML:errMsg;
 			}
 			LibertyPreflight.uploader_under_way = 0;
+			/*
 			var file = document.getElementById(fileid);
 			LibertyPreflight.fileInputClones[fileid].id = fileid;
 			MochiKit.DOM.swapDOM(file, LibertyPreflight.fileInputClones[fileid]);
 			LibertyPreflight.uploaderSetup( fileid );
+			*/
 			// file.value = '';
 		}
 	},
