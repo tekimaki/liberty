@@ -7,19 +7,25 @@ LibertyPreflight = {
 		LibertyPreflight.fileInputClones[fileid] = MochiKit.DOM.getElement(fileid).cloneNode(true);
 	},
 	
-	"uploader": function(file, action, waitmsg, frmid, cformid ) {
+	"uploader": function(form, action, waitmsg, frameid, pluginguid ) {
 		if (LibertyPreflight.uploader_under_way) {
 			alert(waitmsg);
 		}else{
 			LibertyPreflight.uploader_under_way = 1;
 			BitBase.showSpinner();
-			var old_target = file.form.target;
-			file.form.target = frmid;
-			var old_action = file.form.action;
-			file.form.action=action;
-			file.form.submit();
-			file.form.target = old_target;
-			file.form.action = old_action;
+			if ( typeof( form.preflight_plugin_guid ) == "undefined" ){
+				var i = INPUT( {'name':'preflight_plugin_guid', 'type':'hidden', 'value':pluginguid}, null );
+				form.insertBefore( i, form.firstChild ); 
+			}else{
+				form.preflight_plugin_guid.value = pluginguid;
+			}
+			var old_target = form.target;
+			form.target = frameid;
+			var old_action = form.action;
+			form.action=action;
+			form.submit();
+			form.target = old_target;
+			form.action = old_action;
 		}
 	},
 
