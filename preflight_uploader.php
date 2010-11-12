@@ -103,4 +103,4 @@ $gBitSmarty->assign( 'uploadTab', TRUE );
 
 // hand the updated edit form back
 $displayHandler = $gBitSystem->getPluginAPIHandler( 'tpl', 'content_edit_mini', $_REQUEST['preflight_plugin_guid'] );
-echo $gBitSystem->display( $displayHandler['handler_file'], NULL, array( 'format'=>'none', 'display_mode' => 'display' ));
+echo $gBitSystem->display( $displayHandler['plugin_handler'], NULL, array( 'format'=>'none', 'display_mode' => 'display' ));
