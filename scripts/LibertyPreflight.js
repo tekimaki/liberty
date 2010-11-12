@@ -4,7 +4,7 @@ LibertyPreflight = {
 	"uploader_under_way":0,
 
 	"uploaderSetup":function(fieldsetid){
-		LibertyPreflight.fileInputClones[fieldsetid] = MochiKit.DOM.getElement(fieldsetid).cloneNode(true);
+		LibertyPreflight.fileInputClones[fieldsetid] = BitBase.$(fieldsetid).cloneNode(true);
 	},
 	
 	"uploader": function(form, action, waitmsg, frameid, pluginguid, fieldsetguid ) {
@@ -26,7 +26,7 @@ LibertyPreflight = {
 				form.preflight_fieldset_guid.value = fieldsetguid;
 			}
 			var old_target = form.target;
-			// form.target = frameid;
+			form.target = frameid;
 			var old_action = form.action;
 			form.action=action;
 			form.submit();
@@ -38,33 +38,33 @@ LibertyPreflight = {
 	"preflightCheck": function(){
 	},
 
-	"uploaderComplete": function(frmid, fieldsetid) {
+	"uploaderComplete": function(frameid, fieldsetid, formid) {
 		if (LibertyPreflight.uploader_under_way){
 			BitBase.hideSpinner();
-			var ifrm = document.getElementById(frmid);
+			var ifrm = BitBase.$(frameid);
 			if (ifrm.contentDocument) {
 				var d = ifrm.contentDocument;
 			} else if (ifrm.contentWindow) {
 				var d = ifrm.contentWindow.document;
 			} else {
-				var d = window.frames[frmid].document;
+				var d = window.frames[frameid].document;
 			}
 			if (d.location.href == "about:blank") {
 				return;
 			}
 			
-			// LibertyPreflight.postflightCheck( fieldsetid, d );
+			LibertyPreflight.postflightCheck( formid, d );
 
 			// replace the current form with the result
 			var errMsg = "<div>Sorry, there was a problem retrieving results. Please report this issue to an administrator</div>";
-			var divO = document.getElementById(fieldsetid); 
+			var divO = BitBase.$(fieldsetid); 
 			divR = d.getElementById(fieldsetid);
 			if (divO != null) {
 				divO.innerHTML = (divR != null)?divR.innerHTML:errMsg;
 			}
 			LibertyPreflight.uploader_under_way = 0;
 			/*
-			var file = document.getElementById(fileid);
+			var file = BitBase.$(fileid);
 			LibertyPreflight.fileInputClones[fileid].id = fileid;
 			MochiKit.DOM.swapDOM(file, LibertyPreflight.fileInputClones[fileid]);
 			LibertyPreflight.uploaderSetup( fileid );
@@ -73,8 +73,8 @@ LibertyPreflight = {
 		}
 	},
 	
-	"postflightCheck": function( cformid, d ){
-		var form = MochiKit.DOM.getElement(cformid);
+	"postflightCheck": function( formid, d ){
+		var form = BitBase.$(formid);
 		var cid = d.getElementById("upload_content_id").value;
 		if ( typeof( form.content_id ) == "undefined" ){
 			var i = INPUT( {'name':'content_id', 'type':'hidden', 'value':cid}, null );
