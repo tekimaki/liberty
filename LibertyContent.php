@@ -433,6 +433,10 @@ class LibertyContent extends LibertyBase {
 		return( count( $this->mErrors ) == 0 );
 	}
 
+	function preflightLoad(){
+		// do nothing - prevents errors while we sort out conversion of LibertyMime to a service; see preflightLoad in LibertyMime and in preflight_upload.php
+	}
+
 
 	/**
 	 * Delete comment entries relating to the content object

@@ -17,4 +17,5 @@
 </iframe>
 
 <input type="hidden" name="upload_content_id" id="upload_content_id" value="{if $gContent->mContentId}{$gContent->mContentId}{/if}" />
+<input type="hidden" name="content_type_guid" id="upload_content_type_guid" value="{$gContent->mContentTypeGuid}" />
 {/strip}

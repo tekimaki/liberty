@@ -82,6 +82,7 @@ if( empty( $error ) && is_object( $gContent ) ){
 		if( empty( $_REQUEST['content_id'] ) ){
 			$storeHash['content_status_id'] = -5;
 			$gContent->preflightStore( $storeHash );	
+			$_REQUEST['content_id'] = $storeHash['content_id'];
 		}
 		$gContent->mContentId = $_REQUEST['content_id']; // this sucks can do this better
 	}
@@ -90,6 +91,9 @@ if( empty( $error ) && is_object( $gContent ) ){
 	$storeHandler = $gBitSystem->getPluginAPIHandler( 'function', 'content_store', $_REQUEST['preflight_plugin_guid'] );
 	$error = $gContent->invokeService( $storeHandler, $storeHash );
 }
+
+// substitute for display service in LibertyMime
+$gContent->preflightLoad();
 
 // load service
 // @TODO change this to load when pkgmkr can do selective loading based on perhaps a fieldset key being set

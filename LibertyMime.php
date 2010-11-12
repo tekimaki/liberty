@@ -77,6 +77,17 @@ class LibertyMime extends LibertyAttachable {
 	}
 
 	/**
+	 * need a way to call load within class reference
+	 * this is basically a substitute for a mime load 
+	 * or display api hook until Mime can truly be converted
+	 */
+	function preflightLoad(){
+		if( BitBase::verifyId( $this->mContentId ) ){
+			LibertyMime::load();
+		}
+	}
+
+	/**
 	 * Store a new upload
 	 *
 	 * @param array $pStoreHash contains all data to store the gallery
@@ -177,7 +188,7 @@ class LibertyMime extends LibertyAttachable {
 	function storeAttachment( &$pParamHash ){
 		global $gLibertySystem;
 		// can only store attachments to existing content
-		if( $this->isValid() && LibertyMime::verifyAttachmentHash( $pParamHash ) ){
+		if( BitBase::verifyId( $this->mContentId ) && LibertyMime::verifyAttachmentHash( $pParamHash ) ){
 			$this->mDb->StartTrans();	
 
 			// let the plugin do the rest
@@ -216,11 +227,11 @@ class LibertyMime extends LibertyAttachable {
 	function verifyAttachmentHash( &$pParamHash ){
 		if( !empty( $pParamHash['file'] ) ){
 			// content_id is required
-			$pParamHash['content_id'] = !empty( $pParamHash['content_id'] )?$pParamHash['content_id']:($this->isValid()?$this->mContentId:NULL);
+			$pParamHash['content_id'] = !empty( $pParamHash['content_id'] )?$pParamHash['content_id']:(BitBase::verifyId( $this->mContentId )?$this->mContentId:NULL);
 			if( !empty( $pParamHash['content_id'] ) ){
 				$pParamHash['upload_store']['content_id'] = $pParamHash['content_id']; 
 			}else{
-				$this->setErrors( 'content_id', tra('Invalid content id') );
+				$this->setError( 'content_id', tra('Invalid content id') );
 			}
 
 			// file 
@@ -363,7 +374,7 @@ class LibertyMime extends LibertyAttachable {
 		$ret = NULL;
 		if( !empty( $pInfoHash ) ) {
 			// do some stuff if we are given a hash of stuff
-		} elseif( $this->isValid() && !empty( $this->mStorage ) ) {
+		} elseif( BitBase::verifyId( $this->mContentId ) && !empty( $this->mStorage ) ) {
 			foreach( array_keys( $this->mStorage ) as $attachmentId ) {
 				if( !empty( $this->mStorage[$attachmentId]['is_primary'] ) ) {
 					break;
@@ -544,7 +555,7 @@ class LibertyMime extends LibertyAttachable {
 			}
 
 			// this function might be called statically
-			if( !empty( $this ) && $this->isValid() ) {
+			if( !empty( $this ) && BitBase::verifyId( $this->mContentId ) ) {
 				$this->mStoragePrefs[$pAttachmentId][$pPrefName] = $pPrefValue;
 			}
 
@@ -564,7 +575,7 @@ class LibertyMime extends LibertyAttachable {
 	function loadAttachmentPreferences( $pContentId = NULL ) {
 		global $gBitSystem;
 
-		if( !@BitBase::verifyId( $pContentId ) && $this->isValid() && @BitBase::verifyId( $this->mContentId )) {
+		if( !@BitBase::verifyId( $pContentId ) && @BitBase::verifyId( $this->mContentId )) {
 			$pContentId = $this->mContentId;
 			$store_prefs = TRUE;
 		}

@@ -63,13 +63,6 @@ LibertyPreflight = {
 				divO.innerHTML = (divR != null)?divR.innerHTML:errMsg;
 			}
 			LibertyPreflight.uploader_under_way = 0;
-			/*
-			var file = BitBase.$(fileid);
-			LibertyPreflight.fileInputClones[fileid].id = fileid;
-			MochiKit.DOM.swapDOM(file, LibertyPreflight.fileInputClones[fileid]);
-			LibertyPreflight.uploaderSetup( fileid );
-			*/
-			// file.value = '';
 		}
 	},
 	
