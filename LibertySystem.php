@@ -741,12 +741,15 @@ class LibertySystem extends LibertyBase {
 	 * @see loadPackagePlugins
 	 */
     function loadPackagePluginsAtPath( $pPluginsPath ){
-        if( is_dir( $pPluginsPath ) && $plugins = opendir( $pPluginsPath )) {
+        global $gBitSystem;
+		if( is_dir( $pPluginsPath ) && $plugins = opendir( $pPluginsPath )) {
             while( FALSE !== ( $pluginDirName = readdir( $plugins ) ) ) {
-				$pluginDirPath = $pPluginsPath.'/'.$pluginDirName;
-                if( is_dir( $pluginDirPath ) && is_file( $pluginDirPath.'/plugin_inc.php' ) ) {
-                    require_once( $pluginDirPath.'/plugin_inc.php' );
-                }
+				if(!empty($gBitSystem->mPackagePluginsConfig[$pluginDirName]) && $gBitSystem->mPackagePluginsConfig[$pluginDirName]['active']=='y' ){
+					$pluginDirPath = $pPluginsPath.'/'.$pluginDirName;
+					if(is_dir( $pluginDirPath ) && is_file( $pluginDirPath.'/plugin_inc.php' ) ) {
+						require_once( $pluginDirPath.'/plugin_inc.php' );
+					}
+				}
             }
         }
     }
