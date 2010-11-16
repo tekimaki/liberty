@@ -6,6 +6,18 @@ LibertyPreflight = {
 	"uploaderSetup":function(fieldsetid){
 		LibertyPreflight.fileInputClones[fieldsetid] = BitBase.$(fieldsetid).cloneNode(true);
 	},
+
+	"expunge": function(form, action, waitmsg, frameid, pluginguid, fieldsetguid, expungefieldsetid ) {
+		if (LibertyPreflight.uploader_under_way) {
+			alert(waitmsg);
+		}else{
+			// drop the fieldset to be deleted then run upload
+			var i = BitBase.$( expungefieldsetid );	
+			i.parentNode.removeChild(i);
+			delete i;
+			LibertyPreflight.uploader( form, action, waitmsg, frameid, pluginguid, fieldsetguid );
+		}
+	},
 	
 	"uploader": function(form, action, waitmsg, frameid, pluginguid, fieldsetguid ) {
 		if (LibertyPreflight.uploader_under_way) {
