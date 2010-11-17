@@ -75,6 +75,11 @@ LibertyPreflight = {
 				divO.innerHTML = (divR != null)?divR.innerHTML:errMsg;
 			}
 			LibertyPreflight.uploader_under_way = 0;
+
+			// set any placeholders
+			if( typeof( BitBase.setPlaceholders ) != "undefined" ){
+				BitBase.setPlaceholders();
+			}
 		}
 	},
 	
