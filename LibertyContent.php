@@ -2772,8 +2772,8 @@ class LibertyContent extends LibertyBase {
 		$parseHash['content_id']      = !empty( $parseHash['content_id'] )      ? $parseHash['content_id']      : NULL;
 		$parseHash['cache_extension'] = !empty( $parseHash['cache_extension'] ) ? $parseHash['cache_extension'] : NULL;
 		$parseHash['format_guid']     = !empty( $parseHash['format_guid'] )     ? $parseHash['format_guid']     : $pFormatGuid;
-		$parseHash['user_id']         = !empty( $parseHash['user_id'] )         ? $parseHash['user_id']         : is_object( $gBitUser ) ? $gBitUser->mUserId : ANONYMOUS_USER_ID;
-
+		$parseHash['user_id']         = !empty( $parseHash['user_id'] )         ? $parseHash['user_id']         : ( is_object( $gBitUser ) ? $gBitUser->mUserId : ANONYMOUS_USER_ID );
+		
 		// Ensure we have a format
 		if( empty( $parseHash['format_guid'] )) {
 			$parseHash['format_guid'] = $gBitSystem->getConfig( 'default_format', 'tikiwiki' );
