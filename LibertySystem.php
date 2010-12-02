@@ -44,7 +44,6 @@ define( 'LIBERTY_SERVICE_FORUMS', 'forums' );
 // define( 'LIBERTY_SERVICE_GROUP', 'groups' );
 define( 'LIBERTY_SERVICE_MAPS', 'map_display' );
 define( 'LIBERTY_SERVICE_METADATA', 'metadata' );
-define( 'LIBERTY_SERVICE_MENU', 'menu' );
 define( 'LIBERTY_SERVICE_RATING', 'rating' );
 define( 'LIBERTY_SERVICE_REBLOG', 'reblogging_rss_feeds' );
 define( 'LIBERTY_SERVICE_SEARCH', 'search' );
