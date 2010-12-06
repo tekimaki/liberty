@@ -1405,7 +1405,8 @@ class LibertyContent extends LibertyBase {
 		$ret = FALSE;
 		if( !$this->isValid() ) {
 			// return default user permission setting when no content is loaded
-			$this->invokeServices( 'content_user_perms_function' );
+			$permsAPIHash = array( 'user_permissions' => TRUE ); // specify to append perns to the user permissions hash
+			$this->invokeServices( 'content_user_perms_function', $permsAPIHash );
 			// OH SHIT!
 			$ret = $gBitUser->hasPermission( $pPermName );
 		} elseif( !$gBitUser->isRegistered() || !( $ret = $this->isOwner() || $ret = $gBitUser->isAdmin() )) {
@@ -1619,7 +1620,8 @@ class LibertyContent extends LibertyBase {
 
 			$this->mUserContentPerms = array_merge( $defaultPerms, $nonDefaultPerms );
 
-			$this->invokeServices( 'content_user_perms_function' );
+			$permsAPIHash = array( 'content_permissions' => TRUE ); // specify to apped perms to the mUserContentPerms hash
+			$this->invokeServices( 'content_user_perms_function', $permsAPIHash );
 		}
 
 		return $this->mUserContentPerms;
