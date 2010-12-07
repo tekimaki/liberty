@@ -2467,7 +2467,7 @@ class LibertyContent extends LibertyBase {
 		// Should results be hashed or sequential indexed
 		$hashKeySql = '';
 		if( !empty( $pListHash['hash_key'] ) ) {
-			$hashKeySql = $pListHash['hash_key'].' AS `hash_key`, ';
+			$hashKeySql = 'lc.`content_id` AS `hash_key`, ';
 		}
 
 		if( $gBitSystem->isPackageActive( 'gatekeeper' ) ) {
