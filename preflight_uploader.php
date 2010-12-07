@@ -89,7 +89,10 @@ if( empty( $error ) && is_object( $gContent ) ){
 
 	// store service
 	$storeHandler = $gBitSystem->getPluginAPIHandler( 'function', 'content_store', $_REQUEST['preflight_plugin_guid'] );
-	$error = $gContent->invokeService( $storeHandler, $storeHash );
+	$gContent->invokeService( $storeHandler, $storeHash );
+	if( $errors = $gContent->getErrors() ){
+		$gBitSmarty->assign_by_ref( 'errors', $errors );
+	}
 }
 
 // substitute for display service in LibertyMime

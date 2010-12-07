@@ -1405,7 +1405,8 @@ class LibertyContent extends LibertyBase {
 		$ret = FALSE;
 		if( !$this->isValid() ) {
 			// return default user permission setting when no content is loaded
-			$this->invokeServices( 'content_user_perms_function' );
+			$permsAPIHash = array( 'user_permissions' => TRUE ); // specify to append perns to the user permissions hash
+			$this->invokeServices( 'content_user_perms_function', $permsAPIHash );
 			// OH SHIT!
 			$ret = $gBitUser->hasPermission( $pPermName );
 		} elseif( !$gBitUser->isRegistered() || !( $ret = $this->isOwner() || $ret = $gBitUser->isAdmin() )) {
@@ -1619,7 +1620,8 @@ class LibertyContent extends LibertyBase {
 
 			$this->mUserContentPerms = array_merge( $defaultPerms, $nonDefaultPerms );
 
-			$this->invokeServices( 'content_user_perms_function' );
+			$permsAPIHash = array( 'content_permissions' => TRUE ); // specify to apped perms to the mUserContentPerms hash
+			$this->invokeServices( 'content_user_perms_function', $permsAPIHash );
 		}
 
 		return $this->mUserContentPerms;
@@ -2777,8 +2779,8 @@ class LibertyContent extends LibertyBase {
 		$parseHash['content_id']      = !empty( $parseHash['content_id'] )      ? $parseHash['content_id']      : NULL;
 		$parseHash['cache_extension'] = !empty( $parseHash['cache_extension'] ) ? $parseHash['cache_extension'] : NULL;
 		$parseHash['format_guid']     = !empty( $parseHash['format_guid'] )     ? $parseHash['format_guid']     : $pFormatGuid;
-		$parseHash['user_id']         = !empty( $parseHash['user_id'] )         ? $parseHash['user_id']         : is_object( $gBitUser ) ? $gBitUser->mUserId : ANONYMOUS_USER_ID;
-
+		$parseHash['user_id']         = !empty( $parseHash['user_id'] )         ? $parseHash['user_id']         : ( is_object( $gBitUser ) ? $gBitUser->mUserId : ANONYMOUS_USER_ID );
+		
 		// Ensure we have a format
 		if( empty( $parseHash['format_guid'] )) {
 			$parseHash['format_guid'] = $gBitSystem->getConfig( 'default_format', 'tikiwiki' );
