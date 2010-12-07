@@ -2371,9 +2371,14 @@ class LibertyContent extends LibertyBase {
 			$bindVars[] = ( '%' . strtoupper( $pListHash['find'] ) . '%' );
 		}
 
-		if( !empty( $pListHash['content_id_list'] ) ) { // you can use an array of titles
+		if( !empty( $pListHash['content_id_list'] ) ) { // you can use an array of content_ids
 			$whereSql .= " AND lc.`content_id` IN ( ".implode( ',',array_fill( 0,count( $pListHash['content_id_list'] ),'?' ) ).") ";
 			$bindVars = array_merge( $bindVars, $pListHash['content_id_list'] );
+		}
+
+		if( !empty( $pListHash['exclude_content_id_list'] ) ) { // you can use an array of content_ids
+			$whereSql .= " AND NOT lc.`content_id` IN ( ".implode( ',',array_fill( 0,count( $pListHash['exclude_content_id_list'] ),'?' ) ).") ";
+			$bindVars = array_merge( $bindVars, $pListHash['exclude_content_id_list'] );
 		}
 
 		// this is necessary to display useful information in the liberty RSS feed
