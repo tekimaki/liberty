@@ -373,7 +373,7 @@ if( !function_exists( 'mime_default_expunge' )) {
 		$ret = FALSE;
 		if( @BitBase::verifyId( $pAttachmentId )) {
 			if( $fileHash = LibertyMime::getAttachment( $pAttachmentId )) {
-				if( $gBitUser->isAdmin() || $gBitUser->mUserId == $fileHash['user_id'] && !empty( $fileHash['storage_path'] )) {
+				if( !empty( $fileHash['storage_path'] ) ) {
 					// make sure this is a valid storage directory before removing it
 					if(( $nuke = LibertyMime::validateStoragePath( BIT_ROOT_PATH.'/'.$fileHash['storage_path'] )) && is_file( $nuke )) {
 						unlink_r( dirname( $nuke ));

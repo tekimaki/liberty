@@ -246,7 +246,7 @@ class LibertyAttachable extends LibertyContent {
 		$ret = NULL;
 		if( @$this->verifyId( $pAttachmentId ) ) {
 			$sql = "SELECT `attachment_plugin_guid`, `user_id` FROM `".BIT_DB_PREFIX."liberty_attachments` WHERE `attachment_id` = ?";
-			if(( $row = $this->mDb->getRow( $sql, array( $pAttachmentId ))) && ( $this->isOwner( $row ) || $gBitUser->isAdmin() )) {
+			if( $row = $this->mDb->getRow( $sql, array( $pAttachmentId ) ) ) {
 				// check if we have the means available to remove this attachment
 				if(( $guid = $row['attachment_plugin_guid'] ) && $expungeFunc = $gLibertySystem->getPluginFunction( $guid, 'expunge_function', 'mime' )) {
 					// --- Do the final cleanup of liberty related tables ---
