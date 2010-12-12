@@ -33,7 +33,7 @@
 					{rdelim}
 				//]]></script>
 				{assign var=charCount value=$textarea_data|count_characters:true}
-				<div class="formhelp">{tr}Maximum character count:{/tr}{$textarea_maxchars}<br />
+				<div class="formhelp">{tr}Maximum characters allowed:{/tr} <strong>{$textarea_maxchars}</strong>&nbsp;&nbsp;&#8226;&nbsp;&nbsp;
 					{tr}Characters remaining:{/tr} <input readonly="readonly" type="text" id="{$textarea_id}Counter" size="5" value="{$textarea_maxchars-$charCount}" /></div>
 			{/if}
 
