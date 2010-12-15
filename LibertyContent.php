@@ -1404,13 +1404,17 @@ class LibertyContent extends LibertyBase {
 		global $gBitUser;
 		$ret = FALSE;
 		if( !$this->isValid() ) {
+			// @TODO make this more elegant so that results are cached 
 			// return default user permission setting when no content is loaded
-			$permsAPIHash = array( 'user_permissions' => TRUE ); // specify to append perns to the user permissions hash
-			$this->invokeServices( 'content_user_perms_function', $permsAPIHash );
-			// OH SHIT!
-			$ret = $gBitUser->hasPermission( $pPermName );
+			$checkPerms = $gBitUser->getDefaultPermissions();
+			// Do they have the admin permission or the one we want?
+			if ( !empty( $checkPerms[$this->mAdminContentPerm] ) ) {
+				$ret = TRUE;
+			} elseif ( !empty( $checkPerms[$pPermName] ) ) {
+				$ret = TRUE;
+			}
 		} elseif( !$gBitUser->isRegistered() || !( $ret = $this->isOwner() || $ret = $gBitUser->isAdmin() )) {
-			if( $gBitUser->isAdmin() || $gBitUser->hasPermission( $this->mAdminContentPerm )) {
+			if( $gBitUser->isAdmin() ){ //|| $gBitUser->hasPermission( $this->mAdminContentPerm )) {
 				$ret = TRUE;
 			} else {
 				$this->verifyAccessControl( $pPermName );
@@ -1424,6 +1428,7 @@ class LibertyContent extends LibertyBase {
 					}
 				} else {
 					// return default user permission setting when no content perms are set
+					// @TODO this is possibly a problem -wjames
 					$ret = $gBitUser->hasPermission( $pPermName );
 				}
 			}
