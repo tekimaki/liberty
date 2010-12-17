@@ -10,7 +10,7 @@ if (isset($_REQUEST['content_id'])) {
   $gContent = $staticContent->getLibertyObject( $_REQUEST['content_id'] );
   if (isset($gContent) && $gContent->isValid()) {
     if ($gContent->hasExpungePermission()) {
-      if (true || $gContent->expunge()) {
+      if ($gContent->expunge()) {
 	echo '{"status":1, "message":"'.tra("Content Deleted").'"}';
 	die;
       } else {
