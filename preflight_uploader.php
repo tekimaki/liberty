@@ -81,8 +81,15 @@ if( empty( $error ) && is_object( $gContent ) ){
 		// if we dont have a content object we create a draft.
 		if( empty( $_REQUEST['content_id'] ) ){
 			$storeHash['content_status_id'] = -5;
-			$gContent->preflightStore( $storeHash );	
-			$_REQUEST['content_id'] = $storeHash['content_id'];
+			if( $gContent->preflightStore( $storeHash ) ){	
+				$_REQUEST['content_id'] = $storeHash['content_id'];
+			}else{
+				$gBitSmarty->assign('errors', $gContent->getErrors() );
+				// vd( $gContent->getErrors() );
+				// @TODO handle preflight store errors
+				echo 'preflight store error';
+				die;
+			}
 		}
 		$gContent->mContentId = $_REQUEST['content_id']; // this sucks can do this better
 	}
