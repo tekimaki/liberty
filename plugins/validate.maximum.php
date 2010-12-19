@@ -41,11 +41,10 @@ $pluginParams = array (
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_MAX, $pluginParams );
 
 function validate_max($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
-  if (!(empty($pConstraints['max']) ||
-	$pParamHash[$var] > $pConstraints['max'])) {
-    $pObject->mErrors[$var] = 'The value of '
-      . $pContraints['name']
-      . 'is greater than the maximum of '
+  if (!empty($pConstraints['max']) && strlen($pParamHash[$pVar]) > $pConstraints['max']) {
+    $pObject->mErrors[$pVar] = 'The value of '
+      . $pConstraints['name']
+      . ' is greater than the maximum of '
       . $pConstraints['max'];
   }
   return (count($pObject->mErrors) == 0);
