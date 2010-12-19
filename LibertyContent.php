@@ -204,12 +204,14 @@ class LibertyContent extends LibertyBase {
 		if (!empty($pParamHash['content_status_id'])) {
 			if( $this->hasUserPermission( 'p_liberty_edit_content_status' ) || $gBitUser->hasUserPermission( 'p_liberty_edit_all_status') ) {
 				$allStatus = $this->getAvailableContentStatuses();
-				if (empty($allStatus[$pParamHash['content_status_id']])) {
-					$this->mErrors['content_status_id'] = "No such status ID or permission denied.";
-				} else {
+				if ( !empty($allStatus[$pParamHash['content_status_id']]) || ( !empty( $pParamHash['preflight'] ) && empty( $_REQUEST['preflight'] ) ) ) {		// preflight autosets status -5, this bypass must not be in the request, only can be set internally
 					$pParamHash['content_store']['content_status_id'] = $pParamHash['content_status_id'];
+				} else {
+					$this->mErrors['content_status_id'] = "No such status ID or permission denied.";
 				}
 			}
+		}elseif( empty($pParamHash['content_store']['content_status_id'] ) ){
+			$pParamHash['content_store']['content_status_id'] = $gBitSystem->getConfig('liberty_default_status', BIT_CONTENT_DEFAULT_STATUS);
 		}
 
 		// prep text inputs [title,data,edit_comment]
@@ -351,6 +353,8 @@ class LibertyContent extends LibertyBase {
 				if( !empty( $pParamHash['content_store']['title'] ) && !empty( $this->mInfo['title'] ) && $pParamHash['content_store']['title'] != $this->mInfo['title'] ) {
 					$this->mLogs['rename_page'] = "Renamed from {$this->mInfo['title']} to {$pParamHash['content_store']['title']}.";
 				}
+				$this->mContentId = $pParamHash['content_id'];		// content created by a pre-flight process generally do not instantiate but the request content_id is valid and will update the record properly, here we make sure the object gets setup right
+				$this->mContentTypeGuid = $this->mInfo['content_type_guid'] = $pParamHash['content_type_guid'];
 				$result = $this->mDb->associateUpdate( $table, $pParamHash['content_store'], array("content_id" => $pParamHash['content_id'] ) );
 				$this->mLogs['content_store'] = "Updated";
 			}
@@ -412,6 +416,7 @@ class LibertyContent extends LibertyBase {
 	 */
 	function preflightStore( &$pParamHash ) {
 		global $gLibertySystem;
+		$pParamHash['preflight'] = TRUE;		// set for special cases in verify
 		if( LibertyContent::verify( $pParamHash ) ) {
 			$this->mDb->StartTrans();
 			$table = BIT_DB_PREFIX."liberty_content";
