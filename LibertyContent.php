@@ -210,8 +210,6 @@ class LibertyContent extends LibertyBase {
 					$this->mErrors['content_status_id'] = "No such status ID or permission denied.";
 				}
 			}
-		}elseif( empty($pParamHash['content_store']['content_status_id'] ) ){
-			$pParamHash['content_store']['content_status_id'] = $gBitSystem->getConfig('liberty_default_status', BIT_CONTENT_DEFAULT_STATUS);
 		}
 
 		// prep text inputs [title,data,edit_comment]
