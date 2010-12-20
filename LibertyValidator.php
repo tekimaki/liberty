@@ -10,23 +10,25 @@ class LibertyValidator {
 	static $sActivePluginsByAttribute;
 
 	function preview(&$pVars, &$pParamHash, &$store) {
-		LibertyValidator::setupPlugins();
-		// For each variable that we need to preview
-		foreach($pVars as $type => $vars) {
-			// If there is a handler of the right type
-			if (!empty(LibertyValidator::$sActivePluginsByType[$type])) {
-				// Call all plugins of the given type
-				foreach (LibertyValidator::$sActivePluginsByType[$type] as $type => $data) {
-					// But only call them if they have a preview function
-					if (!empty($data['preview_function'])) {
-						$function = $data['preview_function'];
-						$function($vars, $pParamHash, $store);
+		if( !empty( $pVars ) ){
+			LibertyValidator::setupPlugins();
+			// For each variable that we need to preview
+			foreach($pVars as $type => $vars) {
+				// If there is a handler of the right type
+				if (!empty(LibertyValidator::$sActivePluginsByType[$type])) {
+					// Call all plugins of the given type
+					foreach (LibertyValidator::$sActivePluginsByType[$type] as $type => $data) {
+						// But only call them if they have a preview function
+						if (!empty($data['preview_function'])) {
+							$function = $data['preview_function'];
+							$function($vars, $pParamHash, $store);
+						}
 					}
+				} else {
+					// TODO: Should we just call null here and ignore they turned off all validators of the right type?
+					global $gBitSystem;
+					$gBitSystem->fatalError("Unsupported validation type: ".$type);
 				}
-			} else {
-				// TODO: Should we just call null here and ignore they turned off all validators of the right type?
-				global $gBitSystem;
-				$gBitSystem->fatalError("Unsupported validation type: ".$type);
 			}
 		}
 	}
