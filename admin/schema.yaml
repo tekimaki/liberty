@@ -475,6 +475,7 @@ liberty:
       - content_upload_tab
       - content_edit_mini
       - content_edit_tab
+      - content_ajax_edit_mini
       - content_view
       - content_body
       - content_nav

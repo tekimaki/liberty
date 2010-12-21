@@ -85,7 +85,7 @@ if( empty( $error ) && is_object( $gContent ) ){
 				$_REQUEST['content_id'] = $storeHash['content_id'];
 			}else{
 				$gBitSmarty->assign('errors', $gContent->getErrors() );
-				// vd( $gContent->getErrors() );
+				vd( $gContent->getErrors() );
 				// @TODO handle preflight store errors
 				echo 'preflight store error';
 				die;
@@ -116,5 +116,5 @@ $gBitSmarty->assign( 'libertyUploader', TRUE );
 $gBitSmarty->assign( 'uploadTab', TRUE );
 
 // hand the updated edit form back
-$displayHandler = $gBitSystem->getPluginAPIHandler( 'tpl', 'content_edit_mini', $_REQUEST['preflight_plugin_guid'] );
+$displayHandler = $gBitSystem->getPluginAPIHandler( 'tpl', 'content_ajax_edit_mini', $_REQUEST['preflight_plugin_guid'] );
 echo $gBitSystem->display( $displayHandler['plugin_handler'], NULL, array( 'format'=>'none', 'display_mode' => 'display' ));
