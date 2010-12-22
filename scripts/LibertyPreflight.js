@@ -37,6 +37,12 @@ LibertyPreflight = {
 			}else{
 				form.preflight_fieldset_guid.value = fieldsetguid;
 			}
+			if ( typeof( form.formid ) == "undefined" ){
+				var i = INPUT( {'name':'formid', 'type':'hidden', 'value':form.id}, null );
+				form.insertBefore( i, form.firstChild ); 
+			}else{
+				form.formid.value = form.id;
+			}
 			var old_target = form.target;
 			form.target = frameid;
 			var old_action = form.action;
