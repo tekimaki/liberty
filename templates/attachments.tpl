@@ -12,7 +12,7 @@
 				<div class="row">
 					{formlabel label="User" for=""}
 					{forminput}
-					<input type="text" name="login" value="{$smarty.request.login}" />
+					<input class="textInput" type="text" name="login" value="{$smarty.request.login}" />
 						{formhelp note="Enter the login name of a given user. Enter 'all' to view all attachments."}
 					{/forminput}
 				</div>

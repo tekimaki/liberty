@@ -2,7 +2,7 @@
 <div class="row">
 	{formlabel label=$label|default:"Primary Attachment" for="primary_attachment_id"}
 	{forminput}
-		<input type="text" name="primary_attachment_id" id="primary_attachment_id" />
+		<input class="textInput" type="text" name="primary_attachment_id" id="primary_attachment_id" />
 		{formhelp note="Enter an existing attachment id to use. Please use the attachment browser to find attachment ids."}
 	{/forminput}
 </div>

@@ -24,7 +24,7 @@
 			<div class="row">
 				{formlabel label="Editable Time Period" for="comments_edit_minutes"}
 				{forminput}
-					<input type="text" name="comments_edit_minutes" value="{$gBitSystem->getConfig('comments_edit_minutes', 60)}" />
+					<input class="textInput" type="text" name="comments_edit_minutes" value="{$gBitSystem->getConfig('comments_edit_minutes', 60)}" />
 					{formhelp note="The number of minutes after creation a user can edit their comment."}
 				{/forminput}
 			</div>

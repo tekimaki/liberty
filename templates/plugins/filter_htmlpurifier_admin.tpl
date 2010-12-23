@@ -11,7 +11,7 @@
 				{formlabel label="Blacklisted HTML tags" for="blacklisted_html_tags"}
 				{formfeedback warning=$errors.blacklist}
 				{forminput}
-					<input type="text" id="blacklisted_html_tags" name="blacklisted_html_tags" size="50" maxlength="250" value="{$gBitSystem->getConfig('blacklisted_html_tags')|escape}" />
+					<input class="textInput" type="text" id="blacklisted_html_tags" name="blacklisted_html_tags" size="50" maxlength="250" value="{$gBitSystem->getConfig('blacklisted_html_tags')|escape}" />
 					{formhelp note="A comma seperated list of tags that should NOT be allowed in any content."}
 				{/forminput}
 			</div>

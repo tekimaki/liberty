@@ -27,7 +27,7 @@
 				<div class="row">
 					{formlabel label="Title" for="comments-title"}
 					{forminput}
-						<input type="text" size="50" name="comment_title" id="comments-title" value="{$postComment.title|escape:html}" />
+						<input class="textInput" type="text" size="50" name="comment_title" id="comments-title" value="{$postComment.title|escape:html}" />
 						{formhelp note=""}
 					{/forminput}
 				</div>
@@ -37,7 +37,7 @@
 						{formlabel label="Login" for="login-email"}
 						{forminput}
 							<div style="display:inline-block;padding-right:20px;">
-								<input type="text" size="20" name="login_email" id="login-email" value="{$smarty.request.login_email|escape:html}" />
+								<input class="textInput" type="text" size="20" name="login_email" id="login-email" value="{$smarty.request.login_email|escape:html}" />
 								<div class="label">{tr}Username or Email{/tr}</div>
 							</div>
 							<div style="display:inline-block">
@@ -50,7 +50,7 @@
 					<div class="row" style="display:none" id="post-anon">
 						{formlabel label="Your Name" for="comments-name"}
 						{forminput}
-							<input type="text" size="50" name="comment_name" id="comments-name" value="{$postComment.anon_name|escape:html}" />
+							<input class="textInput" type="text" size="50" name="comment_name" id="comments-name" value="{$postComment.anon_name|escape:html}" />
 							{formhelp note=""}
 						{/forminput}
 					</div>

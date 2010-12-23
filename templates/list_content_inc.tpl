@@ -25,7 +25,7 @@
 		{/if}
 
 		{forminput}
-			<input type="text" name="find" value="{$listInfo.find}" />
+			<input class="textInput" type="text" name="find" value="{$listInfo.find}" />
 			<input class="button" type="submit" value="{tr}Apply Filter{/tr}" name="search_objects" />
 			{formhelp note="You can restrict the content listing to a given content type or apply a filter on content title."}
 		{/forminput}

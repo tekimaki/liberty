@@ -2,35 +2,35 @@
 <div class="row">
 	{formlabel label="Title" for="title"}
 	{forminput}
-		<input type="text" size="35" id="audio_title" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][title]" value="{$attachment.meta.title}" />
+		<input class="textInput" type="text" size="35" id="audio_title" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][title]" value="{$attachment.meta.title}" />
 	{/forminput}
 </div>
 
 <div class="row">
 	{formlabel label="Album" for="audio_album"}
 	{forminput}
-		<input type="text" size="35" id="audio_album" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][album]" value="{$attachment.meta.album}" />
+		<input class="textInput" type="text" size="35" id="audio_album" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][album]" value="{$attachment.meta.album}" />
 	{/forminput}
 </div>
 
 <div class="row">
 	{formlabel label="Artist" for="audio_artist"}
 	{forminput}
-		<input type="text" size="35" id="audio_artist" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][artist]" value="{$attachment.meta.artist}" />
+		<input class="textInput" type="text" size="35" id="audio_artist" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][artist]" value="{$attachment.meta.artist}" />
 	{/forminput}
 </div>
 
 <div class="row">
 	{formlabel label="Year" for="audio_year"}
 	{forminput}
-		<input type="text" size="35" id="audio_year" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][year]" value="{$attachment.meta.year}" />
+		<input class="textInput" type="text" size="35" id="audio_year" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][year]" value="{$attachment.meta.year}" />
 	{/forminput}
 </div>
 
 <div class="row">
 	{formlabel label="Genre" for="audio_genre"}
 	{forminput}
-		<input type="text" size="35" id="audio_genre" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][genre]" value="{$attachment.meta.genre}" />
+		<input class="textInput" type="text" size="35" id="audio_genre" name="plugin[{$attachment.attachment_id}][mimeaudio][meta][genre]" value="{$attachment.meta.genre}" />
 	{/forminput}
 </div>
 
