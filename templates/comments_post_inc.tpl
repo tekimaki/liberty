@@ -41,7 +41,7 @@
 								<div class="label">{tr}Username or Email{/tr}</div>
 							</div>
 							<div style="display:inline-block">
-								<input type="password" size="8" name="login_password" id="login-password" value="{$smarty.request.login_password|escape:html}" />
+								<input class="textInput" type="password" size="8" name="login_password" id="login-password" value="{$smarty.request.login_password|escape:html}" />
 								<div class="label">{tr}Password{/tr}</div>
 							</div>
 							<div class="formhelp">{tr}If you are already registered with <strong>{$gBitSystem->mConfig.site_title|default:"this site"}</strong> please enter your login details above.{/tr}</div>
