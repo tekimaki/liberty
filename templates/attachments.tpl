@@ -18,7 +18,7 @@
 				</div>
 
 				<div class="submit">
-					<input type="submit" name="apply" value="{tr}Filter{/tr}" />
+					<input class="button" type="submit" name="apply" value="{tr}Filter{/tr}" />
 				</div>
 			{/form}
 		{/if}

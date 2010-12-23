@@ -30,7 +30,7 @@
 			</div>
 
 			<div class="buttonHolder row submit">
-				<input type="submit" name="rank_settings" value="{tr}Apply settings{/tr}" />
+				<input class="button" type="submit" name="rank_settings" value="{tr}Apply settings{/tr}" />
 			</div>
 		{/form}
 

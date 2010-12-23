@@ -17,7 +17,7 @@
 			</div>
 
 			<div class="buttonHolder row submit">
-				<input type="submit" name="apply" value="{tr}Save Plugin Settings{/tr}" />
+				<input class="button" type="submit" name="apply" value="{tr}Save Plugin Settings{/tr}" />
 			</div>
 		{/form}
 	</div><!-- end .body -->
