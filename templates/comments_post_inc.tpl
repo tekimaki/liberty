@@ -27,7 +27,7 @@
 				<div class="row">
 					{formlabel label="Title" for="comments-title"}
 					{forminput}
-						<input type="text" size="50" name="comment_title" id="comments-title" value="{$postComment.title|escape:html}" />
+						<input class="textInput" type="text" size="50" name="comment_title" id="comments-title" value="{$postComment.title|escape:html}" />
 						{formhelp note=""}
 					{/forminput}
 				</div>
@@ -37,11 +37,11 @@
 						{formlabel label="Login" for="login-email"}
 						{forminput}
 							<div style="display:inline-block;padding-right:20px;">
-								<input type="text" size="20" name="login_email" id="login-email" value="{$smarty.request.login_email|escape:html}" />
+								<input class="textInput" type="text" size="20" name="login_email" id="login-email" value="{$smarty.request.login_email|escape:html}" />
 								<div class="label">{tr}Username or Email{/tr}</div>
 							</div>
 							<div style="display:inline-block">
-								<input type="password" size="8" name="login_password" id="login-password" value="{$smarty.request.login_password|escape:html}" />
+								<input class="textInput" type="password" size="8" name="login_password" id="login-password" value="{$smarty.request.login_password|escape:html}" />
 								<div class="label">{tr}Password{/tr}</div>
 							</div>
 							<div class="formhelp">{tr}If you are already registered with <strong>{$gBitSystem->mConfig.site_title|default:"this site"}</strong> please enter your login details above.{/tr}</div>
@@ -50,7 +50,7 @@
 					<div class="row" style="display:none" id="post-anon">
 						{formlabel label="Your Name" for="comments-name"}
 						{forminput}
-							<input type="text" size="50" name="comment_name" id="comments-name" value="{$postComment.anon_name|escape:html}" />
+							<input class="textInput" type="text" size="50" name="comment_name" id="comments-name" value="{$postComment.anon_name|escape:html}" />
 							{formhelp note=""}
 						{/forminput}
 					</div>
@@ -77,14 +77,14 @@
 				{/if}
 
 				<div class="buttonHolder row submit">
-					<input type="submit" name="post_comment_preview" value="{tr}Preview{/tr}" {if $comments_ajax}onclick="LibertyComment.previewComment(); return false;"{/if}/>&nbsp;
-					<input type="submit" name="post_comment_submit" value="{tr}Post{/tr}" {if $comments_ajax}onclick="LibertyComment.postComment(); return false;"{/if}/>&nbsp;
-					<input type="submit" name="post_comment_cancel" value="{tr}Cancel{/tr}" {if $comments_ajax}onclick="LibertyComment.cancelComment(true); return false;"{/if}/>
+					<input class="button" type="submit" name="post_comment_preview" value="{tr}Preview{/tr}" {if $comments_ajax}onclick="LibertyComment.previewComment(); return false;"{/if}/>&nbsp;
+					<input class="button" type="submit" name="post_comment_submit" value="{tr}Post{/tr}" {if $comments_ajax}onclick="LibertyComment.postComment(); return false;"{/if}/>&nbsp;
+					<input class="button" type="submit" name="post_comment_cancel" value="{tr}Cancel{/tr}" {if $comments_ajax}onclick="LibertyComment.cancelComment(true); return false;"{/if}/>
 				</div>
 			{/legend}
 		{elseif $gBitUser->hasPermission( 'p_liberty_post_comments' )}
 			<div class="row">
-				<input type="submit" name="post_comment_request" value="{tr}Add Comment{/tr}" />
+				<input class="button" type="submit" name="post_comment_request" value="{tr}Add Comment{/tr}" />
 			</div>
 		{/if}
 	{/form}

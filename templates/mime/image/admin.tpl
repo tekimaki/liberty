@@ -37,7 +37,7 @@
 			</div>
 
 			<div class="buttonHolder row submit">
-				<input type="submit" name="settings_store" value="{tr}Change preferences{/tr}" />
+				<input class="button" type="submit" name="settings_store" value="{tr}Change preferences{/tr}" />
 			</div>
 		{/form}
 	</div><!-- end .body -->

@@ -113,7 +113,7 @@
 			</div>
 
 			<div class="buttonHolder row submit">
-				<input type="submit" name="plugin_settings" value="{tr}Save Plugin Settings{/tr}" />
+				<input class="button" type="submit" name="plugin_settings" value="{tr}Save Plugin Settings{/tr}" />
 			</div>
 		{/form}
 	</div><!-- end .body -->

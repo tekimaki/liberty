@@ -16,7 +16,7 @@
 
 				<div class="buttonHolder row submit">
 					<input type="hidden" name="attachment_id" value="{$smarty.request.attachment_id}" />
-					<input type="submit" name="plugin_submit" value="{tr}Update File{/tr}" />
+					<input class="button" type="submit" name="plugin_submit" value="{tr}Update File{/tr}" />
 				</div>
 			{/form}
 		{/if}

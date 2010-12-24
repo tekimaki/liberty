@@ -63,8 +63,8 @@
 		</div>
 
 		<div class="buttonHolder row submit">
-			<input type="submit" name="back" value="{tr}Go back to content{/tr}" />
-			<input type="submit" name="assign" value="{tr}Assign Permission{/tr}" />
+			<input class="button" type="submit" name="back" value="{tr}Go back to content{/tr}" />
+			<input class="button" type="submit" name="assign" value="{tr}Assign Permission{/tr}" />
 		</div>
 	{/form}
 
