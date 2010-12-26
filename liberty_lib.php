@@ -296,7 +296,12 @@ function liberty_content_load_sql( &$pObject, $pParamHash=NULL ) {
 				$ret['join_sql'] = " 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_comments` lcoms ON (lc.`content_id` = lcoms.`content_id`) 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content` rlcs ON( rlcs.`content_id`=lcoms.`root_id` )";
-			$ret['where_sql'] = " AND lc.`content_status_id` < 100 AND ( ( (rlcs.`user_id` = '".$gBitUser->getUserId()."' OR lc.`user_id` = '".$gBitUser->getUserId()."') AND lc.`content_status_id` > -100) OR lc.`content_status_id` > 0 )";
+				$ret['where_sql'] = " AND lc.`content_status_id` < 100 AND ( "; 
+				// only join user exceptions if the user is registered
+				if( $gBitUser->isRegistered() ){
+					$ret['where_sql'] .= "( (rlcs.`user_id` = '".$gBitUser->getUserId()."' OR lc.`user_id` = '".$gBitUser->getUserId()."') AND lc.`content_status_id` > -100 ) OR "; 
+				}
+				$ret['where_sql'] .= "lc.`content_status_id` > 0 )";
 		} elseif( is_object( $gBitUser ) ) {
 			// let owner see any of their own content with a status > -100
 			$ret['where_sql'] = " AND lc.`content_status_id` < 100 AND ( (lc.`user_id` = '".$gBitUser->getUserId()."' AND lc.`content_status_id` > -100) OR lc.`content_status_id` > 0 )";
@@ -352,12 +357,12 @@ function liberty_content_list_sql( &$pObject, $pParamHash=NULL ) {
 			$ret['join_sql'] = " 
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_comments` lcoms ON (lc.`content_id` = lcoms.`content_id`) 
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` rlcs ON( rlcs.`content_id`=lcoms.`root_id` )";
-			$ret['where_sql'] =
-				" AND lc.`content_status_id` < ".$max_status_id.
-				" AND (
-					( (rlcs.`user_id` = '".$gBitUser->getUserId()."' OR lc.`user_id` = '".$gBitUser->getUserId()."') AND lc.`content_status_id` > ".$min_owner_status_id.")
-					OR lc.`content_status_id` > ".$min_status_id."
-				)";
+			$ret['where_sql'] = " AND lc.`content_status_id` < ".$max_status_id." AND ( "; 
+			// only join user exceptions if the user is registered
+			if( $gBitUser->isRegistered() ){
+				$ret['where_sql'] .= "( (rlcs.`user_id` = '".$gBitUser->getUserId()."' OR lc.`user_id` = '".$gBitUser->getUserId()."') AND lc.`content_status_id` > ".$min_owner_status_id." ) OR "; 
+			}
+			$ret['where_sql'] .= "lc.`content_status_id` > ".$min_status_id." )";
 		} else {
 			$ret['where_sql'] =
 				" AND lc.`content_status_id` < ".$max_status_id.
