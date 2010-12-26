@@ -27,7 +27,7 @@
 					<li>{smartlink ititle="Last Modified" iorder="desc" idefault=1 isort="last_modified" icontrol=$listInfo}</li>
 					<li>{smartlink ititle="Author" isort="creator_user" icontrol=$listInfo}</li>
 					<li>{smartlink ititle="Last Editor" isort="modifier_user" icontrol=$listInfo}</li>
-					{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='list_sort' serviceHash=$gContent->mInfo}
+					{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='content_list_sort' serviceHash=$gContent->mInfo}
 				</ul>
 			</div>
 

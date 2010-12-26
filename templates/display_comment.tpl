@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="content">
-			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='comment' serviceHash=$comment}
+			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='comment_body' serviceHash=$comment}
 			{$comment.parsed_data}
 			{if $gBitSystem->isFeatureActive( 'comments_allow_attachments' )}
 				{include file="bitpackage:liberty/list_comment_files_inc.tpl" storageHash=$comment.storage}

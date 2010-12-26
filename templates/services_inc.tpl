@@ -1,16 +1,16 @@
 {strip}
-{assign var=serviceLocTpls value=$gLibertySystem->getServiceValues("content_`$serviceLocation`_tpl")}
+{assign var=services value=$gBitSystem->getPackagePluginHandlers($smarty.const.PKG_PLUGIN_TYPE_TPL,$serviceLocation)}
 {capture assign=liberty_service_content}{strip}
-	{foreach from=$serviceLocTpls key=serviceName item=template}
-		{include file=$template serviceHash=$serviceHash}
+	{foreach from=$services item=service}
+		{include file=$service.plugin_handler serviceHash=$serviceHash}
 	{/foreach}
 {/strip}{/capture}
 {if !empty($liberty_service_content)}
-	{if $serviceLocTpls and ( $serviceLocation == 'nav' or $serviceLocation == 'view' )}
+	{if $services and ( $serviceLocation == 'content_nav' or $serviceLocation == 'content_view' )}
 		<div class="services-{$serviceLocation}">
 	{/if}
 	{$liberty_service_content}
-	{if $serviceLocTpls and ( $serviceLocation == 'nav' or $serviceLocation == 'view' )}
+	{if $services and ( $serviceLocation == 'content_nav' or $serviceLocation == 'content_view' )}
 		</div>
 	{/if}
 {/if}
