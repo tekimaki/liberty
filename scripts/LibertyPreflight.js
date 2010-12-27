@@ -11,11 +11,17 @@ LibertyPreflight = {
 		if (LibertyPreflight.uploader_under_way) {
 			alert(waitmsg);
 		}else{
-			// drop the fieldset to be deleted then run upload
-			var i = BitBase.$( expungefieldsetid );	
-			i.parentNode.removeChild(i);
-			delete i;
-			LibertyPreflight.uploader( form, action, waitmsg, frameid, pluginguid, fieldsetguid );
+			// reconfirm with end user they want to expunge
+			var confirm_expunge= confirm("Are you sure you want to delete this?");
+			if(confirm_expunge){
+				// drop the fieldset to be deleted then run upload
+				var i = BitBase.$( expungefieldsetid );	
+				i.parentNode.removeChild(i);
+				delete i;
+				LibertyPreflight.uploader( form, action, waitmsg, frameid, pluginguid, fieldsetguid );
+			}else {
+				return ;
+			}
 		}
 	},
 	
