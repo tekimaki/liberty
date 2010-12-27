@@ -3,7 +3,7 @@
 	{* We want the close click always...*}
 	{if !$liberty_preview}
 		<div class="floaticon">
-			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon' serviceHash=$gContent->mInfo}
+			{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='content_icon' serviceHash=$gContent->mInfo}
 		</div><!-- end .floaticon -->
 	{/if}
 {if $gContent->isValid()}
@@ -20,7 +20,7 @@
 	{/if}
 
 	<div class="body">
-		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='body' serviceHash=$gContent->mInfo}
+		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='content_body' serviceHash=$gContent->mInfo}
 		{if !empty($gContent->mInfo.parsed_data)}
 			<div class="content">
 				{$gContent->mInfo.parsed_data}
@@ -28,7 +28,7 @@
 		{/if}
 	</div><!-- end .body -->
 {if !$preview}
-{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='view' serviceHash=$gContent->mInfo}
+{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='content_view' serviceHash=$gContent->mInfo}
 {/if}
 {else}
 	<div class=error>No such Content.</div>
