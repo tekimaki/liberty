@@ -351,6 +351,7 @@ function liberty_content_list_sql( &$pObject, $pParamHash=NULL ) {
 	$min_owner_status_id = isset( $pParamHash['min_owner_status_id'] ) && ( @BitBase::verifyId( $pParamHash['min_owner_status_id'] ) || $pParamHash['min_owner_status_id'] === 0 ) ? $pParamHash['min_owner_status_id'] : -100;
 
 	if( $gBitSystem->isFeatureActive('liberty_display_status') && !$hasPerm ) {
+		// comments requires special sql
 		if(( is_object( $pObject ) && !empty( $pObject->mType['content_type_guid'] ) && $pObject->mType['content_type_guid'] == 'bitcomment' )
 			|| ( !empty( $pParamHash['include_comments'] ) && $pParamHash['include_comments']  == 'y' )) {
 			// if we are getting a list of comments then lets check the owner of the comment root and the owner of the content
@@ -363,6 +364,7 @@ function liberty_content_list_sql( &$pObject, $pParamHash=NULL ) {
 				$ret['where_sql'] .= "( (rlcs.`user_id` = '".$gBitUser->getUserId()."' OR lc.`user_id` = '".$gBitUser->getUserId()."') AND lc.`content_status_id` > ".$min_owner_status_id." ) OR "; 
 			}
 			$ret['where_sql'] .= "lc.`content_status_id` > ".$min_status_id." )";
+		// all other content 
 		} else {
 			$ret['where_sql'] =
 				" AND lc.`content_status_id` < ".$max_status_id.

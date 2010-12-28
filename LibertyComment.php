@@ -584,7 +584,7 @@ class LibertyComment extends LibertyMime {
 	}
 
 	// Returns a hash containing the comment tree of comments related to this content
-	function getComments( $pContentId = NULL, $pMaxComments = NULL, $pOffset = NULL, $pSortOrder = NULL, $pDisplayMode = NULL ) {
+	function getComments( $pContentId = NULL, $pMaxComments = NULL, $pOffset = NULL, $pSortOrder = NULL, $pDisplayMode = NULL, $pHidePrivate = NULL ) {
 		if( $pDisplayMode != "flat" ) {
 			if ($pSortOrder == "commentDate_asc") {
 				$pSortOrder = 'thread_asc';
@@ -635,7 +635,17 @@ class LibertyComment extends LibertyMime {
 		}
 
 		$joinSql = $selectSql = $whereSql = '';
-		$pListHash = array( 'content_id' => $contentId, 'max_records' => $pMaxComments, 'offset'=>$pOffset, 'sort_mode'=> $pSortOrder, 'display_mode' => $pDisplayMode, 'has_comment_view_perm' => TRUE );
+		$pListHash = array( 'content_id' => $contentId,
+							'max_records' => $pMaxComments,
+							'offset'=>$pOffset,
+							'sort_mode'=> $pSortOrder,
+							'display_mode' => $pDisplayMode,
+							'has_comment_view_perm' => TRUE,
+							'min_owner_status_id' => ( $pHidePrivate )?0:-100, 
+						);
+		if( $pHidePrivate ){
+			$pListHash['enforce_status'] = TRUE;
+		}
 		$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars, $this, $pListHash );
 
 		if ($pContentId) {
