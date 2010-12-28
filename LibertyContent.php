@@ -298,11 +298,11 @@ class LibertyContent extends LibertyBase {
 				$pParamHash['format_guid'] != $this->getField('format_guid') )
 			{
 				if( !empty( $formats ) &&
-					!in_array( $pParamHash['format_guid'], array_keys( $formats ) ) ){
-						$this->setError('format') = tra( 'Invalid text format' );
-					}
+					!in_array( $pParamHash['format_guid'], array_keys( $formats ) ) 
+				){
+					$this->setError('format', tra( 'Invalid text format' ) );
 				}elseif( $pParamHash['format_guid'] != $gBitSystem->getConfig( 'default_format', 'tikiwiki' ) ){
-					$this->setError('format') = tra( 'Invalid text format' );
+					$this->setError('format', tra( 'Invalid text format' ) );
 				}
 			}
 		}
