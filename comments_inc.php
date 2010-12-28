@@ -304,8 +304,7 @@ if( $gContent->hasUserPermission( 'p_liberty_read_comments' )) {
 			$commentOffset = $numComments / $maxComments;
 			$currentPage = ceil( $commentOffset+1 / $maxComments );
 		}
-		$hide_private_comments = $gBitSystem->getConfig('comments_hide_private_display', FALSE )?TRUE:FALSE; // hide private comments from inline display
-		$comments = $gComment->getComments( $parents, $maxComments, $commentOffset, $comments_sort_mode, $comments_display_style, $hide_private_comments );
+		$comments = $gComment->getComments( $parents, $maxComments, $commentOffset, $comments_sort_mode, $comments_display_style, $gBitSystem->isFeatureActive('comments_hide_private_display') );
 	}
 
 	if( $comments_display_style == 'flat' ) {
