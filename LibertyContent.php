@@ -81,6 +81,11 @@ class LibertyContent extends LibertyBase {
 	var $mPrefs = NULL;
 
 	/**
+	 * Text formats allowed to this content
+	 */
+	var $mTextFormats = NULL;
+
+	/**
 	 * Control permission specific to this LibertyContent type
 	 * @private
 	 */
@@ -265,10 +270,45 @@ class LibertyContent extends LibertyBase {
 		$pParamHash['content_store']['modifier_user_id'] = $pParamHash['modifier_user_id'];
 
 		// content format guid
+		$formats = array();
 		if( empty( $pParamHash['format_guid'] ) ) {
-			$pParamHash['format_guid'] = $gBitSystem->getConfig( 'default_format', 'tikiwiki' );
+			// existing content
+			if( $this->isValid() ){
+				$pParamHash['format_guid'] = $this->getField('format_guid');
+			// new content
+			}elseif( $formats = $this->getTextFormats() ){
+				foreach( $formats as $guid => $format ){
+					if( !empty( $format['is_default'] ) ){
+						$pParamHash['format_guid'] = $guid;
+						break;
+					}
+				}
+			}
+			// if still empty get the system default
+			if( empty( $pParamHash['format_guid'] ) ){
+				$pParamHash['format_guid'] = $gBitSystem->getConfig( 'default_format', 'tikiwiki' );
+			}
+		}else{
+			if( $formats != $this->getTextFormats() ){
+				$formats = $gLibertySystem->getTextFormats();
+			}
+			// check format_guid against allowed formats 
+			// new content or existing content format change attempt
+			if( !$this->isValid() ||
+				$pParamHash['format_guid'] != $this->getField('format_guid') )
+			{
+				if( !empty( $formats ) &&
+					!in_array( $pParamHash['format_guid'], array_keys( $formats ) ) 
+				){
+					$this->setError('format', tra( 'Invalid text format' ) );
+				}elseif( $pParamHash['format_guid'] != $gBitSystem->getConfig( 'default_format', 'tikiwiki' ) ){
+					$this->setError('format', tra( 'Invalid text format' ) );
+				}
+			}
 		}
-		$pParamHash['content_store']['format_guid'] = $pParamHash['format_guid'];
+		if( empty( $this->mErrors['format'] ) ){
+			$pParamHash['content_store']['format_guid'] = $pParamHash['format_guid'];
+		}
 
 		if( !empty( $pParamHash['hits'] ) ) {
 			$pParamHash['content_store']['hits'] = $pParamHash['hits'] + 1;
@@ -290,7 +330,6 @@ class LibertyContent extends LibertyBase {
 			// someone has deleted the data entirely - common for fisheye
 			$pParamHash['content_store']['data'] = NULL;
 		}
-		$pParamHash['content_store']['format_guid'] = $pParamHash['format_guid'];
 
 		// set version (for history)
 		if( !@BitBase::verifyId( $this->mInfo['version'] ) ) {
@@ -1983,26 +2022,6 @@ class LibertyContent extends LibertyBase {
 		return $gLibertySystem->getContentTypeName( $this->getContentType(), $pPlural );
 	}
 
-
-	/**
-	 * getContentTypeDescription
-	 *
-	 * @param array $pContentType
-	 * @access public
-	 * @return TRUE on success, FALSE on failure
-	 */
-	function getContentTypeDescription( $pContentType=NULL ) {
-		deprecated( 'You are calling the deprecated method getContentTypeDescription, use getContentTypeName( $pPlural )' );
-		return $this->getContentTypeName();
-		/*
-		global $gLibertySystem;
-		if( is_null( $pContentType ) ) {
-			$pContentType = $this->getContentType();
-		}
-		return $gLibertySystem->getContentTypeDescription( $pContentType );
- 		*/
-	}
-
 	/**
 	 * Access a content item content_id
 	 *
@@ -2015,17 +2034,6 @@ class LibertyContent extends LibertyBase {
 		}
 		return $ret;
 	}
-
-	/**
-	 * Return content type description for this content object.
-	 *
-	 * @return string content_type_guid description for the object
-	 */
-	function getContentDescription() {
-		deprecated( 'You are calling the deprecated method getContentDescription, use getContentTypeName( $pPlural )' );
-		return $this->getContentTypeName();
-	}
-
 
 	/**
 	 * returns a path to the template type requested
@@ -2042,6 +2050,38 @@ class LibertyContent extends LibertyBase {
 				break;
 		}
 		return $ret;
+	}
+
+	/**
+	 * get text formats this content type is allowed
+	 */
+	function getTextFormats(){
+		if( empty( $this->mTextFormats ) ){
+			global $gBitSystem, $gLibertySystem;
+			$formats = array();
+			$LCConfig = LCConfig::getInstance();
+			$guids = $LCConfig->getAllConfig( $this->getContentType() );
+			if( !empty( $guids ) ){ 
+				foreach( $guids as $key=>$value ){
+					if( $value == 'y' ){
+						// look for format plugin values
+						if( substr( $key, 0, 7 ) == 'format_' ){
+							$guid = substr( $key, 7 );
+							if( !empty( $gLibertySystem->mPlugins[$guid] ) ){
+								$formats[$guid] = $gLibertySystem->mPlugins[$guid]; 
+							}
+						} 
+					}
+					
+					// look for default format override
+					if( $key == 'default_format' ){ 
+						$formats[$value]['is_default'] = TRUE;
+					}
+				}
+			}
+			$this->mTextFormats = $formats;
+		}
+		return $this->mTextFormats;
 	}
 
 	/**

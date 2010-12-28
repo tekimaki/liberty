@@ -26,6 +26,11 @@ $commentSettings = array(
 		'note' => 'Comments are posted dynamically with javascript (js) - this requires a one time larger download of a js library, but then comments can be posted without page refresh.',
 		'page' => '',
 	),
+	"comments_hide_private_display" => array(
+		'label' => 'Hide pending comments from inline display',
+		'note' => 'Check to hide inline display of comments, which are not public, from all users including admins',
+		'page' => '',
+	),
 //	"comments_display_expanded" => array(
 //		'label' => 'Expand Comments',
 //		'note' => 'When users first visit your site, comments can be hidden or displayed by default.',
