@@ -45,56 +45,56 @@
 {/foreach}
 {if $numformat > 1 || $format_options}
 	<div class="row">
-		{formfeedback error=$errors.format}
 		{formlabel label="Content Format"}
-		{foreach name=formatPlugins from=$formats item=plugin key=guid}
-			{if $plugin.is_active eq 'y' and $plugin.edit_field and $plugin.plugin_type eq 'format'}
-				{forminput}
-					<label>
-					{if $numformat > 1}
-							<input type="radio" name="{$format_guid_variable|default:"format_guid"}" value="{$plugin.edit_field}"
-							{if $contentObject->mInfo.format_guid eq $plugin.plugin_guid
-								} checked="checked"{
-							elseif !$contentObject->mInfo.format_guid and ( $plugin.is_default || ( $default_format && $plugin.plugin_guid eq $default_format ) )
-								} checked="checked"{
-							/if
-							} onclick="
-								{if $gBitSystem->isPackageActive('quicktags')}
-									{foreach from=$gLibertySystem->mPlugins item=tag key=guid}
-										{if $tag.is_active eq 'y' and $tag.edit_field and $tag.plugin_type eq 'format'}
-											{if $tag.plugin_guid eq $plugin.plugin_guid}
-												BitBase.showById
-											{else}
-												BitBase.hideById
+		{forminput}
+			{formfeedback error=$errors.format}
+			{foreach name=formatPlugins from=$formats item=plugin key=guid}
+				{if $plugin.is_active eq 'y' and $plugin.edit_field and $plugin.plugin_type eq 'format'}
+						<label>
+						{if $numformat > 1}
+								<input type="radio" name="{$format_guid_variable|default:"format_guid"}" value="{$plugin.edit_field}"
+								{if $contentObject->mInfo.format_guid eq $plugin.plugin_guid
+									} checked="checked"{
+								elseif !$contentObject->mInfo.format_guid and ( $plugin.is_default || ( $default_format && $plugin.plugin_guid eq $default_format ) )
+									} checked="checked"{
+								/if
+								} onclick="
+									{if $gBitSystem->isPackageActive('quicktags')}
+										{foreach from=$gLibertySystem->mPlugins item=tag key=guid}
+											{if $tag.is_active eq 'y' and $tag.edit_field and $tag.plugin_type eq 'format'}
+												{if $tag.plugin_guid eq $plugin.plugin_guid}
+													BitBase.showById
+												{else}
+													BitBase.hideById
+												{/if}
+												('qt{$textarea_id}{$tag.plugin_guid}'); 
 											{/if}
-											('qt{$textarea_id}{$tag.plugin_guid}'); 
-										{/if}
-									{/foreach}
-								{/if}
-							"
-						/> {$plugin.edit_label}
-					{else}
-						{$plugin.edit_label}
-					{/if}
-					</label>
-					{if $plugin.plugin_guid == "tikiwiki"}
-						{if $numformat > 1}		
-							&nbsp;&nbsp;
+										{/foreach}
+									{/if}
+								"
+							/> {$plugin.edit_label}
+						{else}
+							{$plugin.edit_label}
 						{/if}
-						{if !$gBitSystem->isFeatureActive('content_force_allow_html')}
-							{if $gBitUser->hasPermission( 'p_liberty_enter_html' ) || $gBitSystem->isFeatureActive('content_allow_html')}
-								&nbsp; &nbsp; <label><input type="checkbox" name="preferences[content_enter_html]" value="y" id="html" {if $contentObject->mPrefs.content_enter_html}checked="checked" {/if}/> {tr}Allow HTML{/tr}</label>
-							{elseif is_object($contentObject) && $contentObject->getPreference( 'content_enter_html' )}
-								[ {tr}HTML will remain as HTML{/tr} ]
-							{else}
-								[ {tr}HTML will be escaped{/tr} ]
+						</label>
+						{if $plugin.plugin_guid == "tikiwiki"}
+							{if $numformat > 1}		
+								&nbsp;&nbsp;
+							{/if}
+							{if !$gBitSystem->isFeatureActive('content_force_allow_html')}
+								{if $gBitUser->hasPermission( 'p_liberty_enter_html' ) || $gBitSystem->isFeatureActive('content_allow_html')}
+									&nbsp; &nbsp; <label><input type="checkbox" name="preferences[content_enter_html]" value="y" id="html" {if $contentObject->mPrefs.content_enter_html}checked="checked" {/if}/> {tr}Allow HTML{/tr}</label>
+								{elseif is_object($contentObject) && $contentObject->getPreference( 'content_enter_html' )}
+									[ {tr}HTML will remain as HTML{/tr} ]
+								{else}
+									[ {tr}HTML will be escaped{/tr} ]
+								{/if}
 							{/if}
 						{/if}
-					{/if}
-					{formhelp note=`$plugin.edit_help`}
-				{/forminput}
-			{/if}
-		{/foreach}
+						{formhelp note=`$plugin.edit_help`}
+				{/if}
+			{/foreach}
+		{/forminput}
 		{if $numformat > 1}
 			{forminput}
 				{formhelp note="Choose what kind of syntax you want to submit your data in."}
@@ -109,6 +109,7 @@
 		<div class="row">
 			{formlabel label="Content Format"}
 			{forminput}
+				{formfeedback error=$errors.format}
 				<label>
 					{$singleplugin.edit_label}
 				</label>
