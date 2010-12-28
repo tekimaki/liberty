@@ -81,6 +81,9 @@ class LibertySystem extends LibertyBase {
 	// Content types
 	var $mContentTypes;
 
+	// Text Formats
+	var $mTextFormats;
+
 	// File name of last plug that registered
 	var $mPluginFileName;
 
@@ -765,6 +768,22 @@ class LibertySystem extends LibertyBase {
         // check for plugins in config/pkg/plugins/ dir
         $paths[] = CONFIG_PKG_PATH.$pPackageName.'/plugins';
 		return $paths;
+	}
+
+	public function getTextFormats(){
+		if( empty( $this->mTextFormats ) ){
+			$formats = array();
+			// pluck text formats from all plugins
+			foreach( $gLibertySystem->mPlugins as $guid=>$plugin ) {
+				if( $plugin['is_active'] == 'y' &&
+					!empty( $plugin['edit_field'] ) &&
+					$plugin['plugin_type'] == 'format'){
+					$formats[$guid] = $plugin;
+				}
+			}
+			$this->mTextFormats = $formats;
+		}
+		return $this->mTextFormats;
 	}
 
 

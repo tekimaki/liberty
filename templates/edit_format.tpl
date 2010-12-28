@@ -25,8 +25,15 @@
 {/if}
 
 {* We have to count these first because of the tikiwiki format options which may show even if it is the only format option. *}
+{if $contentObject->getTextFormats()}
+	{assign var=formats value=$contentObject->getTextFormats()}
+{else}
+	{assign var=formats value=$gLibertySystem->getTextForgetTextFormats()}
+	{assign var=default_format value=$gBitSystem->getConfig('default_format','tikiwiki')}
+{/if}
+
 {assign var=numformat value=0}
-{foreach name=formatPlugins from=$gLibertySystem->mPlugins item=plugin key=guid}
+{foreach name=formatPlugins from=$formats item=plugin key=guid}
 	{if $plugin.is_active eq 'y' and $plugin.edit_field and $plugin.plugin_type eq 'format'}
 		{assign var=numformat value=$numformat+1}
 		{if $plugin.plugin_guid == "tikiwiki"}
@@ -40,7 +47,7 @@
 	<div class="row">
 		{formfeedback error=$errors.format}
 		{formlabel label="Content Format"}
-		{foreach name=formatPlugins from=$gLibertySystem->mPlugins item=plugin key=guid}
+		{foreach name=formatPlugins from=$formats item=plugin key=guid}
 			{if $plugin.is_active eq 'y' and $plugin.edit_field and $plugin.plugin_type eq 'format'}
 				{forminput}
 					<label>
@@ -48,7 +55,7 @@
 							<input type="radio" name="{$format_guid_variable|default:"format_guid"}" value="{$plugin.edit_field}"
 							{if $contentObject->mInfo.format_guid eq $plugin.plugin_guid
 								} checked="checked"{
-							elseif !$contentObject->mInfo.format_guid and $plugin.plugin_guid eq $gBitSystem->getConfig('default_format', 'tikiwiki')
+							elseif !$contentObject->mInfo.format_guid and ( $plugin.is_default || ( $default_format && $plugin.plugin_guid eq $default_format ) )
 								} checked="checked"{
 							/if
 							} onclick="
@@ -93,7 +100,7 @@
 				{formhelp note="Choose what kind of syntax you want to submit your data in."}
 			{/forminput}
 		{else}
-			<input type="hidden" name="{$format_guid_variable|default:"format_guid"}" value="{$gBitSystem->getConfig('default_format','tikiwiki')}" />
+			<input type="hidden" name="{$format_guid_variable|default:"format_guid"}" value="{$default_format}" />
 		{/if}
 	</div>
 {else}
@@ -108,7 +115,7 @@
 			{/forminput}
 		</div>
 	{/if}
-	<input type="hidden" name="{$format_guid_variable|default:"format_guid"}" value="{if $numformat eq 1}{$singleplugin.edit_field}{else}{$gBitSystem->getConfig('default_format','tikiwiki')}{/if}" />
+	<input type="hidden" name="{$format_guid_variable|default:"format_guid"}" value="{if $numformat eq 1}{$singleplugin.edit_field}{else}{$default_format}{/if}" />
 {/if}
 
 {/strip}
