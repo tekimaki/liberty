@@ -772,6 +772,7 @@ class LibertySystem extends LibertyBase {
 
 	public function getTextFormats(){
 		if( empty( $this->mTextFormats ) ){
+			global $gLibertySystem;
 			$formats = array();
 			// pluck text formats from all plugins
 			foreach( $gLibertySystem->mPlugins as $guid=>$plugin ) {
