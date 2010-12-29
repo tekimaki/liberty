@@ -335,7 +335,7 @@ function liberty_content_load_sql( &$pObject, $pParamHash=NULL ) {
 function liberty_content_list_sql( &$pObject, $pParamHash=NULL ) {
 	global $gBitSystem, $gBitUser;
 	$ret = array();
-
+	$ret['where_sql'] = $ret['join_sql'] ='';
 	$hasPerm = FALSE;
 	// enforce_status will require the status limit on everyone including admin and thus we can ignore permission checks
 	if( !isset( $pParamHash['enforce_status'] )) {
