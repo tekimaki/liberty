@@ -42,10 +42,11 @@ $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_MAX, $pluginParams );
 
 function validate_max($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
   if (!empty($pConstraints['max']) && strlen($pParamHash[$pVar]) > $pConstraints['max']) {
-    $pObject->mErrors[$pVar] = 'The value of '
+    $pObject->mErrors[$pVar] = ''
       . $pConstraints['name']
-      . ' is greater than the maximum of '
-      . $pConstraints['max'];
+      . ' is too long, max '
+      . $pConstraints['max']
+      . ' characters allowed.';
   }
   return (count($pObject->mErrors) == 0);
 }
