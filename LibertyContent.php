@@ -84,6 +84,7 @@ class LibertyContent extends LibertyBase {
 	 * Text formats allowed to this content
 	 */
 	var $mTextFormats = NULL;
+	var $mTextFormatDefault = NULL;
 
 	/**
 	 * Control permission specific to this LibertyContent type
@@ -2076,6 +2077,7 @@ class LibertyContent extends LibertyBase {
 					// look for default format override
 					if( $key == 'default_format' ){ 
 						$formats[$value]['is_default'] = TRUE;
+						$this->mTextFormatDefault = $value;
 					}
 				}
 			}
@@ -2083,6 +2085,24 @@ class LibertyContent extends LibertyBase {
 		}
 		return $this->mTextFormats;
 	}
+
+	/**
+	 * get the default text format
+	 */
+	function getTextFormatDefault(){
+		// no value try to load it
+		if( empty( $this->mTextFormatDefault ) ){
+			$this->getTextFormats();
+		}
+		// still no value use system default
+		if( empty( $this->mTextFormatDefault ) ){
+			return $gBitSysmtem->getConfig( 'default_format' );
+		}
+
+		// return content default
+		return $this->mTextFormatDefault;
+	}
+
 
 	/**
 	 * Pure virtual function that returns the include file that should render a page of content of this type
