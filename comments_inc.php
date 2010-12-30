@@ -140,6 +140,9 @@ if( !empty( $_REQUEST['post_comment_submit'] ) && $gContent->hasUserPermission( 
 		$_REQUEST['post_comment_request'] = TRUE;
 		//this is critical and triggers other settings if store fails - do not remove without looking at what preview effects
 		$_REQUEST['post_comment_preview'] = TRUE;
+
+		$storeComment->invokeServices( 'content_preview_function', $_REQUEST );
+		$gBitSmarty->assign_by_ref( 'storeComment', $storeComment );
 	}
 } elseif(!empty($_REQUEST['post_comment_request']) && !$gContent->hasUserPermission( 'p_liberty_post_comments' )) {
 	$formfeedback['warning']="You don't have permission to post comments.";

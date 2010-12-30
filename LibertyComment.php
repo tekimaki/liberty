@@ -112,7 +112,7 @@ class LibertyComment extends LibertyMime {
 			$pParamHash['anon_name']=null;
 		}
 
-		if( !@$gBitUser->verifyCaptcha( $pParamHash['captcha'] ) ) {
+		if( !$gBitSystem->isFeatureActive( 'comments_bypass_captcha' ) && !@$gBitUser->verifyCaptcha( $pParamHash['captcha'] ) ) {
 			$this->mErrors['store'] = tra( 'Incorrect validation code' );
 		}
 
