@@ -67,7 +67,7 @@ function validate_emails($pVars, &$pParamHash, &$pObject, &$store) {
 			if (function_exists('is_email')) {
 				if (!is_email($pParamHash[$var])) {
 					$pObject->mErrors[$var] =
-						'The email address given for '.$constraints['name'].' does not seem to be a valid email address.';
+						'Invalid email address.';
 				} else {
 					$store[$var] = $pParamHash[$var];
 				}

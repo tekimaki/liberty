@@ -38,6 +38,7 @@ class LibertyComment extends LibertyMime {
 		$this->mInfo = $pInfo;
 		$this->mContentTypeGuid = BITCOMMENT_CONTENT_TYPE_GUID;
 		$this->mAdminContentPerm = 'p_liberty_admin_comments';
+		$this->mViewContentPerm = 'p_liberty_read_comments';
 		$this->mRootObj = NULL;
 
 		if ($this->mCommentId || $this->mContentId) {
@@ -112,7 +113,7 @@ class LibertyComment extends LibertyMime {
 			$pParamHash['anon_name']=null;
 		}
 
-		if( !@$gBitUser->verifyCaptcha( $pParamHash['captcha'] ) ) {
+		if( !$gBitSystem->isFeatureActive( 'comments_bypass_captcha' ) && !@$gBitUser->verifyCaptcha( $pParamHash['captcha'] ) ) {
 			$this->mErrors['store'] = tra( 'Incorrect validation code' );
 		}
 
@@ -451,6 +452,7 @@ class LibertyComment extends LibertyMime {
 					ptc.`content_type_guid` as `parent_content_type_guid`, 
 					rlc.`content_type_guid` as `root_content_type_guid`, 
 					lc.`content_type_guid`, 
+					lc.`content_status_id`,
 					uu.`login` AS `creator_user`, 
 					uu.`login`,
 					uu.`real_name`, 

@@ -31,6 +31,11 @@ $commentSettings = array(
 		'note' => 'Check to hide inline display of comments, which are not public, from all users including admins',
 		'page' => '',
 	),
+	"comments_bypass_captcha" => array(
+		'label' => 'Disable captcha requirement',
+		'note' => 'Allow guest users to submit comments without having to complete a captcha.',
+		'page' => '',
+	),
 //	"comments_display_expanded" => array(
 //		'label' => 'Expand Comments',
 //		'note' => 'When users first visit your site, comments can be hidden or displayed by default.',
