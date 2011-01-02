@@ -522,36 +522,13 @@ class LibertyComment extends LibertyMime {
 
 		$joinSql = $selectSql = $whereSql = '';
 
-		/* brute force call to liberty_content_list_sql 
-		 * for status enforcement
-		 * 
-		 * here we call liberty_content_list_sql which has a 
-		 * restriction to enforce content_status_id. we could 
-		 * have called the full list_sql service, but that
-		 * would be overkill for just getting a count.
-		 */
 		if ( !is_array($pContentId) ){
-			$sqlHash = liberty_content_list_sql( $this, NULL ); 
-			if( !empty( $sqlHash['select_sql'] ) ) {
-				$selectSql .= $sqlHash['select_sql'];
-			}
-			if( !empty( $sqlHash['join_sql'] ) ) {
-				$joinSql .= $sqlHash['join_sql'];
-			}
-			if( !empty( $sqlHash['where_sql'] ) ) {
-				$whereSql .= $sqlHash['where_sql'];
-			}
-			if( !empty( $sqlHash['bind_vars'] ) ) {
-				if ( is_array( $bindVars ) ) {
-					$bindVars = array_merge( $bindVars, $sqlHash['bind_vars'] );
-				} else {
-					$bindVars = $sqlHash['bind_vars'];
-				}
-			}
+			$pParamHash['include_comments'] = TRUE;
+			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars, NULL, $pParamHash );
 		}
 
 		if ($bindVars) {
-			$sql = "SELECT count(*) as comment_count $selectSql
+			$sql = "SELECT count(*) as comment_count
 					FROM `".BIT_DB_PREFIX."liberty_comments` lcom
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lcom.`content_id` = lc.`content_id`) $joinSql
 					WHERE lcom.`root_id` $mid $whereSql";
