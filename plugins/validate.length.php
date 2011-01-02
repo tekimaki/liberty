@@ -42,8 +42,8 @@ $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_LENGTH, $pluginParams );
 
 function validate_length($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
   if( !empty ( $pParamHash[$pVar] ) ) {
-    if (strlen($pParamHash[$var]) > $pConstraints['length']) {
-      $pObject->mErrors[$var] =
+    if (strlen($pParamHash[$pVar]) > $pConstraints['length']) {
+      $pObject->mErrors[$pVar] =
 	'The length of the '.$pConstraints['name'].' field is too long.';
     }
   }
