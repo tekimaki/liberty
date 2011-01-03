@@ -91,6 +91,8 @@ class LibertyComment extends LibertyMime {
 		}
 		*/
 
+		$pParamHash['comment_store'] = array();
+
 		$pParamHash['content_id'] = (@BitBase::verifyId($this->mContentId) ? $this->mContentId : NULL);
 
 		if( empty( $pParamHash['root_id'] ) && !empty( $pParamHash['comments_parent_id'] ) ) {
@@ -99,6 +101,8 @@ class LibertyComment extends LibertyMime {
 
 		if (!$pParamHash['root_id']) {
 			$this->mErrors['root_id'] = "Missing root id for comment";
+		}else{
+			$pParamHash['comment_store']['root_id'] = $pParamHash['root_id'];
 		}
  
 		if( empty( $pParamHash['parent_id'] ) ){
@@ -107,16 +111,21 @@ class LibertyComment extends LibertyMime {
 
 		if (!$pParamHash['parent_id']) {
 			$this->mErrors['parent_id'] = "Missing parent id for comment";
+		}else{
+			$pParamHash['comment_store']['parent_id'] = $pParamHash['parent_id'];
 		}
 
-		if (empty($pParamHash['anon_name'])) {
-			$pParamHash['anon_name']=null;
+		if ( !$gBitUser->isRegistered() && empty($pParamHash['anon_name'])) {
+			$this->setError('anon_name', tra('Your name is required') );
+		}elseif( !empty( $pParamHash['anon_name'] ) ){
+			$pParamHash['comment_store']['anon_name'] = $pParamHash['anon_name'];
 		}
 
 		if( !$gBitSystem->isFeatureActive( 'comments_bypass_captcha' ) && !@$gBitUser->verifyCaptcha( $pParamHash['captcha'] ) ) {
 			$this->mErrors['store'] = tra( 'Incorrect validation code' );
 		}
 
+		// prep for LibertyContent
 		if( !empty( $pParamHash['comment_title'] ) ){
 			$pParamHash['title'] = $pParamHash['comment_title'];
 		}
@@ -152,12 +161,15 @@ class LibertyComment extends LibertyMime {
 	}
 
 	function storeComment( &$pParamHash ) {
-		
-
 		$this->mDb->StartTrans();
 		if( $this->verifyComment($pParamHash) && LibertyMime::store( $pParamHash ) ) {
-			if (!$this->mCommentId) {
-				$this->mCommentId = $this->mDb->GenID( 'liberty_comment_id_seq');
+			$table = BIT_DB_PREFIX."liberty_comments";
+
+			// insert
+			if (empty( $this->mCommentId )) {
+
+				$pParamHash['comment_store']['content_id'] = $this->mContentId = $pParamHash['content_id'];
+				$pParamHash['comment_store']['comment_id'] = $this->mCommentId = $this->mDb->GenID( 'liberty_comment_id_seq');
 
 				if (!empty($pParamHash['parent_id'])) {
 					$parentComment = new LibertyComment(NULL,$pParamHash['parent_id']);
@@ -173,22 +185,21 @@ class LibertyComment extends LibertyMime {
 					$parent_sequence_forward = substr($parent_sequence_forward,0,10*24);
 				}
 
-				$this->mInfo['thread_forward_sequence'] = $parent_sequence_forward . sprintf("%09d.",$this->mCommentId);
-				$this->mInfo['thread_reverse_sequence'] = strtr($parent_sequence_forward . sprintf("%09d.",$this->mCommentId),
+				$pParamHash['comment_store']['thread_forward_sequence'] = $this->mInfo['thread_forward_sequence'] = $parent_sequence_forward . sprintf("%09d.",$this->mCommentId);
+				$pParamHash['comment_store']['thread_reverse_sequence'] = $this->mInfo['thread_reverse_sequence'] = strtr($parent_sequence_forward . sprintf("%09d.",$this->mCommentId),
 						'0123456789', '9876543210');
 
-				$sql = "INSERT INTO `".BIT_DB_PREFIX."liberty_comments` (`comment_id`, `content_id`, `parent_id`, `root_id`, `anon_name`, `thread_forward_sequence`, `thread_reverse_sequence`) VALUES (?,?,?,?,?,?,?)";
+				// insert
+				$result = $this->mDb->associateInsert( $table, $pParamHash['comment_store'] );
 
-				$this->mDb->query($sql, array($this->mCommentId, $pParamHash['content_id'], $pParamHash['parent_id'],
-					$pParamHash['root_id'], $pParamHash['anon_name'],
-					$this->mInfo['thread_forward_sequence'], $this->mInfo['thread_reverse_sequence']));
 				$this->mInfo['parent_id'] = $pParamHash['parent_id'];
 				$this->mInfo['content_id'] = $pParamHash['content_id'];
 				$this->mInfo['root_id'] = $pParamHash['root_id'];
-				$this->mContentId = $pParamHash['content_id'];
+			// update
 			} else {
-				$sql = "UPDATE `".BIT_DB_PREFIX."liberty_comments` SET `parent_id` = ?, `content_id`= ? WHERE `comment_id` = ?";
-				$this->mDb->query($sql, array($pParamHash['parent_id'], $pParamHash['content_id'], $this->mCommentId));
+				$locId = array( "comment_id" => $this->mCommentId );
+				$result = $this->mDb->associateUpdate( $table, $pParamHash['comment_store'], $locId );
+
 				$this->mInfo['parent_id'] = $pParamHash['parent_id'];
 				$this->mInfo['content_id'] = $pParamHash['content_id'];
 				$this->mContentId = $pParamHash['content_id'];

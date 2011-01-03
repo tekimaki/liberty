@@ -48,8 +48,9 @@
 						{/forminput}
 					</div>
 					<div class="row" style="display:none" id="post-anon">
-						{formlabel label="Your Name" for="comments-name"}
+						{formlabel label="Your Name" for="comments-name" required="y"}
 						{forminput}
+							{formfeedback error=$formfeedback.error.anon_name}
 							<input class="textInput" type="text" size="50" name="comment_name" id="comments-name" value="{$postComment.anon_name|escape:html}" />
 							{formhelp note=""}
 						{/forminput}
@@ -63,7 +64,7 @@
 					</div>
 				{/if}
 
-				{textarea id="commentpost" name="comment_data" rows=$gBitSystem->getConfig('comments_default_post_lines', 6)}{$postComment.data}{/textarea}
+				{textarea id="commentpost" name="comment_data" rows=$gBitSystem->getConfig('comments_default_post_lines', 6) required="y"}{$postComment.data}{/textarea}
 
 				{* @TODO perm check more accurately should be on root content object *}
 				{if $gBitSystem->isFeatureActive( 'comments_allow_attachments' ) && $gBitUser->hasPermission('p_liberty_attach_attachments') }

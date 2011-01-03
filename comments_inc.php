@@ -92,7 +92,6 @@ if( @BitBase::verifyId( $_REQUEST['post_comment_id'] ) && $gContent->hasUserPerm
 	$post_comment_id = NULL;
 	$editComment = NULL;
 }
-$gBitSmarty->assign('post_comment_id', $post_comment_id);
 
 // Store comment posts
 if( !empty( $_REQUEST['post_comment_submit'] ) && $gContent->hasUserPermission( 'p_liberty_post_comments' )) {
@@ -128,6 +127,7 @@ if( !empty( $_REQUEST['post_comment_submit'] ) && $gContent->hasUserPermission( 
 			$gSwitchboardSystem->sendEvent('My Content', 'new comment', $gContent->mContentId, $message );
 		}
 		$postComment = NULL;
+		$post_comment_id = NULL;
 	} else {
 		// store fails handle errors and preview
 		$formfeedback['error']=array_merge( $formfeedback['error'], $storeComment->mErrors );
@@ -147,6 +147,7 @@ if( !empty( $_REQUEST['post_comment_submit'] ) && $gContent->hasUserPermission( 
 } elseif(!empty($_REQUEST['post_comment_request']) && !$gContent->hasUserPermission( 'p_liberty_post_comments' )) {
 	$formfeedback['warning']="You don't have permission to post comments.";
 }
+$gBitSmarty->assign('post_comment_id', $post_comment_id);
 
 // $post_comment_request is a flag indicating whether or not to display the comment input form
 if( empty( $_REQUEST['post_comment_request'] ) && !$gBitSystem->isFeatureActive( 'comments_auto_show_form' ) ) {
