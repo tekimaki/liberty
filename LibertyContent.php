@@ -2090,13 +2090,14 @@ class LibertyContent extends LibertyBase {
 	 * get the default text format
 	 */
 	function getTextFormatDefault(){
+		global $gBitSystem;
 		// no value try to load it
 		if( empty( $this->mTextFormatDefault ) ){
 			$this->getTextFormats();
 		}
 		// still no value use system default
 		if( empty( $this->mTextFormatDefault ) ){
-			return $gBitSysmtem->getConfig( 'default_format' );
+			return $gBitSystem->getConfig( 'default_format' );
 		}
 
 		// return content default
