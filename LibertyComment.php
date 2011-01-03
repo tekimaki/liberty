@@ -517,16 +517,16 @@ class LibertyComment extends LibertyMime {
 	}
 
 
-	function getNumComments($pContentId = NULL) {
+	function getNumComments($pContentId = NULL, &$pParamHash = array() ) {
 		$bindVars = NULL;
 		if (!$pContentId && $this->mContentId) {
-			$mid = '=?';
+			$mid = ' WHERE lcom.`root_id` =?';
 			$bindVars = array($this->mContentId);
 		} elseif (is_array($pContentId)) {
-			$mid = 'in ('.implode(',', array_fill(0, count( $pContentId ), '?')).')';
+			$mid = ' WHERE lcom.`root_id` in ('.implode(',', array_fill(0, count( $pContentId ), '?')).')';
 			$bindVars = $pContentId;
 		} elseif ($pContentId) {
-			$mid = '=?';
+			$mid = ' WHERE lcom.`root_id` =?';
 			$bindVars = array($pContentId);
 		}
 		$commentCount = 0;
@@ -542,7 +542,7 @@ class LibertyComment extends LibertyMime {
 			$sql = "SELECT count(*) as comment_count
 					FROM `".BIT_DB_PREFIX."liberty_comments` lcom
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lcom.`content_id` = lc.`content_id`) $joinSql
-					WHERE lcom.`root_id` $mid $whereSql";
+					$mid $whereSql";
 			$commentCount = $this->mDb->getOne($sql, $bindVars);
 		}
 		return $commentCount;
