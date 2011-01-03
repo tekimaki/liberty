@@ -31,6 +31,11 @@ $commentSettings = array(
 		'note' => 'Check to hide inline display of comments, which are not public, from all users including admins',
 		'page' => '',
 	),
+	"comments_email_owner" => array(
+		'label' => 'New comment email notification',
+		'note' => 'Send an email to the content owner when a comment is posted to it.',
+		'page' => '',
+	),
 	"comments_bypass_captcha" => array(
 		'label' => 'Disable captcha requirement',
 		'note' => 'Allow guest users to submit comments without having to complete a captcha.',

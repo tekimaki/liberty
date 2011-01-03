@@ -117,7 +117,7 @@ if( !empty( $_REQUEST['post_comment_submit'] ) && $gContent->hasUserPermission( 
 	if( empty( $formfeedback['error'] ) && $storeComment->storeComment( $_REQUEST )) {
 		// store successful
 		$storeComment->loadComment();
-		if( empty( $_REQUEST['post_comment_id'] ) && $gBitSystem->isPackageActive( 'switchboard' ) ) {
+		if( empty( $_REQUEST['post_comment_id'] ) && $gBitSystem->isPackageActive( 'switchboard' ) && $gBitSystem->isFeatureActive('comments_email_owner') ) {
 			// A new comment, and we have switchboard to send notifications
 			global $gSwitchboardSystem;
 			// Draft the message:
