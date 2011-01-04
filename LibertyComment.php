@@ -404,6 +404,9 @@ class LibertyComment extends LibertyMime {
 		}
 		LibertyContent::prepGetList( $pParamHash );
 		$sort_mode = $this->mDb->convertSortmode($pParamHash['sort_mode']);
+		if( !empty( $pParamHash['secondary_sort_mode'] ) ){
+			$sort_mode = $sort_mode.', '.$this->mDb->convertSortmode($pParamHash['secondary_sort_mode']);
+		}
 
 		$joinSql = $whereSql = $selectSql = '';
 		$bindVars = $ret = array();
