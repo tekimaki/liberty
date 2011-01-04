@@ -522,6 +522,7 @@ class LibertyComment extends LibertyMime {
 
 	function getNumComments($pContentId = NULL, &$pParamHash = array() ) {
 		$bindVars = NULL;
+		$mid = '';
 		if (!$pContentId && $this->mContentId) {
 			$mid = ' WHERE lcom.`root_id` =?';
 			$bindVars = array($this->mContentId);
