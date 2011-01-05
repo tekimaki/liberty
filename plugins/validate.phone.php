@@ -57,7 +57,8 @@ function validate_phone($pVars, &$pParamHash, &$pObject, &$store) {
 				$pObject->mErrors[$var] = 'You must enter a 10 or 12 character value for ' . $constraints['name'];
 			}
 			else {
-				$store[$var] = $phone;
+				// store the fully formatted number
+				$store[$var] = $pParamHash[$var];
 			}
 		}
 		else {
