@@ -50,7 +50,7 @@ if( !empty( $_REQUEST['deleteAttachment'] )) {
 
 // make sure js is being loaded
 if( $gBitSystem->getConfig( 'liberty_attachment_style' ) == 'ajax' ) {
-	$gBitThemes->loadAjax( 'mochikit', array( 'Iter.js', 'DOM.js' ) );
-	$gBitThemes->loadJavascript( LIBERTY_PKG_PATH.'scripts/LibertyAttachment.js', TRUE );
+	$gBitThemes->loadAjax( 'jquery' );
+	$gBitThemes->loadJavascript( LIBERTY_PKG_PATH.'scripts/JQuery.LibertyAttachment.js', TRUE );
 }
 ?>
