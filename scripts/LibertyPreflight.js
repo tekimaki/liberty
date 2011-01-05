@@ -29,6 +29,9 @@ LibertyPreflight = {
 		if (LibertyPreflight.uploader_under_way) {
 			alert(waitmsg);
 		}else{
+			if( typeof( BitCK ) != 'undefined' ){
+				BitCK.unCKifyAll();
+			}
 			LibertyPreflight.uploader_under_way = 1;
 			BitBase.showSpinner();
 			if ( typeof( form.preflight_plugin_guid ) == "undefined" ){
@@ -91,6 +94,9 @@ LibertyPreflight = {
 			// set any placeholders
 			if( typeof( BitBase.setPlaceholders ) != "undefined" ){
 				BitBase.setPlaceholders();
+			}
+			if( typeof( BitCK ) != 'undefined' ){
+				BitCK.CKall();
 			}
 		}
 	},
