@@ -47,14 +47,14 @@ function preview_phone($pVars, &$pParamHash, &$pStore){
 	}
 }
 
-function validate_phone($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_phone($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints ) {
 		if( isset( $pParamHash[$var] ) ) {
 			// We just strip down to what we seek.
 			// TODO: Verify valid characters first
 			$phone = preg_replace('/[^0-9a-zA-Z]/', '',$pParamHash[$var]);
 			if( strlen( $phone ) != 0 && strlen( $phone ) != 10 && strlen( $phone ) != 12 ) {
-				$pObject->mErrors[$var] = 'You must enter a 10 or 12 character value for ' . $constraints['name'];
+				$pErrors[$var] = 'You must enter a 10 or 12 character value for ' . $constraints['name'];
 			}
 			else {
 				// store the fully formatted number

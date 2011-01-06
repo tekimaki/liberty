@@ -48,7 +48,7 @@ function preview_strings(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_strings($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_strings($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if( empty ( $pParamHash[$var] ) ) {
 			// Somebody deleted the value, we need to null it out
@@ -59,6 +59,6 @@ function validate_strings($pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

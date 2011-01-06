@@ -50,7 +50,7 @@ function preview_zips(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_zips(&$pVars, &$pParamHash, &$pObject, &$store) {
+function validate_zips(&$pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 	    if (!empty( $pStore[$var] ) &&
 			empty( $pParamHash[$var] )) {
@@ -58,7 +58,7 @@ function validate_zips(&$pVars, &$pParamHash, &$pObject, &$store) {
 		}
 		else {
 			if( !preg_match("/^([0-9]{5})(-[0-9]{4})?$/i", $pParamHash[$var])) {
-				$pObject->mErrors[$var] =
+				$pErrors[$var] =
 					'The value for '.(empty( $constraints['label'] ) ? $constraints['name'] : $constraints['label']).' is not in a valid zipcode format.';
 			}
 			else {

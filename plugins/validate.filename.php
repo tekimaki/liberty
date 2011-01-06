@@ -48,12 +48,12 @@ function preview_filenames(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_filenames($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_filenames($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			$filename = $pParamHash[$var];
 			if ( preg_match('/[&\ $\?\*\%:\/\\\]/', $filename) ){
-				$pObject->mErrors[$var] = tra('The file name contains invalid characters, make sure the filename does not contain any of the follow characters: &$?%:/\\');
+				$pErrors[$var] = tra('The file name contains invalid characters, make sure the filename does not contain any of the follow characters: &$?%:/\\');
 			} else {
 				$store[$var] = $filename;
 			}
@@ -63,5 +63,5 @@ function validate_filenames($pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }

@@ -33,7 +33,7 @@ class LibertyValidator {
 		}
 	}
 
-    function validateAttachment($pName, $pParams, &$pObject) {
+    function validateAttachment($pName, $pParams, &$pErrors) {
 		// If there is a particular format required and there is a file with a type
 		if (is_array($pParams['format']) && !empty($_FILES[$pName]) && !empty($_FILES[$pName]['type'])) {
 
@@ -42,7 +42,7 @@ class LibertyValidator {
 			$mimeType = $gBitSystem->verifyMimeType( $_FILES[$pName]['tmp_name'] );
 			// Check this type against the allowed formats for this attachment
 			if (!in_array($mimeType, $pParams['format'])) {
-				$pObject->mErrors[$pName] = "Invalid file format for " . $pParams['name'];
+				$pErrors->mErrors[$pName] = "Invalid file format for " . $pParams['name'];
 			}
 		}			
 	}
@@ -91,7 +91,7 @@ class LibertyValidator {
 		}
 	}
 
-	function validate(&$pVars, &$pParamHash, &$pObject, &$store) {
+	function validate(&$pVars, &$pParamHash, &$pErrors, &$store) {
 		if( !empty( $pVars ) ){
 			// Make sure we have the byType array setup
 			LibertyValidator::setupPlugins();
@@ -104,7 +104,7 @@ class LibertyValidator {
 						// But only if they have specified a validate function
 						if (!empty($data['validate_function'])) {
 							$function = $data['validate_function'];
-							$function($vars, $pParamHash, $pObject, $store);
+							$function($vars, $pParamHash, $pErrors, $store);
 						}					
 					}
 				// No plugins of the right type! Ack!
@@ -124,7 +124,7 @@ class LibertyValidator {
 								// But only if it has specified an attribute function properly
 								if (!empty($data['validate_attribute_function'])) {
 									$function = $data['validate_attribute_function'];
-									$function($var, $constraints, $pParamHash, $pObject, $store);
+									$function($var, $constraints, $pParamHash, $pErrors, $store);
 								}		
 							}
 						}

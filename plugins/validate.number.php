@@ -41,7 +41,7 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_NUMBER, $pluginParams );
 
-function validate_number(&$pVars, &$pParamHash, &$pObject, &$store) {
+function validate_number(&$pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			if (is_numeric($pParamHash[$var])) {
@@ -50,13 +50,13 @@ function validate_number(&$pVars, &$pParamHash, &$pObject, &$store) {
 					$store[$var] = $match[1];
 				}
 				else {
-					$pObject->mErrors[$var] = 'The value of '
+					$pErrors[$var] = 'The value of '
 						. $constraints['name'] 
 						. ' is not an integer.';
 				}
 			}
 			else {
-				$pObject->mErrors[$var] = 'The value of ' . 
+				$pErrors[$var] = 'The value of ' . 
 					$constraints['name'] 
 					. ' is not an integer.';
 			}
@@ -66,7 +66,7 @@ function validate_number(&$pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 
 

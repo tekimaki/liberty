@@ -48,7 +48,7 @@ function preview_urls(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_urls($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_urls($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if( empty ( $pParamHash[$var] ) ) {
 			// Somebody deleted the value, we need to null it out
@@ -82,11 +82,11 @@ function validate_urls($pVars, &$pParamHash, &$pObject, &$store) {
 			if (eregi($urlregex, $pParamHash[$var])) {
 				$store[$var] = $pParamHash[$var];
 			} else {
-				$pObject->mErrors[$var] = 'The URL entered for '.$constraints['name'] . 'is invalid.';
+				$pErrors[$var] = 'The URL entered for '.$constraints['name'] . 'is invalid.';
 			}
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

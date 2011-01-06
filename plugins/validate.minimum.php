@@ -40,13 +40,13 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_MIN, $pluginParams );
 
-function validate_min($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
+function validate_min($pVar, $pConstraints, &$pParamHash, &$pErrors, &$store) {
   if (!(empty($pConstraints['min']) ||
 	$pParamHash[$var] < $pConstraints['min'])) {
-    $pObject->mErrors[$var] = 'The value of '
+    $pErrors[$var] = 'The value of '
       . $pContraints['name']
       . 'is less than the minimum of '
       . $pConstraints['min'];
   }
-  return (count($pObject->mErrors) == 0);
+  return (count($pErrors) == 0);
 }

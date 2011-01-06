@@ -57,7 +57,7 @@ function preview_times(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_times($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_times($pVars, &$pParamHash, &$pErrors, &$store) {
 	global $gBitSystem;
 	$offset = $gBitSystem->get_display_offset();
 	$bd = new BitDate($offset);
@@ -100,18 +100,18 @@ function validate_times($pVars, &$pParamHash, &$pObject, &$store) {
 					$store[$var] = $bd->getUTCFromDisplayDate($store[$var]);
 				}
 				else {
-					$pObject->mErrors[$var] = 'The value for '.
+					$pErrors[$var] = 'The value for '.
 						$constraints['name']
 						. ' is invalid.';
 				}
 				// otherwise validate it as an integer
 			}else{
 				// TODO: This should be called via a service hook now.
-				validate_number($pVars, $pParamHash, $pObject, $store);
+				validate_number($pVars, $pParamHash, $pErrors, $store);
 			}
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

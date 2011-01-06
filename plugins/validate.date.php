@@ -53,7 +53,7 @@ function preview_dates(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_dates($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_dates($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if( isset( $pParamHash[$var]['Month'] ) &&
 			isset( $pParamHash[$var]['Day'] ) &&
@@ -62,7 +62,7 @@ function validate_dates($pVars, &$pParamHash, &$pObject, &$store) {
 				if (! ( is_numeric($pParamHash[$var]['Month']) &&
 						is_numeric($pParamHash[$var]['Day']) &&
 						is_numeric($pParamHash[$var]['Year']) ) ) {
-					$pObject->mErrors[$var] = 'The value of the ' . 
+					$pErrors[$var] = 'The value of the ' . 
 						$constraints['name'] . ' is invalid.';
 				}
 				else {
@@ -78,13 +78,13 @@ function validate_dates($pVars, &$pParamHash, &$pObject, &$store) {
 						$pParamHash[$var]['Month'].
 						$pParamHash[$var]['Day'];
 					if (strlen($store[$var]) != 8) {
-						$pObject->mErrors[$var] = 'The value of ' .
+						$pErrors[$var] = 'The value of ' .
 							$constraint['name'] . ' is invalid.';
 					}
 				}
 			}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

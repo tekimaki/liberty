@@ -47,7 +47,7 @@ function preview_hexcolor(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_hexcolor($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_hexcolor($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			$hexcolor = $pParamHash[$var];
@@ -57,7 +57,7 @@ function validate_hexcolor($pVars, &$pParamHash, &$pObject, &$store) {
 			if ( ctype_xdigit($hexcolor) && (strlen($hexcolor) == 6 || strlen($hexcolor) == 3))
 			$store[$var] = $hexcolor;
 			else {
-				$pObject->mErrors[$var] = tra('The hex color code you entered is not valid');
+				$pErrors[$var] = tra('The hex color code you entered is not valid');
 			}
 		}
 		else {
@@ -65,6 +65,6 @@ function validate_hexcolor($pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

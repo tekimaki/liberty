@@ -47,7 +47,7 @@ function preview_reals(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_reals($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_reals($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			if (is_numeric($pParamHash[$var])) {
@@ -56,13 +56,13 @@ function validate_reals($pVars, &$pParamHash, &$pObject, &$store) {
 					$store[$var] = $match[1];
 				}
 				else {
-					$pObject->mErrors[$var] = 'The value of '
+					$pErrors[$var] = 'The value of '
 						. $constraints['name']
 						. ' is not a real number.';
 				}
 			}
 			else {
-				$pObject->mErrors[$var] = 'The value of ' .
+				$pErrors[$var] = 'The value of ' .
 					$constraints['name']
 					. ' is not an real number.';
 			}
@@ -72,6 +72,6 @@ function validate_reals($pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

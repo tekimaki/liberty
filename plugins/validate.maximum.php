@@ -40,13 +40,13 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_MAX, $pluginParams );
 
-function validate_max($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
+function validate_max($pVar, $pConstraints, &$pParamHash, &$pErrors, &$store) {
   if (!empty($pConstraints['max']) && strlen($pParamHash[$pVar]) > $pConstraints['max']) {
-    $pObject->mErrors[$pVar] = ''
+    $pErrors[$pVar] = ''
       . $pConstraints['name']
       . ' is too long, max '
       . $pConstraints['max']
       . ' characters allowed.';
   }
-  return (count($pObject->mErrors) == 0);
+  return (count($pErrors) == 0);
 }

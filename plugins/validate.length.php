@@ -40,13 +40,13 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_LENGTH, $pluginParams );
 
-function validate_length($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
+function validate_length($pVar, $pConstraints, &$pParamHash, &$pErrors, &$store) {
   if( !empty ( $pParamHash[$pVar] ) ) {
     if (strlen($pParamHash[$pVar]) > $pConstraints['length']) {
-      $pObject->mErrors[$pVar] =
+      $pErrors[$pVar] =
 	'The length of the '.$pConstraints['name'].' field is too long.';
     }
   }
-  return (count($pObject->mErrors) == 0);
+  return (count($pErrors) == 0);
 }
 

@@ -56,7 +56,7 @@ function preview_booleans($pVars, &$pParamHash, &$pStore){
 	}
 }
 
-function validate_booleans($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_booleans($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach ($pVars as $var => $constraints) {
 		if (isset($pParamHash[$var])) {
 			$store[$var] =
@@ -70,6 +70,6 @@ function validate_booleans($pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

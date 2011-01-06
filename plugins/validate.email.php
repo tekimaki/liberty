@@ -55,7 +55,7 @@ function preview_emails(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_emails($pVars, &$pParamHash, &$pObject, &$store) {
+function validate_emails($pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if( !empty( $pStore[$var] ) &&
 			empty ( $pParamHash[$var] ) ) {
@@ -66,7 +66,7 @@ function validate_emails($pVars, &$pParamHash, &$pObject, &$store) {
 			// Did we manage to inclue is_email.php above?
 			if (function_exists('is_email')) {
 				if (!is_email($pParamHash[$var])) {
-					$pObject->mErrors[$var] =
+					$pErrors[$var] =
 						'Invalid email address.';
 				} else {
 					$store[$var] = $pParamHash[$var];
@@ -78,6 +78,6 @@ function validate_emails($pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

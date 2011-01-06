@@ -51,7 +51,7 @@ function preview_reference(&$pVars, &$pParamHash, &$pStore) {
  * for now this is a lot like integers except that unset value is returned null not 0
  * @TODO perhaps validate against the reference record
  */
-function validate_reference(&$pVars, &$pParamHash, &$pObject, &$store) {
+function validate_reference(&$pVars, &$pParamHash, &$pErrors, &$store) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			if (is_numeric($pParamHash[$var])) {
@@ -60,12 +60,12 @@ function validate_reference(&$pVars, &$pParamHash, &$pObject, &$store) {
 					$store[$var] = $pParamHash[$var];
 				}
 				else {
-					$pObject->mErrors[$var] = 'The value of ' . 
+					$pErrors[$var] = 'The value of ' . 
 						$constraints['name'] 
 						. ' is not an integer.';
 				}
 			} else {
-				$pObject->mErrors[$var] = 'The value of ' . 
+				$pErrors[$var] = 'The value of ' . 
 					$constraints['name'] 
 					. ' is not an integer.';
 			}
@@ -75,6 +75,6 @@ function validate_reference(&$pVars, &$pParamHash, &$pObject, &$store) {
 		}
 	}
 	
-	return (count($pObject->mErrors) == 0);
+	return (count($pErrors) == 0);
 }
 

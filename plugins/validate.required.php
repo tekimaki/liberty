@@ -40,11 +40,11 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_REQUIRED, $pluginParams );
 
-function validate_required($pVar, $pConstraints, &$pParamHash, &$pObject, &$store) {
+function validate_required($pVar, $pConstraints, &$pParamHash, &$pErrors, &$store) {
   if( empty ( $pParamHash[$pVar] ) ) {
-    $pObject->mErrors[$pVar] = 'A value for ' . $pConstraints['name']
+    $pErrors[$pVar] = 'A value for ' . $pConstraints['name']
       . ' is required.';
   }
-  return (count($pObject->mErrors) == 0);
+  return (count($pErrors) == 0);
 }
 
