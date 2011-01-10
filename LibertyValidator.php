@@ -42,7 +42,7 @@ class LibertyValidator {
 			$mimeType = $gBitSystem->verifyMimeType( $_FILES[$pName]['tmp_name'] );
 			// Check this type against the allowed formats for this attachment
 			if (!in_array($mimeType, $pParams['format'])) {
-				$pErrors->mErrors[$pName] = "Invalid file format for " . $pParams['name'];
+				$pErrors[$pName] = "Invalid file format for " . $pParams['name'];
 			}
 		}			
 	}
