@@ -65,9 +65,6 @@ LibertyPreflight = {
 		}
 	},
 
-	"preflightCheck": function(){
-	},
-
 	"uploaderComplete": function(frameid, fieldsetid, formid) {
 		if (LibertyPreflight.uploader_under_way){
 			BitBase.hideSpinner();
@@ -83,6 +80,7 @@ LibertyPreflight = {
 				return;
 			}
 			
+			console.log(d);
 			LibertyPreflight.postflightCheck( formid, d );
 
 			// replace the current form with the result

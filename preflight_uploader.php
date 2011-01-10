@@ -85,7 +85,6 @@ if( empty( $error ) && is_object( $gContent ) ){
 				$_REQUEST['content_id'] = $storeHash['content_id'];
 			}else{
 				$gBitSmarty->assign('errors', $gContent->getErrors() );
-				vd( $gContent->getErrors() );
 				// @TODO handle preflight store errors
 				echo 'preflight store error';
 				die;
@@ -99,6 +98,8 @@ if( empty( $error ) && is_object( $gContent ) ){
 	$gContent->invokeService( $storeHandler, $storeHash );
 	if( $errors = $gContent->getErrors() ){
 		$gBitSmarty->assign_by_ref( 'errors', $errors );
+		// get preview on entire submitted form - there may be additional edits we want to preserve 
+		$gContent->invokeServices( 'content_preview_function', $_REQUEST );
 	}
 }
 
@@ -116,5 +117,9 @@ $gBitSmarty->assign( 'libertyUploader', TRUE );
 $gBitSmarty->assign( 'uploadTab', TRUE );
 
 // hand the updated edit form back
-$displayHandler = $gBitSystem->getPluginAPIHandler( 'tpl', 'content_ajax_edit_mini', $_REQUEST['preflight_plugin_guid'] );
-echo $gBitSystem->display( $displayHandler['plugin_handler'], NULL, array( 'format'=>'none', 'display_mode' => 'display' ));
+if( $displayHandler = $gBitSystem->getPluginAPIHandler( 'tpl', 'content_ajax_edit_mini', $_REQUEST['preflight_plugin_guid'] ) ){
+	echo $gBitSystem->display( $displayHandler['plugin_handler'], NULL, array( 'format'=>'none', 'display_mode' => 'display' ));
+}else{
+	echo "missing preflight ajax template handler, can not return the form";
+}
+
