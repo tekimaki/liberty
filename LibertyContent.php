@@ -1529,7 +1529,6 @@ class LibertyContent extends LibertyBase {
 
 	// === verifyAdminPermission
 	/**
-	 * This code was duplicated _EVERYWHERE_ so here is an easy template to cut that down.
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
@@ -1578,7 +1577,6 @@ class LibertyContent extends LibertyBase {
 
 	// === verifyUpdatePermission
 	/**
-	 * This code was duplicated _EVERYWHERE_ so here is an easy template to cut that down.
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
@@ -1629,7 +1627,6 @@ class LibertyContent extends LibertyBase {
 
 	// === verifyViewPermission
 	/**
-	 * This code was duplicated _EVERYWHERE_ so here is an easy template to cut that down.
 	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
 	 * @return TRUE if permitted, method will fatal out if not
 	 * @access public
