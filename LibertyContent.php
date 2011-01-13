@@ -1640,6 +1640,32 @@ class LibertyContent extends LibertyBase {
 		}
 	}
 
+	// === hasListViewPermission
+	/**
+	 * Determine if current user has the ability to view a list this type of content
+	 * Note that this will always return TRUE if you haven't set the mListViewContentPerm in your class
+	 *
+	 * @return bool True if user has this type of content administration permission
+	 */
+	function hasListViewPermission() {
+		return( $this->hasUpdatePermission() || empty( $this->mListViewContentPerm ) || $this->hasUserPermission( $this->mListViewContentPerm ));
+	}
+
+	// === verifyListViewPermission
+	/**
+	 * It will verify if a given user has a given $permission and if not, it will display the error template and die()
+	 * @return TRUE if permitted, method will fatal out if not
+	 * @access public
+	 */
+	function verifyListViewPermission() {
+		global $gBitSystem;
+		if( $this->hasListViewPermission() ) {
+			return TRUE;
+		} else {
+			$gBitSystem->fatalPermission( $this->mListViewContentPerm );
+		}
+	}
+
 	/**
 	 * Determine if current user has the ability to post comments to this type of content
 	 *
