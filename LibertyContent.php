@@ -92,6 +92,7 @@ class LibertyContent extends LibertyBase {
 	 * @private
 	 */
 	var $mViewContentPerm;
+	var $mListViewContentPerm;
 	var $mUpdateContentPerm;
 	var $mCreateContentPerm;
 	var $mExpungeContentPerm;
