@@ -28,7 +28,7 @@
 {if $contentObject->getTextFormats()}
 	{assign var=formats value=$contentObject->getTextFormats()}
 {else}
-	{assign var=formats value=$gLibertySystem->getTextForgetTextFormats()}
+	{assign var=formats value=$gLibertySystem->getTextFormats()}
 	{assign var=default_format value=$gBitSystem->getConfig('default_format','tikiwiki')}
 {/if}
 
