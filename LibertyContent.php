@@ -40,6 +40,7 @@ if( !defined( 'BIT_CONTENT_DEFAULT_STATUS' ) ) {
  * required setup
  */
 require_once( LIBERTY_PKG_PATH.'LibertyBase.php' );
+require_once( LIBERTY_PKG_PATH . 'LibertyValidator.php' );
 
 define( 'LIBERTY_SPLIT_REGEX', "!\.{3}split\.{3}[\t ]*\n?!" );
 
@@ -95,6 +96,12 @@ class LibertyContent extends LibertyBase {
 	var $mCreateContentPerm;
 	var $mExpungeContentPerm;
 	var $mAdminContentPerm;
+
+	/**
+	 * Verification schema
+ 	 */
+	var $mVerification;
+
 
 	/**
 	 * Construct an empty LibertyBase object with a blank permissions array
@@ -165,6 +172,16 @@ class LibertyContent extends LibertyBase {
 	function verify( &$pParamHash ) {
 		global $gLibertySystem, $gBitSystem, $gBitLanguage, $gBitUser;
 
+		// deal with the madness that is edit
+		if( !empty( $pParamHash['edit'] ) ){
+			$pParamHash['data'] = $pParamHash['edit'];
+		}
+		// New data validation - expand as needed
+		// Be aware that prepVerify of liberty_content schemea 
+		// can be overridden by classes implementing LibertyContent 
+		// Currently supporting field validation overrides for title, data
+		LibertyContent::validateFields($pParamHash);
+
 		// content_type_guid
 		// It is possible a derived class set this to something different
 		if( empty( $pParamHash['content_type_guid'] ) ) {
@@ -223,12 +240,6 @@ class LibertyContent extends LibertyBase {
 					|| (!empty($this->mInfo["data"]) && !empty($pParamHash["edit"]) && (md5($this->mInfo["data"]) != md5($pParamHash["edit"])))
 					|| (!empty($pParamHash["title"]) && !empty($this->mInfo["title"]) && (md5($this->mInfo["title"]) != md5($pParamHash["title"])))
 					|| (!empty($pParamHash["edit_comment"]) && !empty($this->mInfo["edit_comment"]) && (md5($this->mInfo["edit_comment"]) != md5($pParamHash["edit_comment"])));
-		// check some lengths, if too long, then truncate
-		if( !empty( $pParamHash['title'] ) ) {
-			$pParamHash['content_store']['title'] = substr( $pParamHash['title'], 0, BIT_CONTENT_MAX_TITLE_LEN );
-		} elseif( isset( $pParamHash['title'] ) ) {
-			$pParamHash['content_store']['title'] = NULL;
-		}
 
 		// get the lang code from $_REQUEST if it's not set
 		if( !empty( $pParamHash['lang_code'] ) && in_array( $pParamHash['lang_code'], array_keys( $gBitLanguage->mLanguageList ) ) ) {
@@ -328,7 +339,7 @@ class LibertyContent extends LibertyBase {
 		if( !empty( $pParamHash['content_store']['data'] )) {
 			$this->filterData( $pParamHash['content_store']['data'], $pParamHash['content_store'], 'prestore' );
 		} else {
-			// someone has deleted the data entirely - common for fisheye
+			// someone has deleted the data entirely to erase it
 			$pParamHash['content_store']['data'] = NULL;
 		}
 
@@ -368,6 +379,34 @@ class LibertyContent extends LibertyBase {
 		$this->invokeServices( 'content_verify_function', $pParamHash );
 
 		return( count( $this->mErrors ) == 0 );
+	}
+
+	/**
+	 * validateFields validates the fields
+	 */
+	function validateFields(&$pParamHash) {
+		$this->prepVerify();
+		LibertyValidator::validate(
+			$this->mVerification['liberty_content'],
+			$pParamHash,
+			$this->mErrors, $pParamHash['content_store']);
+	}
+
+	/**
+	 * prepVerify prepares the object for input verification
+	 */
+	function prepVerify() {
+		if (empty($this->mVerification['liberty_content'])) {
+	 		/* Validation for liberty_content title */
+			$this->mVerification['liberty_content']['string']['title'] = array(
+				'name' => 'Title',
+				'max' => BIT_CONTENT_MAX_TITLE_LEN,
+			);
+	 		/* Validation for liberty_content data */
+			$this->mVerification['liberty_content']['string']['data'] = array(
+				'name' => 'Body',
+			);
+		}
 	}
 
 	/**
