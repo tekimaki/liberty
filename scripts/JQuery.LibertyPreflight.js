@@ -29,8 +29,13 @@ LibertyPreflight = {
 		if (LibertyPreflight.uploader_under_way) {
 			alert(waitmsg);
 		}else{
+			// unset ckeditor
 			if( typeof( BitCK ) != 'undefined' ){
 				BitCK.unCKifyAll();
+			}
+			// unset any placeholders
+			if( typeof( BitBase.clearPlaceholders ) != "undefined" ){
+				BitBase.clearPlaceholders();
 			}
 			LibertyPreflight.uploader_under_way = 1;
 			BitBase.showSpinner();
