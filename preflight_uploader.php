@@ -21,6 +21,8 @@ if( !empty( $_REQUEST['preflight_plugin_guid'] ) && !empty( $_REQUEST['preflight
 	default:
 		if( !empty( $_REQUEST[$_REQUEST['preflight_plugin_guid']][$_REQUEST['preflight_fieldset_guid']] ) ){
 			$storeHash[$_REQUEST['preflight_plugin_guid']][$_REQUEST['preflight_fieldset_guid']] = $_REQUEST[$_REQUEST['preflight_plugin_guid']][$_REQUEST['preflight_fieldset_guid']];
+			$storeHash['preflight_plugin_guid'] = $_REQUEST['preflight_plugin_guid'];
+			$storeHash['preflight_fieldset_guid'] = $_REQUEST['preflight_fieldset_guid'];
 		}
 		else{
 			$error = tra( 'No fieldset found for plugin guid '.$_REQUEST['preflight_plugin_guid'] );
