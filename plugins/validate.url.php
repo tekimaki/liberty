@@ -82,7 +82,7 @@ function validate_urls($pVars, &$pParamHash, &$pErrors, &$store) {
 			if (eregi($urlregex, $pParamHash[$var])) {
 				$store[$var] = $pParamHash[$var];
 			} else {
-				$pErrors[$var] = 'The URL entered for '.$constraints['name'] . 'is invalid.';
+				$pErrors[$var] = 'The URL entered is invalid.';
 			}
 		}
 	}
