@@ -41,33 +41,15 @@ $gLibertySystem->registerPlugin( PLUGIN_GUID_FILTERHTMLPURIFIER, $pluginParams )
 function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 	global $gHtmlPurifier, $gBitSystem;
 
-	if (!isset($gHtmlPurifier)) {
-		$pear_version = false;
+	$pear_version = false;
+	if (@include_once("PEAR.php")) {		
+		if(@include_once("HTMLPurifier.php")) {
+			@include_once("HTMLPurifier.auto.php");
+			$auto_config = true;
 
-		if (@include_once("PEAR.php")) {		
-			if(@include_once("HTMLPurifier.php")) {
-				// for backward compatibility checks
-				$htmlp_version = NULL;
+			$config = htmlpure_getDefaultConfig( $pObject );
 
-				// If using 3.10+
-				if(!class_exists("HTMLPurifier_Config")) {
-					@include_once("HTMLPurifier.auto.php");
-					$auto_config = true;
-					$htmlp_version = 3.1;
-				}
-
-				$config = htmlpure_getDefaultConfig( $htmlp_version, $pObject );
-
-
-				// As suggested here:  http://www.bitweaver.org/forums/index.php?t=8554
-				$gHtmlPurifier = new HTMLPurifier($config);
-
-				// how plugins are registered changed in v3.1 
-				// old way of adding plugins before v3.1
-				if ( !$htmlp_version >= 3.1 ) {
-					htmlpure_legacyAddFilters();
-				}
-			}
+			$gHtmlPurifier = new HTMLPurifier($config);
 		}
 	}
 
@@ -81,8 +63,7 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 		if( empty( $pFilterHash['htmlp_config'] ) ){
 			$pString = $gHtmlPurifier->purify( $pString );
 		}else{
-			$htmlp_version = $gHtmlPurifier->version;
-			$config = htmlpure_getDefaultConfig( $htmlp_version, $pObject );
+			$config = htmlpure_getDefaultConfig( $pObject );
 
 			/* if we've received custom configurations for the particular parse then we deal with them
 			   for now were expecting config data that htmlpurfier doesn't really handle in a nice way
@@ -128,7 +109,7 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 	return $pString;
 }
 
-function htmlpure_getDefaultConfig( &$htmlp_version, $pObject=NULL ){
+function htmlpure_getDefaultConfig( $pObject=NULL ){
 	global $gBitSystem;
 
 	$config = HTMLPurifier_Config::createDefault();
@@ -195,34 +176,32 @@ function htmlpure_getDefaultConfig( &$htmlp_version, $pObject=NULL ){
 	// TODO: devise a way to parse plugins dir
 	// and check for the right property here
 	// so new plugins are just drop in place.
-	if ( $htmlp_version >= 3.1 ){
-		$custom_filters = array();
+	$custom_filters = array();
 
-		// Disable included YouTube filter, we have our own
-		$config->set('Filter.YouTube', false);
+	// Disable included YouTube filter, we have our own
+	$config->set('Filter.YouTube', false);
 
-		if ($gBitSystem->isFeatureActive('htmlpure_allow_youtube')) {
-			require_once(UTIL_PKG_PATH.'htmlpure/Filter/YouTube.php');
-			$custom_filters[] = new HTMLPurifier_Filter_YouTube();
-		}
-		if ($gBitSystem->isFeatureActive('htmlpure_allow_cnbc')) {
-			require_once(UTIL_PKG_PATH.'htmlpure/Filter/CNBC.php');
-			$custom_filters[] = new HTMLPurifier_Filter_CNBC();
-		}
+	if ($gBitSystem->isFeatureActive('htmlpure_allow_youtube')) {
+		require_once(UTIL_PKG_PATH.'htmlpure/Filter/YouTube.php');
+		$custom_filters[] = new HTMLPurifier_Filter_YouTube();
+	}
+	if ($gBitSystem->isFeatureActive('htmlpure_allow_cnbc')) {
+		require_once(UTIL_PKG_PATH.'htmlpure/Filter/CNBC.php');
+		$custom_filters[] = new HTMLPurifier_Filter_CNBC();
+	}
 
-		// risky elements - user must have trusted editor permission
-		if( in_array( 'p_liberty_trusted_editor', $userPerms ) ) {
-			$config->set('HTML.Trusted', true);
-			$config->set('HTML.SafeEmbed', true);
-			$config->set('HTML.SafeObject', true);
-			$config->set('Output.FlashCompat', true);
-			require_once( UTIL_PKG_PATH.'htmlpure/Filter/SafeIframe.php' );
-			$custom_filters[] = new HTMLPurifier_Filter_SafeIframe();
-		}
+	// risky elements - user must have trusted editor permission
+	if( in_array( 'p_liberty_trusted_editor', $userPerms ) ) {
+		$config->set('HTML.Trusted', true);
+		$config->set('HTML.SafeEmbed', true);
+		$config->set('HTML.SafeObject', true);
+		$config->set('Output.FlashCompat', true);
+		require_once( UTIL_PKG_PATH.'htmlpure/Filter/SafeIframe.php' );
+		$custom_filters[] = new HTMLPurifier_Filter_SafeIframe();
+	}
 
-		if( !empty( $custom_filters ) ){
-			$config->set('Filter.Custom', $custom_filters );
-		}
+	if( !empty( $custom_filters ) ){
+		$config->set('Filter.Custom', $custom_filters );
 	}
 
 	$def =& $config->getHTMLDefinition();
@@ -254,20 +233,6 @@ function htmlpure_getDefaultConfig( &$htmlp_version, $pObject=NULL ){
 	}
 
 	return $config;
-}
-
-function htmlpure_legacyAddFilters(){
-	global $gHtmlPurifier, $gBitSystem;
-
-	if ( $gBitSystem->isFeatureActive('htmlpure_allow_youtube') ) {
-		require_once(UTIL_PKG_PATH.'htmlpure/Filter/YouTube.php');
-
-		$gHtmlPurifier->addFilter(new HTMLPurifier_Filter_YouTube());
-	}
-	if ($gBitSystem->isFeatureActive('htmlpure_allow_cnbc')) {
-		require_once(UTIL_PKG_PATH.'htmlpure/Filter/CNBC.php');
-		$gHtmlPurifier->addFilter(new HTMLPurifier_Filter_CNBC());
-	}
 }
 
 function htmlpure_cleanupPeeTags( $pee ) {
