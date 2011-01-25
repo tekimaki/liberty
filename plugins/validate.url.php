@@ -72,7 +72,8 @@ function validate_urls($pVars, &$pParamHash, &$pErrors, &$store) {
 			// PORT
 			$urlregex .= "(\:[0-9]{2,5})?";
 			// PATH
-			$urlregex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?";
+			// allow # and ! which are discouraged and should be encoded but are valid - see facebook links for headaches
+			$urlregex .= "(\/([a-z0-9+\$\#!_-]\.?)+)*\/?";		
 			// GET Query
 			$urlregex .= "(\?[a-z+&\$_.-][a-z0-9;:@/&%=+\$_.-]*)?";
 			// ANCHOR
