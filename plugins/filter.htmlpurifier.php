@@ -155,18 +155,12 @@ function htmlpure_getDefaultConfig( &$htmlp_version, $pObject=NULL ){
 		$config->set('HTML.XHTML', true);
 	}
 
-	$hasAdmin = FALSE;
-	if( is_a( $pObject, 'LibertyContent' ) ) {
-		// check to see if last editor has ability to admin content, if so, ease up on the purification restraints
-		$query = "SELECT ugp.`group_id` 
-				  FROM `".BIT_DB_PREFIX."users_groups_map` ugm 
-					INNER JOIN `".BIT_DB_PREFIX."users_group_permissions` ugp ON (ugp.`group_id`=ugm.`group_id`) 
-				  WHERE ugm.`user_id`=? AND (ugp.`perm_name`=? OR ugp.`perm_name`='p_admin')";
-		// cache for 15 minutes
-		$hasAdmin = $pObject->mDb->getOne( $query, array( $pObject->getField( 'modifier_user_id' ), $pObject->mAdminContentPerm ), NULL, NULL, 900 );
-	}
+	$blacklistedTags = '';
 
-	if( $hasAdmin ) {
+	// @TODO respect revoked permissions
+	$userPerms = array_keys( $pObject->getUserPermissions( $pObject->getField( 'modifier_user_id' ), TRUE, FALSE ) );
+
+	if( in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
 		// Last person to edit this file has admin permission for this entire class of content, let freedom ring
 		$config->set( 'CSS.AllowTricky', true );
 
@@ -191,45 +185,55 @@ function htmlpure_getDefaultConfig( &$htmlp_version, $pObject=NULL ){
 		if ($gBitSystem->getConfig('htmlpure_disable_uri') == 'y') {
 			$config->set('URI.Disable', true);
 		}
+		$blacklistedTags = $gBitSystem->getConfig('blacklisted_html_tags', '');
+	}
 
-		// Set that we are using a div to wrap things.
-		$config->set('HTML.BlockWrapper', 'div');
+	// Set that we are using a div to wrap things.
+	$config->set('HTML.BlockWrapper', 'div');
 
-		// set plugins
-		// TODO: devise a way to parse plugins dir
-		// and check for the right property here
-		// so new plugins are just drop in place.
-		if ( $htmlp_version >= 3.1 ){
-			$custom_filters = array();
+	// set plugins
+	// TODO: devise a way to parse plugins dir
+	// and check for the right property here
+	// so new plugins are just drop in place.
+	if ( $htmlp_version >= 3.1 ){
+		$custom_filters = array();
 
-			// Disable included YouTube filter, we have our own
-			$config->set('Filter.YouTube', false);
+		// Disable included YouTube filter, we have our own
+		$config->set('Filter.YouTube', false);
 
-			if ($gBitSystem->isFeatureActive('htmlpure_allow_youtube')) {
-				require_once(UTIL_PKG_PATH.'htmlpure/Filter/YouTube.php');
-				$custom_filters[] = new HTMLPurifier_Filter_YouTube();
-			}
-			if ($gBitSystem->isFeatureActive('htmlpure_allow_cnbc')) {
-				require_once(UTIL_PKG_PATH.'htmlpure/Filter/CNBC.php');
-				$custom_filters[] = new HTMLPurifier_Filter_CNBC();
-			}
-
-			if( !empty( $custom_filters ) ){
-				$config->set('Filter.Custom', $custom_filters );
-			}
+		if ($gBitSystem->isFeatureActive('htmlpure_allow_youtube')) {
+			require_once(UTIL_PKG_PATH.'htmlpure/Filter/YouTube.php');
+			$custom_filters[] = new HTMLPurifier_Filter_YouTube();
+		}
+		if ($gBitSystem->isFeatureActive('htmlpure_allow_cnbc')) {
+			require_once(UTIL_PKG_PATH.'htmlpure/Filter/CNBC.php');
+			$custom_filters[] = new HTMLPurifier_Filter_CNBC();
 		}
 
-		$blacklistedTags = $gBitSystem->
-			getConfig('blacklisted_html_tags', '');
-
-		$def =& $config->getHTMLDefinition();
-		// HTMLPurifier doesn't have a blacklist feature. Duh guys!
-		// Note that this has to come last since the other configs
-		// may tweak the def.
-		foreach (explode(',',$blacklistedTags) as $tag) {
-			unset($def->info[$tag]);
+		// risky elements - user must have trusted editor permission
+		if( in_array( 'p_liberty_trusted_editor', $userPerms ) ) {
+			$config->set('HTML.Trusted', true);
+			$config->set('HTML.SafeEmbed', true);
+			$config->set('HTML.SafeObject', true);
+			$config->set('Output.FlashCompat', true);
+			require_once( UTIL_PKG_PATH.'htmlpure/Filter/SafeIframe.php' );
+			$custom_filters[] = new HTMLPurifier_Filter_SafeIframe();
 		}
 
+		if( !empty( $custom_filters ) ){
+			$config->set('Filter.Custom', $custom_filters );
+		}
+	}
+
+	$def =& $config->getHTMLDefinition();
+	// HTMLPurifier doesn't have a blacklist feature. Duh guys!
+	// Note that this has to come last since the other configs
+	// may tweak the def.
+	foreach (explode(',',$blacklistedTags) as $tag) {
+		unset($def->info[$tag]);
+	}
+
+	if( in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
 		if ($gBitSystem->getConfig('htmlpure_force_nofollow', 'y') == 'y') {
 			if( !class_exists("HTMLPurifier_AttrTransform_ForceValue") ){
 				class HTMLPurifier_AttrTransform_ForceValue extends HTMLPurifier_AttrTransform

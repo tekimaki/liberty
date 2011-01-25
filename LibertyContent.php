@@ -1501,7 +1501,7 @@ class LibertyContent extends LibertyBase {
 				$ret = TRUE;
 			} else {
 				$this->verifyAccessControl( $pPermName );
-				$checkPerms = $this->getUserPermissions();
+				$checkPerms = $this->getUserPermissions( $gBitUser->mUserId );
 				if ( !empty( $checkPerms ) ) {
 					// Do they have the admin permission or the one we want?
 					if ( !empty( $checkPerms[$this->mAdminContentPerm] ) ) {
@@ -1701,14 +1701,13 @@ class LibertyContent extends LibertyBase {
 	 *         is revoked, but another is still permitted. If the permission is
 	 *         revoked, is_revoked will be set to 'y'
 	 */
-	function getUserPermissions() {
-		global $gBitUser;
-
-		$userId = $gBitUser->mUserId;
+	function getUserPermissions( $pUserId, $pForce = FALSE, $pCache = TRUE ) {
+		$perms = array();
+		$userId = $pUserId;
 		// Prevent null entires when creating database
 		if( !is_numeric( $userId ) ) $userId = 0;
 		if( !is_numeric( $this->mContentId ) ) $this->mContentId = 0;
-		if( !isset( $this->mUserContentPerms )) {
+		if( !isset( $this->mUserContentPerms ) || $pForce ) {
 			// get the default permissions for specified user
 			$query = "
 				SELECT ugp.`perm_name` as `hash_key`, 1 as `group_perm`, ugp.`perm_name`, ugp.`perm_value`, ugp.`group_id`
@@ -1729,13 +1728,27 @@ class LibertyContent extends LibertyBase {
 				$nonDefaultPerms = array();
 			}
 
-			$this->mUserContentPerms = array_merge( $defaultPerms, $nonDefaultPerms );
+			//$this->mUserContentPerms = array_merge( $defaultPerms, $nonDefaultPerms );
+			$perms = array_merge( $defaultPerms, $nonDefaultPerms ); 
 
-			$permsAPIHash = array( 'content_permissions' => TRUE ); // specify to apped perms to the mUserContentPerms hash
+			$permsAPIHash = array( 
+				'content_permissions' => TRUE, 	// specify to apped perms to the mUserContentPerms hash
+				'content_permissions_user_id' => $userId,
+			); 
 			$this->invokeServices( 'content_user_perms_function', $permsAPIHash );
-		}
 
-		return $this->mUserContentPerms;
+			// Do service perms first so that per content rejections override.
+			if( !empty( $permsAPIHash['perms'] ) ){
+				$perms = array_merge($permsAPIHash['perms'], $perms);
+			}
+
+			if( $pCache ){
+				$this->mUserContentPerms = $perms;
+			}
+		}else{
+			$perms = $this->mUserContentPerms;
+		}
+		return $perms;
 	}
 
 	/**

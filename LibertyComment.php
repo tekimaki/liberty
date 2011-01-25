@@ -323,7 +323,7 @@ class LibertyComment extends LibertyMime {
 			/* get the hash of the users perms rather than call hasUserPermission which 
 			 * always returns true for owner which interferes with trying to time limit editing
 			 */
-			$checkPerms = $this->getUserPermissions();
+			$checkPerms = $this->getUserPermissions( $gBitUser->mUserId );
 			$ret = ( !empty( $checkPerms['p_liberty_edit_comments'] ) ||
 					 !empty( $checkPerms['p_liberty_admin_comments'] ) ||
 					 $gBitUser->hasPermission( 'p_liberty_admin_comments' ) ||
