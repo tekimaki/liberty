@@ -159,19 +159,7 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 		$userPerms = array_keys( $pObject->getUserPermissions( $userId, TRUE, FALSE ) );
 	}
 
-	if( in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
-		// Last person to edit this file has admin permission for this entire class of content, let freedom ring
-		$config->set( 'CSS.AllowTricky', true );
-
-		$css =& $config->getCSSDefinition();
-        $css->info['position'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_Enum(array('absolute', 'fixed', 'relative', 'static', 'inherit')) ) );
-        $css->info['top'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
-        $css->info['left'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
-        $css->info['bottom'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
-        $css->info['right'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
-//$def =& $config->getHTMLDefinition();
-//$def->addAttribute('a', 'target', 'Enum#_blank,_self,_target,_top');
-	} else {
+	if( !in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
 		if ($gBitSystem->getConfig('htmlpure_disable_extern') == 'y') {
 			$config->set('URI.DisableExternal', true);
 		}
@@ -220,6 +208,21 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 
 	if( !empty( $custom_filters ) ){
 		$config->set('Filter.Custom', $custom_filters );
+	}
+
+	if( in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
+		// Last person to edit this file has admin permission for this entire class of content, let freedom ring
+		$config->set( 'CSS.AllowTricky', true );
+
+		// This stuff messes with config so needs to come last
+		$css =& $config->getCSSDefinition();
+        $css->info['position'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_Enum(array('absolute', 'fixed', 'relative', 'static', 'inherit')) ) );
+        $css->info['top'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
+        $css->info['left'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
+        $css->info['bottom'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
+        $css->info['right'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_CSS_Length()));
+		// $def =& $config->getHTMLDefinition();
+		// $def->addAttribute('a', 'target', 'Enum#_blank,_self,_target,_top');
 	}
 
 	$def =& $config->getHTMLDefinition();
