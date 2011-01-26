@@ -9,7 +9,7 @@ class LibertyValidator {
 	static $sActivePluginsByType;
 	static $sActivePluginsByAttribute;
 
-	function preview(&$pVars, &$pParamHash, &$store) {
+	function preview(&$pVars, &$pParamHash, &$pStore) {
 		if( !empty( $pVars ) ){
 			LibertyValidator::setupPlugins();
 			// For each variable that we need to preview
@@ -21,7 +21,7 @@ class LibertyValidator {
 						// But only call them if they have a preview function
 						if (!empty($data['preview_function'])) {
 							$function = $data['preview_function'];
-							$function($vars, $pParamHash, $store);
+							$function($vars, $pParamHash, $pStore);
 						}
 					}
 				} else {
@@ -91,7 +91,7 @@ class LibertyValidator {
 		}
 	}
 
-	function validate(&$pVars, &$pParamHash, &$pErrors, &$store) {
+	function validate(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 		if( !empty( $pVars ) ){
 			// Make sure we have the byType array setup
 			LibertyValidator::setupPlugins();
@@ -104,7 +104,7 @@ class LibertyValidator {
 						// But only if they have specified a validate function
 						if (!empty($data['validate_function'])) {
 							$function = $data['validate_function'];
-							$function($vars, $pParamHash, $pErrors, $store);
+							$function($vars, $pParamHash, $pErrors, $pStore, $pObject);
 						}					
 					}
 				// No plugins of the right type! Ack!
@@ -124,7 +124,7 @@ class LibertyValidator {
 								// But only if it has specified an attribute function properly
 								if (!empty($data['validate_attribute_function'])) {
 									$function = $data['validate_attribute_function'];
-									$function($var, $constraints, $pParamHash, $pErrors, $store);
+									$function($var, $constraints, $pParamHash, $pErrors, $pStore);
 								}		
 							}
 						}

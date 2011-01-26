@@ -56,17 +56,17 @@ function preview_booleans($pVars, &$pParamHash, &$pStore){
 	}
 }
 
-function validate_booleans($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_booleans(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 	foreach ($pVars as $var => $constraints) {
 		if (isset($pParamHash[$var])) {
-			$store[$var] =
+			$pStore[$var] =
 				($pParamHash[$var] == 'on' ||
 				 $pParamHash[$var] == 1 ||
 				 $pParamHash[$var] == 'yes')
 				? 1 : 0;
 		}
 		else {
-			$store[$var] = 0;
+			$pStore[$var] = 0;
 		}
 	}
 	

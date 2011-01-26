@@ -173,10 +173,51 @@ class LibertyContent extends LibertyBase {
 	function verify( &$pParamHash ) {
 		global $gLibertySystem, $gBitSystem, $gBitLanguage, $gBitUser;
 
+		// preprep data for validator
 		// deal with the madness that is edit
 		if( !empty( $pParamHash['edit'] ) ){
 			$pParamHash['data'] = $pParamHash['edit'];
 		}
+
+		// prep content format guid
+		$formats = array();
+		if( empty( $pParamHash['format_guid'] ) ) {
+			// existing content
+			if( $this->isValid() ){
+				$pParamHash['format_guid'] = $this->getField('format_guid');
+			// new content
+			}elseif( $formats = $this->getTextFormats() ){
+				foreach( $formats as $guid => $format ){
+					if( !empty( $format['is_default'] ) ){
+						$pParamHash['format_guid'] = $guid;
+						break;
+					}
+				}
+			}
+			// if still empty get the system default
+			if( empty( $pParamHash['format_guid'] ) ){
+				$pParamHash['format_guid'] = $gBitSystem->getConfig( 'default_format', 'tikiwiki' );
+			}
+		}else{
+			if( $formats != $this->getTextFormats() ){
+				$formats = $gLibertySystem->getTextFormats();
+			}
+			// check format_guid against allowed formats 
+			// new content or existing content format change attempt
+			if( !$this->isValid() ||
+				$pParamHash['format_guid'] != $this->getField('format_guid') )
+			{
+				if( !empty( $formats ) &&
+					!in_array( $pParamHash['format_guid'], array_keys( $formats ) ) 
+				){
+					$this->setError('format', tra( 'Invalid text format' ) );
+				}elseif( $pParamHash['format_guid'] != $gBitSystem->getConfig( 'default_format', 'tikiwiki' ) ){
+					$this->setError('format', tra( 'Invalid text format' ) );
+				}
+			}
+		}
+		// end preprep data for validator
+
 		// New data validation - expand as needed
 		// Be aware that prepVerify of liberty_content schemea 
 		// can be overridden by classes implementing LibertyContent 
@@ -282,43 +323,7 @@ class LibertyContent extends LibertyBase {
 		}
 		$pParamHash['content_store']['modifier_user_id'] = $pParamHash['modifier_user_id'];
 
-		// content format guid
-		$formats = array();
-		if( empty( $pParamHash['format_guid'] ) ) {
-			// existing content
-			if( $this->isValid() ){
-				$pParamHash['format_guid'] = $this->getField('format_guid');
-			// new content
-			}elseif( $formats = $this->getTextFormats() ){
-				foreach( $formats as $guid => $format ){
-					if( !empty( $format['is_default'] ) ){
-						$pParamHash['format_guid'] = $guid;
-						break;
-					}
-				}
-			}
-			// if still empty get the system default
-			if( empty( $pParamHash['format_guid'] ) ){
-				$pParamHash['format_guid'] = $gBitSystem->getConfig( 'default_format', 'tikiwiki' );
-			}
-		}else{
-			if( $formats != $this->getTextFormats() ){
-				$formats = $gLibertySystem->getTextFormats();
-			}
-			// check format_guid against allowed formats 
-			// new content or existing content format change attempt
-			if( !$this->isValid() ||
-				$pParamHash['format_guid'] != $this->getField('format_guid') )
-			{
-				if( !empty( $formats ) &&
-					!in_array( $pParamHash['format_guid'], array_keys( $formats ) ) 
-				){
-					$this->setError('format', tra( 'Invalid text format' ) );
-				}elseif( $pParamHash['format_guid'] != $gBitSystem->getConfig( 'default_format', 'tikiwiki' ) ){
-					$this->setError('format', tra( 'Invalid text format' ) );
-				}
-			}
-		}
+		// set format
 		if( empty( $this->mErrors['format'] ) ){
 			$pParamHash['content_store']['format_guid'] = $pParamHash['format_guid'];
 		}
@@ -386,25 +391,28 @@ class LibertyContent extends LibertyBase {
 	 * validateFields validates the fields
 	 */
 	function validateFields(&$pParamHash) {
-		$this->prepVerify();
+		$this->prepVerify($pParamHash);
 		LibertyValidator::validate(
 			$this->mVerification['liberty_content'],
 			$pParamHash,
-			$this->mErrors, $pParamHash['content_store']);
+			$this->mErrors, 
+			$pParamHash['content_store'], 
+			$this);
 	}
 
 	/**
 	 * prepVerify prepares the object for input verification
 	 */
-	function prepVerify() {
+	function prepVerify($pParamHash) {
 		if (empty($this->mVerification['liberty_content'])) {
 	 		/* Validation for liberty_content title */
 			$this->mVerification['liberty_content']['string']['title'] = array(
 				'name' => 'Title',
 				'max' => BIT_CONTENT_MAX_TITLE_LEN,
 			);
+			$format = !empty( $pParamHash['format_guid'] ) && $pParamHash['format_guid'] == 'bithtml' ? 'html' : 'string';
 	 		/* Validation for liberty_content data */
-			$this->mVerification['liberty_content']['string']['data'] = array(
+			$this->mVerification['liberty_content'][$format]['data'] = array(
 				'name' => 'Body',
 			);
 		}

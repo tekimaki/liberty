@@ -47,7 +47,7 @@ function preview_hexcolor(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_hexcolor($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_hexcolor(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			$hexcolor = $pParamHash[$var];
@@ -55,13 +55,13 @@ function validate_hexcolor($pVars, &$pParamHash, &$pErrors, &$store) {
 			// TODO: Not sure if we should trim this is or not as storage could be inconsitent
 			// $hexcolor = ltrim( $hexcolor, '#' );
 			if ( ctype_xdigit($hexcolor) && (strlen($hexcolor) == 6 || strlen($hexcolor) == 3))
-			$store[$var] = $hexcolor;
+			$pStore[$var] = $hexcolor;
 			else {
 				$pErrors[$var] = tra('The hex color code you entered is not valid');
 			}
 		}
 		else {
-			$store[$var] = NULL;
+			$pStore[$var] = NULL;
 		}
 	}
 	

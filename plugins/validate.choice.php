@@ -47,15 +47,15 @@ function preview_choice(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_choice(&$pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_choice(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if (isset( $pParamHash[$var] ) ) {
 			if( in_array( $pParamHash[$var], $constraints['choices'] ) ){
-				$store[$var] = $pParamHash[$var];
+				$pStore[$var] = $pParamHash[$var];
 			}
 		}
 		else{
-			$store[$var] = NULL;
+			$pStore[$var] = NULL;
 		}
 	}
 }

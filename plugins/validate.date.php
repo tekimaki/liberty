@@ -53,7 +53,7 @@ function preview_dates(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_dates($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_dates(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if( isset( $pParamHash[$var]['Month'] ) &&
 			isset( $pParamHash[$var]['Day'] ) &&
@@ -73,11 +73,11 @@ function validate_dates($pVars, &$pParamHash, &$pErrors, &$store) {
 					if( strlen( $pParamHash[$var]['Day'] ) == 1 ) {
 						$pParamHash[$var]['Day'] = '0'.$pParamHash[$var]['Day'];
 					}
-					$store[$var] =
+					$pStore[$var] =
 						$pParamHash[$var]['Year'].
 						$pParamHash[$var]['Month'].
 						$pParamHash[$var]['Day'];
-					if (strlen($store[$var]) != 8) {
+					if (strlen($pStore[$var]) != 8) {
 						$pErrors[$var] = 'The value of ' .
 							$constraint['name'] . ' is invalid.';
 					}

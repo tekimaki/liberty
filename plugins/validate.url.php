@@ -48,11 +48,11 @@ function preview_urls(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_urls($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_urls($pVars, &$pParamHash, &$pErrors, &$pStore) {
 	foreach( $pVars as $var => $constraints) {
 		if( empty ( $pParamHash[$var] ) ) {
 			// Somebody deleted the value, we need to null it out
-			$store[$var] = NULL;
+			$pStore[$var] = NULL;
 		}
 		else {
 			// TODO: Options page for the various parts to configure what is allowed as a URL on your site?
@@ -81,7 +81,7 @@ function validate_urls($pVars, &$pParamHash, &$pErrors, &$store) {
 			
 			// check
 			if (eregi($urlregex, $pParamHash[$var])) {
-				$store[$var] = $pParamHash[$var];
+				$pStore[$var] = $pParamHash[$var];
 			} else {
 				$pErrors[$var] = 'The URL entered is invalid.';
 			}

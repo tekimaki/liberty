@@ -55,12 +55,12 @@ function preview_emails(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_emails($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_emails(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if( !empty( $pStore[$var] ) &&
 			empty ( $pParamHash[$var] ) ) {
 			// Somebody deleted the value, we need to null it out
-			$store[$var] = NULL;
+			$pStore[$var] = NULL;
 		}
 		else {
 			// Did we manage to inclue is_email.php above?
@@ -69,11 +69,11 @@ function validate_emails($pVars, &$pParamHash, &$pErrors, &$store) {
 					$pErrors[$var] =
 						'Invalid email address.';
 				} else {
-					$store[$var] = $pParamHash[$var];
+					$pStore[$var] = $pParamHash[$var];
 				}
 			} else {
 				// TODO: Something better here? At least log a warning?
-				$store[$var] = $pParamHash[$var];
+				$pStore[$var] = $pParamHash[$var];
 			}
 		}
 	}

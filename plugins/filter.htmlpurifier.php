@@ -47,7 +47,11 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 			@include_once("HTMLPurifier.auto.php");
 			$auto_config = true;
 
-			$config = htmlpure_getDefaultConfig( $pObject );
+			if( !empty( $pFilterHash['htmlp_filter_mode'] ) ){
+				$pFilterHash['htmlp_filter_mode'] = 'render';
+			}
+
+			$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
 
 			$gHtmlPurifier = new HTMLPurifier($config);
 		}
@@ -83,8 +87,8 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 		// entities so change quotes back.
 		if (empty($pFilterHash['format_guid']) || 
 		    $pFilterHash['format_guid'] != 'bithtml') {
-		  $pString = preg_replace('|&quot;|', '"', $pString);
-		  $pString = preg_replace('|&#039;|', "'", $pString);
+			$pString = preg_replace('|&quot;|', '"', $pString);
+			$pString = preg_replace('|&#039;|', "'", $pString);
 		}
 
 		/*
@@ -109,8 +113,10 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 	return $pString;
 }
 
-function htmlpure_getDefaultConfig( $pObject=NULL ){
+function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 	global $gBitSystem;
+	$blacklistedTags = '';
+	$userPerms = array();
 
 	$config = HTMLPurifier_Config::createDefault();
 	// Necessary setup for custom configuration I think. http://htmlpurifier.org/docs/enduser-customize.html
@@ -135,11 +141,23 @@ function htmlpure_getDefaultConfig( $pObject=NULL ){
 	if ($gBitSystem->getConfig('htmlpure_xhtml', 'n') == 'n') {
 		$config->set('HTML.XHTML', true);
 	}
+	if ($gBitSystem->getConfig('htmlpure_collecterrors', 'n') == 'y') {
+		$config->set('Core.CollectErrors', true);
+	}
 
-	$blacklistedTags = '';
-
-	// @TODO respect revoked permissions
-	$userPerms = array_keys( $pObject->getUserPermissions( $pObject->getField( 'modifier_user_id' ), TRUE, FALSE ) );
+	// Get user permissions 
+	if( is_object( $pObject ) && is_a( $pObject, 'LibertyContent' ) ){
+		switch( $pFilterHash['htmlp_filter_mode'] ){
+		case 'validate':
+			$userId = $gBitUser->mUserId;
+		case 'render':
+		default:
+			$userId = $pObject->getField( 'modifier_user_id' );
+			break;
+		}
+		// @TODO respect revoked permissions
+		$userPerms = array_keys( $pObject->getUserPermissions( $userId, TRUE, FALSE ) );
+	}
 
 	if( in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
 		// Last person to edit this file has admin permission for this entire class of content, let freedom ring
