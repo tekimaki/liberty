@@ -47,7 +47,7 @@ function preview_reals(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_reals($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_reals($pVars, &$pParamHash, &$pErrors, &$store, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			if (is_numeric($pParamHash[$var])) {

@@ -50,7 +50,7 @@ function preview_zips(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_zips(&$pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_zips(&$pVars, &$pParamHash, &$pErrors, &$store, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 	    if (!empty( $pStore[$var] ) &&
 			empty( $pParamHash[$var] )) {

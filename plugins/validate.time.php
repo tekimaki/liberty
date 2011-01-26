@@ -57,7 +57,7 @@ function preview_times(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_times($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_times($pVars, &$pParamHash, &$pErrors, &$store, $pObject = NULL) {
 	global $gBitSystem;
 	$offset = $gBitSystem->get_display_offset();
 	$bd = new BitDate($offset);

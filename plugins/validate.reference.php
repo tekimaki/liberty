@@ -51,7 +51,7 @@ function preview_reference(&$pVars, &$pParamHash, &$pStore) {
  * for now this is a lot like integers except that unset value is returned null not 0
  * @TODO perhaps validate against the reference record
  */
-function validate_reference(&$pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_reference(&$pVars, &$pParamHash, &$pErrors, &$store, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			if (is_numeric($pParamHash[$var])) {

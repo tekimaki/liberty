@@ -48,7 +48,7 @@ function preview_urls(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_urls($pVars, &$pParamHash, &$pErrors, &$pStore) {
+function validate_urls($pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if( empty ( $pParamHash[$var] ) ) {
 			// Somebody deleted the value, we need to null it out

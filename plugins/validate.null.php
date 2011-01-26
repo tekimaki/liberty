@@ -48,7 +48,7 @@ function preview_null(&$pVars, &$pParamHash, &$pStore) {
 	}
 }
 
-function validate_null($pVars, &$pParamHash, &$pErrors, &$pStore) {
+function validate_null($pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints ) {
 	 	  $pStore[$var] = isset($pParamHash[$var]) ? 
 			$pParamHash[$var] : NULL;

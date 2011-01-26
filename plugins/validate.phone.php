@@ -47,7 +47,7 @@ function preview_phone($pVars, &$pParamHash, &$pStore){
 	}
 }
 
-function validate_phone($pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_phone($pVars, &$pParamHash, &$pErrors, &$store, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints ) {
 		if( isset( $pParamHash[$var] ) ) {
 			// We just strip down to what we seek.

@@ -41,7 +41,7 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_NUMBER, $pluginParams );
 
-function validate_number(&$pVars, &$pParamHash, &$pErrors, &$store) {
+function validate_number(&$pVars, &$pParamHash, &$pErrors, &$store, $pObject = NULL) {
 	foreach( $pVars as $var => $constraints) {
 		if (!empty( $pParamHash[$var] ) ) {
 			if (is_numeric($pParamHash[$var])) {
