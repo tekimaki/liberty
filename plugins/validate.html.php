@@ -86,14 +86,14 @@ function validate_html(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NU
 
 					if( !empty( $errorStr ) ){
 						$pErrors[$var] = tra('Invalid or prohibited html submitted:').$errorStr; 
-					// ok
-					} else {
-						$pStore[$var] = $pParamHash[$var];
 					}
+					// disable htmlp collecterrors
+					$gBitSystem->setConfig('htmlpure_collecterrors', 'n');
 				}
-				// disable htmlp collecterrors
-				$gBitSystem->setConfig('htmlpure_collecterrors', 'n');
-			} else {
+			}
+
+			// no errors send back the data
+			if( empty( $pErrors[$var]  ) ){
 				$pStore[$var] = $pParamHash[$var];
 			}
 		}
