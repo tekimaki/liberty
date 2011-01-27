@@ -39,21 +39,23 @@ $pluginParams = array (
 $gLibertySystem->registerPlugin( PLUGIN_GUID_FILTERHTMLPURIFIER, $pluginParams );
 
 function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
-	global $gHtmlPurifier, $gBitSystem;
+	global $gHtmlPurifier, $gHtmlpConfig, $gBitSystem;
 
-	$pear_version = false;
-	if (@include_once("PEAR.php")) {		
-		if(@include_once("HTMLPurifier.php")) {
-			@include_once("HTMLPurifier.auto.php");
-			$auto_config = true;
+	if (!isset($gHtmlPurifier)) { 
+		$pear_version = false;
+		if (@include_once("PEAR.php")) {		
+			if(@include_once("HTMLPurifier.php")) {
+				@include_once("HTMLPurifier.auto.php");
+				$auto_config = true;
 
-			if( !empty( $pFilterHash['htmlp_filter_mode'] ) ){
-				$pFilterHash['htmlp_filter_mode'] = 'render';
+				if( !empty( $pFilterHash['htmlp_filter_mode'] ) ){
+					$pFilterHash['htmlp_filter_mode'] = 'render';
+				}
+
+				$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
+
+				$gHtmlPurifier = new HTMLPurifier($config);
 			}
-
-			$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
-
-			$gHtmlPurifier = new HTMLPurifier($config);
 		}
 	}
 
@@ -64,23 +66,35 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 		$pString = htmlpure_cleanupPeeTags($pString);
 		//		$pee = $pString;
 		//		$pString = html_entity_decode( $pString );
-		if( empty( $pFilterHash['htmlp_config'] ) ){
-			$pString = $gHtmlPurifier->purify( $pString );
-		}else{
-			$config = htmlpure_getDefaultConfig( $pObject );
+		
+		// update the configuration
+		// updating the configuration can be memory intensive
+		// ten updates can easily knock out php
+		// so we only update the configuration when really necessary
+		// @TODO cache configurations
+		if( is_object( $pObject ) && 
+			is_a( $pObject, 'LibertyContent' ) && 
+			empty( $gHtmlpConfig['last_content_id'] ) || ( $pObject->mContentId != $gHtmlpConfig['last_content_id'] ) && 
+			empty( $gHtmlpConfig['last_filter_mode'] ) || ( $pFilterHash['htmlp_filter_mode'] != $gHtmlpConfig['last_filter_mode'] )
+		){
+			$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
+			if( !empty( $pFilterHash['htmlp_config'] ) ){
+				/* if we've received custom configurations for the particular parse then we deal with them
+				   for now were expecting config data that htmlpurfier doesn't really handle in a nice way
+				   so we stuff it into the 'info' hash under a 'bitweaver' name space.
 
-			/* if we've received custom configurations for the particular parse then we deal with them
-			   for now were expecting config data that htmlpurfier doesn't really handle in a nice way
-			   so we stuff it into the 'info' hash under a 'bitweaver' name space.
-
-			   @TODO ideally this might also look for native htmlpurifier config values in the keys and
-			   then adjust as necessary which is why $config is passed in here. -wjames5
-			  */
-			foreach( $pFilterHash['htmlp_config'] as $key => $val ){
-				$config->def->info['bitweaver'][$key] = $val;
+				   @TODO ideally this might also look for native htmlpurifier config values in the keys and
+				   then adjust as necessary which is why $config is passed in here. -wjames5
+				  */
+				foreach( $pFilterHash['htmlp_config'] as $key => $val ){
+					$config->def->info['bitweaver'][$key] = $val;
+				}
 			}
 
 			$pString = $gHtmlPurifier->purify( $pString, $config );
+			$gHtmlpConfig['last_content_id'] = $pObject->mContentId;
+		}else{
+			$pString = $gHtmlPurifier->purify( $pString );
 		}
 
 		// If we have another parse step they may be escaping
@@ -150,6 +164,7 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 		switch( $pFilterHash['htmlp_filter_mode'] ){
 		case 'validate':
 			$userId = $gBitUser->mUserId;
+			break;
 		case 'render':
 		default:
 			$userId = $pObject->getField( 'modifier_user_id' );
