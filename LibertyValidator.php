@@ -124,7 +124,7 @@ class LibertyValidator {
 								// But only if it has specified an attribute function properly
 								if (!empty($data['validate_attribute_function'])) {
 									$function = $data['validate_attribute_function'];
-									$function($var, $constraints, $pParamHash, $pErrors, $pStore);
+									$function($var, $constraints, $pParamHash, $pErrors, $pStore, $pObject);
 								}		
 							}
 						}

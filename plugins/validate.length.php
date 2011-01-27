@@ -40,7 +40,7 @@ $pluginParams = array (
 
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_LENGTH, $pluginParams );
 
-function validate_length(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
+function validate_length($pVar, $pConstraints, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
   if( !empty ( $pParamHash[$pVar] ) ) {
     if (strlen($pParamHash[$pVar]) > $pConstraints['length']) {
       $pErrors[$pVar] =
