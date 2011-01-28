@@ -410,10 +410,10 @@ class LibertyContent extends LibertyBase {
 				'name' => 'Title',
 				'max' => BIT_CONTENT_MAX_TITLE_LEN,
 			);
-			$format = !empty( $pParamHash['format_guid'] ) && $pParamHash['format_guid'] == 'bithtml' ? 'html' : 'string';
 	 		/* Validation for liberty_content data */
-			$this->mVerification['liberty_content'][$format]['data'] = array(
+			$this->mVerification['liberty_content']['string']['data'] = array(
 				'name' => 'Body',
+				'html' => ( !empty( $pParamHash['format_guid'] ) && $pParamHash['format_guid'] == 'bithtml' ? TRUE : FALSE ),
 			);
 		}
 	}
