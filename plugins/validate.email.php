@@ -65,7 +65,7 @@ function validate_emails(&$pVars, &$pParamHash, &$pErrors, &$pStore, $pObject = 
 		else {
 			// Did we manage to inclue is_email.php above?
 			if (function_exists('is_email')) {
-				if (!is_email($pParamHash[$var])) {
+				if( is_email( $pParamHash[$var], true, true ) > 0 ) {
 					$pErrors[$var] =
 						'Invalid email address.';
 				} else {
