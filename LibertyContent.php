@@ -2364,9 +2364,9 @@ class LibertyContent extends LibertyBase {
 		global $gBitUser;
 		if( $gBitUser->isAdmin() ) {
 			$pListHash['min_content_status_id'] = -9999;
-		} elseif( !empty( $this ) && is_object( $this ) && $this->hasAdminPermission() ) {
+		} elseif( !empty( $this ) && is_a( $this, 'LibertyContent' ) && $this->hasAdminPermission() ) {
 			$pListHash['min_content_status_id'] = -999;
-		} elseif( !empty( $this ) && is_object( $this ) && $this->hasUpdatePermission() ) {
+		} elseif( !empty( $this ) && is_a( $this, 'LibertyContent' ) && $this->hasUpdatePermission() ) {
 			$pListHash['min_content_status_id'] = -99;
 		} else {
 			$pListHash['min_content_status_id'] = 1;
