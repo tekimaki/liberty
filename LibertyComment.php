@@ -538,7 +538,7 @@ class LibertyComment extends LibertyMime {
 		$joinSql = $selectSql = $whereSql = '';
 
 		if ( !is_array($pContentId) ){
-			$pParamHash['include_comments'] = TRUE;
+			$pParamHash['include_comments'] = 'y';
 			$this->getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars, NULL, $pParamHash );
 		}
 
