@@ -88,7 +88,7 @@
 									<th class="width15p">{tr}Size{/tr}</th>
 									<th class="width85p">{tr}Code{/tr}</th>
 								</tr>
-								{if $storage.attachment_plugin_guid eq 'mimeimage'}
+								{if $storage.attachment_plugin_guid eq 'mimeimage' || $storage.attachment_plugin_guid eq 'mimedefault'}
 									{foreach name=size key=size from=$storage.thumbnail_url item=url}
 										<tr>
 											<td>{$size}</td>
