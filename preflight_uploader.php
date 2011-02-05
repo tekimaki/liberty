@@ -89,6 +89,7 @@ if( empty( $error ) && is_object( $gContent ) ){
 				$gBitSmarty->assign('errors', $gContent->getErrors() );
 				// @TODO handle preflight store errors
 				echo 'preflight store error';
+				vd( $gContent->getErrors() );
 				die;
 			}
 		}

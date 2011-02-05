@@ -222,7 +222,9 @@ class LibertyContent extends LibertyBase {
 		// Be aware that prepVerify of liberty_content schemea 
 		// can be overridden by classes implementing LibertyContent 
 		// Currently supporting field validation overrides for title, data
-		LibertyContent::validateFields($pParamHash);
+		if( empty( $pParamHash['preflight'] ) || !empty( $_REQUEST['preflight'] ) ){		// preflight is a special key that can not be set in request, only internally
+			LibertyContent::validateFields($pParamHash);
+		}
 
 		// content_type_guid
 		// It is possible a derived class set this to something different
