@@ -64,16 +64,19 @@ $gLibertySystem->registerPlugin( PLUGIN_MIME_GUID_IMAGE, $pluginParams );
  * @return TRUE on success, FALSE on failure - $pStoreRow[errors] will contain reason
  */
 function mime_image_store( &$pStoreRow ) {
+	global $gBitSystem;
 	// this will set the correct pluign guid, even if we let default handle the store process
 	$pStoreRow['attachment_plugin_guid'] = PLUGIN_MIME_GUID_IMAGE;
 	$pStoreRow['log'] = array();
 
 	// if storing works, we process the image
 	if( $ret = mime_default_store( $pStoreRow )) {
-		if( !mime_image_store_exif_data( $pStoreRow )) {
-			// if it all goes tits up, we'll know why
-			$pStoreRow['errors'] = $pStoreRow['log'];
-			$ret = FALSE;
+		if( $gBitSystem->isFeatureActive( 'mime_image_exif_data' ) ){
+			if( !mime_image_store_exif_data( $pStoreRow )) {
+				// if it all goes tits up, we'll know why
+				$pStoreRow['errors'] = $pStoreRow['log'];
+				$ret = FALSE;
+			}
 		}
 	}
 	return $ret;
@@ -96,10 +99,12 @@ function mime_image_update( &$pStoreRow, $pParams = NULL ) {
 
 	// if storing works, we process the image
 	if( !empty( $pStoreRow['upload'] ) && $ret = mime_default_update( $pStoreRow )) {
-		if( !mime_image_store_exif_data( $pStoreRow )) {
-			// if it all goes tits up, we'll know why
-			$pStoreRow['errors'] = $pStoreRow['log'];
-			$ret = FALSE;
+		if( $gBitSystem->isFeatureActive( 'mime_image_exif_data' ) ){
+			if( !mime_image_store_exif_data( $pStoreRow )) {
+				// if it all goes tits up, we'll know why
+				$pStoreRow['errors'] = $pStoreRow['log'];
+				$ret = FALSE;
+			}
 		}
 	} elseif( $gBitSystem->isFeatureActive( 'mime_image_panoramas' ) && !empty( $pParams['preference']['is_panorama'] ) && empty( $pStoreRow['thumbnail_url']['panorama'] )) {
 		if( !mime_image_create_panorama( $pStoreRow )) {

@@ -5,6 +5,11 @@ include_once( KERNEL_PKG_PATH.'simple_form_functions_lib.php' );
 $gBitSystem->verifyPermission( 'p_admin' );
 
 $settings = array(
+	'mime_image_exif_data' => array(
+		'label' => 'Store Exif Data',
+		'note' => 'If an image contains exif data it will be stored in the upload process',
+		'type' => 'checkbox',
+	),
 	'mime_image_panoramas' => array(
 		'label' => 'Panorama Images',
 		'note' => 'When users upload 360&deg; panoramic images, they can enable a flash viewer to view these. This can greatly enhance the image viewing experience for panoramic images. (<a class="external" href="http://pan0.net/fspp">example</a>)',
