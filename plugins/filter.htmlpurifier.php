@@ -76,7 +76,7 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 		if( is_object( $pObject ) && 
 			is_a( $pObject, 'LibertyContent' ) && 
 			empty( $gHtmlpConfig['last_content_id'] ) || ( $pObject->mContentId != $gHtmlpConfig['last_content_id'] ) && 
-			empty( $gHtmlpConfig['last_filter_mode'] ) || ( !empty( $pFilterHash['htmlp_filter_mode'] ) && $pFilterHash['htmlp_filter_mode'] != $gHtmlpConfig['last_filter_mode'] )
+			empty( $gHtmlpConfig['last_filter_mode'] ) || ( $pFilterHash['htmlp_filter_mode'] != $gHtmlpConfig['last_filter_mode'] )
 		){
 			$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
 			if( !empty( $pFilterHash['htmlp_config'] ) ){
