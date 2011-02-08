@@ -41,16 +41,17 @@ $gLibertySystem->registerPlugin( PLUGIN_GUID_FILTERHTMLPURIFIER, $pluginParams )
 function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 	global $gHtmlPurifier, $gHtmlpConfig, $gBitSystem;
 
+	// set default filter mode
+	if( empty( $pFilterHash['htmlp_filter_mode'] ) ){
+		$pFilterHash['htmlp_filter_mode'] = 'render';
+	}
+
 	if (!isset($gHtmlPurifier)) { 
 		$pear_version = false;
 		if (@include_once("PEAR.php")) {		
 			if(@include_once("HTMLPurifier.php")) {
 				@include_once("HTMLPurifier.auto.php");
 				$auto_config = true;
-
-				if( !empty( $pFilterHash['htmlp_filter_mode'] ) ){
-					$pFilterHash['htmlp_filter_mode'] = 'render';
-				}
 
 				$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
 
@@ -75,7 +76,7 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 		if( is_object( $pObject ) && 
 			is_a( $pObject, 'LibertyContent' ) && 
 			empty( $gHtmlpConfig['last_content_id'] ) || ( $pObject->mContentId != $gHtmlpConfig['last_content_id'] ) && 
-			empty( $gHtmlpConfig['last_filter_mode'] ) || ( $pFilterHash['htmlp_filter_mode'] != $gHtmlpConfig['last_filter_mode'] )
+			empty( $gHtmlpConfig['last_filter_mode'] ) || ( !empty( $pFilterHash['htmlp_filter_mode'] ) && $pFilterHash['htmlp_filter_mode'] != $gHtmlpConfig['last_filter_mode'] )
 		){
 			$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
 			if( !empty( $pFilterHash['htmlp_config'] ) ){
@@ -92,10 +93,15 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 			}
 
 			$pString = $gHtmlPurifier->purify( $pString, $config );
+
+			// set last content id used 
 			$gHtmlpConfig['last_content_id'] = $pObject->mContentId;
 		}else{
 			$pString = $gHtmlPurifier->purify( $pString );
 		}
+
+		// set last filter mode used
+		$gHtmlpConfig['last_filter_mode'] = $pFilterHash['htmlp_filter_mode'];
 
 		// If we have another parse step they may be escaping
 		// entities so change quotes back.
