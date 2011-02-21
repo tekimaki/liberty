@@ -2,7 +2,7 @@
 {if $gBitSystem->isFeatureActive( 'liberty_display_status' ) && 
 	$gBitSystem->isFeatureActive( 'liberty_display_status_menu' ) && 
 	$statuses &&
-	($gBitUser->hasPermission('p_liberty_edit_content_status') || $gBitUser->hasPermission('p_liberty_edit_all_status'))
+	( $gContent->hasUserPermission( 'p_liberty_edit_content_status') || $gContent->hasUserPermission( 'p_liberty_edit_all_status') )
 	}
 	{if ($statuses|@count) > 1}
 	<div class="row">
