@@ -41,8 +41,7 @@ $pluginParams = array (
 $gLibertySystem->registerPlugin( PLUGIN_GUID_VALID_MIN, $pluginParams );
 
 function validate_min($pVar, $pConstraints, &$pParamHash, &$pErrors, &$pStore, $pObject = NULL) {
-  if (!(empty($pConstraints['min']) ||
-	$pParamHash[$var] < $pConstraints['min'])) {
+  if (!empty($pConstraints['min']) && ( empty($pParamHash[$pVar]) || strlen($pParamHash[$pVar]) < $pConstraints['min'] )) {
     $pErrors[$var] = 'The value of '
       . $pContraints['name']
       . 'is less than the minimum of '
