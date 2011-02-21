@@ -39,7 +39,7 @@ $pluginParams = array (
 $gLibertySystem->registerPlugin( PLUGIN_GUID_FILTERHTMLPURIFIER, $pluginParams );
 
 function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
-	global $gHtmlPurifier, $gHtmlpConfig, $gBitSystem;
+	global $gHtmlPurifier, $gHtmlpConfig, $gBitSystem, $gLastHtmlpConfig;
 
 	// set default filter mode
 	if( empty( $pFilterHash['htmlp_filter_mode'] ) ){
@@ -78,7 +78,7 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 			empty( $gHtmlpConfig['last_content_id'] ) || ( $pObject->mContentId != $gHtmlpConfig['last_content_id'] ) && 
 			empty( $gHtmlpConfig['last_filter_mode'] ) || ( $pFilterHash['htmlp_filter_mode'] != $gHtmlpConfig['last_filter_mode'] )
 		){
-			$config = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
+			$gLastHtmlpConfig = htmlpure_getDefaultConfig( $pObject, $pFilterHash );
 			if( !empty( $pFilterHash['htmlp_config'] ) ){
 				/* if we've received custom configurations for the particular parse then we deal with them
 				   for now were expecting config data that htmlpurfier doesn't really handle in a nice way
@@ -92,10 +92,12 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 				}
 			}
 
-			$pString = $gHtmlPurifier->purify( $pString, $config );
-
 			// set last content id used 
 			$gHtmlpConfig['last_content_id'] = $pObject->mContentId;
+		}
+
+		if( !empty( $gLastHtmlpConfig ) ){
+			$pString = $gHtmlPurifier->purify( $pString, $gLastHtmlpConfig );
 		}else{
 			$pString = $gHtmlPurifier->purify( $pString );
 		}
@@ -134,7 +136,7 @@ function htmlpure_filter( &$pString, &$pFilterHash, $pObject ) {
 }
 
 function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
-	global $gBitSystem;
+	global $gBitSystem, $gBitUser;
 	$blacklistedTags = '';
 	$userPerms = array();
 
