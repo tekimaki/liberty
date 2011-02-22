@@ -183,7 +183,6 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 	}
 
 	if( !in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
-		/*
 		if ($gBitSystem->getConfig('htmlpure_disable_extern') == 'y') {
 			$config->set('URI.DisableExternal', true);
 		}
@@ -196,7 +195,6 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 		if ($gBitSystem->getConfig('htmlpure_disable_uri') == 'y') {
 			$config->set('URI.Disable', true);
 		}
-		 */
 		$blacklistedTags = $gBitSystem->getConfig('blacklisted_html_tags', '');
 	}
 
@@ -223,6 +221,7 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 
 	// risky elements - user must have trusted editor permission
 	if( in_array( 'p_liberty_trusted_editor', $userPerms ) ) {
+		$config->set('URI.DisableExternalResources', false);
 		$config->set('HTML.Trusted', true);
 		$config->set('HTML.SafeEmbed', true);
 	//	$config->set('HTML.SafeObject', true); // this seems to conflict wiht Trusted - see http://htmlpurifier.org/phorum/read.php?2,3886,4362#msg-4362 
