@@ -1864,13 +1864,15 @@ class LibertyContent extends LibertyBase {
 	 * @access public
 	 * @return array of preferences if $pContentId is set or pass preferences on to $this->mPrefs
 	 */
-	function loadPreferences( $pContentId = NULL ) {
+	function loadPreferences( $pContentId = NULL, $pForce = FALSE ) {
 		global $gBitSystem;
 		if( @BitBase::verifyId( $pContentId )) {
 			return $gBitSystem->mDb->getAssoc( "SELECT `pref_name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id`=?", array( $pContentId ));
 		} elseif( $this->isValid() ) {
-			// If no results, getAssoc will return an empty array (ie not a true NULL value) so getPreference can tell we have attempted a load
-			$this->mPrefs = @$this->mDb->getAssoc( "SELECT `pref_name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id`=?", array( $this->mContentId ));
+			if( empty( $this->mPrefs ) || $pForce ) {
+				// If no results, getAssoc will return an empty array (ie not a true NULL value) so getPreference can tell we have attempted a load
+				$this->mPrefs = @$this->mDb->getAssoc( "SELECT `pref_name`, `pref_value` FROM `".BIT_DB_PREFIX."liberty_content_prefs` WHERE `content_id`=?", array( $this->mContentId ));
+			}
 		}
 	}
 
