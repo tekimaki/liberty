@@ -234,10 +234,16 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 		$config->set('Filter.Custom', $custom_filters );
 	}
 
+	// stuff for getHTMLDefinition
+	$config->set('HTML.DefinitionID', 'bitweaver');
+	$config->set('HTML.DefinitionRev', 1);
+
 	if( in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
 		// Last person to edit this file has admin permission for this entire class of content, let freedom ring
 		$config->set( 'CSS.AllowTricky', true );
+	}
 
+	if( in_array( $pObject->mAdminContentPerm, $userPerms ) ) {
 		// This stuff messes with config so needs to come last
 		$css =& $config->getCSSDefinition();
         $css->info['position'] = new HTMLPurifier_AttrDef_CSS_Composite(array( new HTMLPurifier_AttrDef_Enum(array('absolute', 'fixed', 'relative', 'static', 'inherit')) ) );
@@ -249,7 +255,15 @@ function htmlpure_getDefaultConfig( $pObject=NULL, $pFilterHash = array() ){
 		// $def->addAttribute('a', 'target', 'Enum#_blank,_self,_target,_top');
 	}
 
+	$def = $config->getHTMLDefinition(true);
+	// force on target
+	$def->addAttribute('a', 'target', new HTMLPurifier_AttrDef_Enum(
+	  array('_blank','_self','_target','_top')
+	));
+
+	// get it again by ref for our blacklist and rel transformation
 	$def =& $config->getHTMLDefinition();
+
 	// HTMLPurifier doesn't have a blacklist feature. Duh guys!
 	// Note that this has to come last since the other configs
 	// may tweak the def.
